@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
+import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedQuizIndexRouteImport } from './routes/_authenticated.quiz.index'
+import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticated.quiz.new'
+import { Route as AuthenticatedQuizIdRouteImport } from './routes/_authenticated.quiz.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -29,6 +34,16 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedTutorRoute = AuthenticatedTutorRouteImport.update({
+  id: '/tutor',
+  path: '/tutor',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
+  id: '/revision',
+  path: '/revision',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   id: '/onboarding',
   path: '/onboarding',
@@ -39,18 +54,43 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedQuizIndexRoute = AuthenticatedQuizIndexRouteImport.update({
+  id: '/quiz/',
+  path: '/quiz/',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedQuizNewRoute = AuthenticatedQuizNewRouteImport.update({
+  id: '/quiz/new',
+  path: '/quiz/new',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedQuizIdRoute = AuthenticatedQuizIdRouteImport.update({
+  id: '/quiz/$id',
+  path: '/quiz/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/revision': typeof AuthenticatedRevisionRoute
+  '/tutor': typeof AuthenticatedTutorRoute
+  '/quiz/$id': typeof AuthenticatedQuizIdRoute
+  '/quiz/new': typeof AuthenticatedQuizNewRoute
+  '/quiz/': typeof AuthenticatedQuizIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/revision': typeof AuthenticatedRevisionRoute
+  '/tutor': typeof AuthenticatedTutorRoute
+  '/quiz/$id': typeof AuthenticatedQuizIdRoute
+  '/quiz/new': typeof AuthenticatedQuizNewRoute
+  '/quiz': typeof AuthenticatedQuizIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +99,35 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/revision': typeof AuthenticatedRevisionRoute
+  '/_authenticated/tutor': typeof AuthenticatedTutorRoute
+  '/_authenticated/quiz/$id': typeof AuthenticatedQuizIdRoute
+  '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
+  '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/dashboard' | '/onboarding'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/revision'
+    | '/tutor'
+    | '/quiz/$id'
+    | '/quiz/new'
+    | '/quiz/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/dashboard' | '/onboarding'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/onboarding'
+    | '/revision'
+    | '/tutor'
+    | '/quiz/$id'
+    | '/quiz/new'
+    | '/quiz'
   id:
     | '__root__'
     | '/'
@@ -72,6 +135,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/dashboard'
     | '/_authenticated/onboarding'
+    | '/_authenticated/revision'
+    | '/_authenticated/tutor'
+    | '/_authenticated/quiz/$id'
+    | '/_authenticated/quiz/new'
+    | '/_authenticated/quiz/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -103,6 +171,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/tutor': {
+      id: '/_authenticated/tutor'
+      path: '/tutor'
+      fullPath: '/tutor'
+      preLoaderRoute: typeof AuthenticatedTutorRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/revision': {
+      id: '/_authenticated/revision'
+      path: '/revision'
+      fullPath: '/revision'
+      preLoaderRoute: typeof AuthenticatedRevisionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/onboarding': {
       id: '/_authenticated/onboarding'
       path: '/onboarding'
@@ -117,17 +199,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/quiz/': {
+      id: '/_authenticated/quiz/'
+      path: '/quiz'
+      fullPath: '/quiz/'
+      preLoaderRoute: typeof AuthenticatedQuizIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/quiz/new': {
+      id: '/_authenticated/quiz/new'
+      path: '/quiz/new'
+      fullPath: '/quiz/new'
+      preLoaderRoute: typeof AuthenticatedQuizNewRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/quiz/$id': {
+      id: '/_authenticated/quiz/$id'
+      path: '/quiz/$id'
+      fullPath: '/quiz/$id'
+      preLoaderRoute: typeof AuthenticatedQuizIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
+  AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
+  AuthenticatedQuizIdRoute: typeof AuthenticatedQuizIdRoute
+  AuthenticatedQuizNewRoute: typeof AuthenticatedQuizNewRoute
+  AuthenticatedQuizIndexRoute: typeof AuthenticatedQuizIndexRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
+  AuthenticatedTutorRoute: AuthenticatedTutorRoute,
+  AuthenticatedQuizIdRoute: AuthenticatedQuizIdRoute,
+  AuthenticatedQuizNewRoute: AuthenticatedQuizNewRoute,
+  AuthenticatedQuizIndexRoute: AuthenticatedQuizIndexRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
