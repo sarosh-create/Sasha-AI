@@ -14,7 +14,233 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      chat_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          subject_id: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_sessions_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          daily_minutes_goal: number
+          display_name: string | null
+          exam_board: string | null
+          exam_date: string | null
+          id: string
+          last_active_date: string | null
+          onboarded: boolean
+          streak_count: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          daily_minutes_goal?: number
+          display_name?: string | null
+          exam_board?: string | null
+          exam_date?: string | null
+          id?: string
+          last_active_date?: string | null
+          onboarded?: boolean
+          streak_count?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          daily_minutes_goal?: number
+          display_name?: string | null
+          exam_board?: string | null
+          exam_date?: string | null
+          id?: string
+          last_active_date?: string | null
+          onboarded?: boolean
+          streak_count?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      quizzes: {
+        Row: {
+          answers: Json | null
+          completed: boolean
+          created_at: string
+          feedback: Json | null
+          id: string
+          questions: Json
+          score: number | null
+          subject_id: string | null
+          topic: string
+          total: number
+          user_id: string
+        }
+        Insert: {
+          answers?: Json | null
+          completed?: boolean
+          created_at?: string
+          feedback?: Json | null
+          id?: string
+          questions: Json
+          score?: number | null
+          subject_id?: string | null
+          topic: string
+          total: number
+          user_id: string
+        }
+        Update: {
+          answers?: Json | null
+          completed?: boolean
+          created_at?: string
+          feedback?: Json | null
+          id?: string
+          questions?: Json
+          score?: number | null
+          subject_id?: string | null
+          topic?: string
+          total?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "quizzes_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      study_logs: {
+        Row: {
+          activity: string
+          created_at: string
+          id: string
+          minutes: number
+          subject_id: string | null
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          subject_id?: string | null
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          created_at?: string
+          id?: string
+          minutes?: number
+          subject_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_logs_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subjects: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          name: string
+          priority: number
+          strength_score: number
+          user_id: string
+        }
+        Insert: {
+          color?: string
+          created_at?: string
+          id?: string
+          name: string
+          priority?: number
+          strength_score?: number
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          name?: string
+          priority?: number
+          strength_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
