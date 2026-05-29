@@ -1,0 +1,201 @@
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { toast } from "sonner";
+import { X, Plus } from "lucide-react";
+
+export const Route = createFileRoute("/_authenticated/onboarding")({
+  component: Onboarding,
+});
+
+type Subject = { name: string; strength_score: number };
+
+const BOARDS = ["AQA", "Edexcel", "OCR", "WJEC/Eduqas", "CIE / Cambridge", "IB", "Other"];
+
+function Onboarding() {
+  const { user } = useAuth();
+  const nav = useNavigate();
+  const [name, setName] = useState("");
+  const [board, setBoard] = useState("AQA");
+  const [examDate, setExamDate] = useState("");
+  const [dailyMinutes, setDailyMinutes] = useState(45);
+  const [subjects, setSubjects] = useState<Subject[]>([
+    { name: "Maths", strength_score: 60 },
+    { name: "Biology", strength_score: 40 },
+  ]);
+  const [newSubj, setNewSubj] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("display_name, exam_board, exam_date, daily_minutes_goal")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data) {
+        setName(data.display_name ?? "");
+        setBoard(data.exam_board ?? "AQA");
+        setExamDate(data.exam_date ?? "");
+        setDailyMinutes(data.daily_minutes_goal ?? 45);
+      }
+      const { data: subs } = await supabase
+        .from("subjects")
+        .select("name, strength_score")
+        .eq("user_id", user.id);
+      if (subs && subs.length) setSubjects(subs);
+    })();
+  }, [user]);
+
+  const addSubject = () => {
+    if (!newSubj.trim()) return;
+    setSubjects([...subjects, { name: newSubj.trim(), strength_score: 50 }]);
+    setNewSubj("");
+  };
+
+  const save = async () => {
+    if (!user) return;
+    if (!subjects.length) {
+      toast.error("Add at least one subject");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { error: pErr } = await supabase.from("profiles").upsert(
+        {
+          user_id: user.id,
+          display_name: name || null,
+          exam_board: board,
+          exam_date: examDate || null,
+          daily_minutes_goal: dailyMinutes,
+          onboarded: true,
+        },
+        { onConflict: "user_id" },
+      );
+      if (pErr) throw pErr;
+
+      // replace subjects
+      await supabase.from("subjects").delete().eq("user_id", user.id);
+      const { error: sErr } = await supabase.from("subjects").insert(
+        subjects.map((s) => ({
+          user_id: user.id,
+          name: s.name,
+          strength_score: s.strength_score,
+          priority: 100 - s.strength_score,
+        })),
+      );
+      if (sErr) throw sErr;
+
+      toast.success("Study plan ready!");
+      nav({ to: "/dashboard" });
+    } catch (e: any) {
+      toast.error(e.message ?? "Failed to save");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="container mx-auto max-w-3xl px-6 py-10">
+      <h1 className="font-display text-3xl font-semibold">Let's set up your study plan</h1>
+      <p className="mt-2 text-muted-foreground">
+        Tell Learn Kata AI what you're studying — it will build a daily roadmap around your weak spots.
+      </p>
+
+      <div className="mt-8 space-y-6 rounded-2xl border border-border bg-card p-6 shadow-card">
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <Label htmlFor="name">Your name</Label>
+            <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+          </div>
+          <div>
+            <Label>Exam board</Label>
+            <Select value={board} onValueChange={setBoard}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {BOARDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label htmlFor="exam">Next exam date</Label>
+            <Input id="exam" type="date" value={examDate} onChange={(e) => setExamDate(e.target.value)} />
+          </div>
+          <div>
+            <Label>Daily study goal: <span className="font-medium">{dailyMinutes} min</span></Label>
+            <Slider
+              value={[dailyMinutes]}
+              onValueChange={(v) => setDailyMinutes(v[0])}
+              min={15} max={180} step={5}
+              className="mt-3"
+            />
+          </div>
+        </div>
+
+        <div>
+          <Label>Subjects & current confidence</Label>
+          <p className="mb-3 text-xs text-muted-foreground">
+            Slide low for weak subjects — your plan will spend more time there.
+          </p>
+          <div className="space-y-3">
+            {subjects.map((s, i) => (
+              <div key={i} className="rounded-xl border border-border bg-background p-3">
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <Input
+                    value={s.name}
+                    onChange={(e) => {
+                      const copy = [...subjects];
+                      copy[i].name = e.target.value;
+                      setSubjects(copy);
+                    }}
+                    className="max-w-xs"
+                  />
+                  <div className="flex items-center gap-3">
+                    <Badge variant={s.strength_score < 50 ? "destructive" : "secondary"}>
+                      {s.strength_score < 40 ? "Weak" : s.strength_score < 70 ? "Okay" : "Strong"}
+                    </Badge>
+                    <button onClick={() => setSubjects(subjects.filter((_, j) => j !== i))} className="text-muted-foreground hover:text-destructive">
+                      <X className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+                <Slider
+                  value={[s.strength_score]}
+                  onValueChange={(v) => {
+                    const copy = [...subjects];
+                    copy[i].strength_score = v[0];
+                    setSubjects(copy);
+                  }}
+                  min={0} max={100} step={5}
+                />
+              </div>
+            ))}
+          </div>
+          <div className="mt-3 flex gap-2">
+            <Input
+              placeholder="Add a subject (e.g. Chemistry)"
+              value={newSubj}
+              onChange={(e) => setNewSubj(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addSubject())}
+            />
+            <Button type="button" variant="outline" onClick={addSubject}><Plus className="h-4 w-4" /> Add</Button>
+          </div>
+        </div>
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button onClick={save} disabled={busy} size="lg">
+            {busy ? "Saving…" : "Save & build my plan"}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

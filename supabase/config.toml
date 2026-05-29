@@ -1,0 +1,10 @@
+project_id = "exegxoartdndszjooplj"
+
+[functions.ai-tutor]
+verify_jwt = false
+
+[functions.quiz-generate]
+verify_jwt = false
+
+[functions.quiz-grade]
+verify_jwt = false
