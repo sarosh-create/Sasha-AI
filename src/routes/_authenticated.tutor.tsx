@@ -167,6 +167,8 @@ function TutorPage() {
         user_id: user.id, activity: "chat", minutes: 3,
       });
       await updateStreak(user.id);
+      await bumpChallenge(user.id, "tutor3");
+      await bumpChallenge(user.id, "study20", 3);
     } catch (e: any) {
       toast.error(e.message ?? "Stream failed");
     } finally {
@@ -210,7 +212,7 @@ function TutorPage() {
             )}
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-card ${
+                <div className={`group max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-card ${
                   m.role === "user"
                     ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border"
@@ -218,6 +220,14 @@ function TutorPage() {
                   <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-headings:font-display">
                     <ReactMarkdown>{m.content || "…"}</ReactMarkdown>
                   </div>
+                  {m.role === "assistant" && m.content && (
+                    <button
+                      onClick={() => saveAsNote(m.content)}
+                      className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground opacity-0 transition group-hover:opacity-100 hover:bg-secondary/80"
+                    >
+                      <StickyNote className="h-3 w-3" /> Save as note
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
