@@ -25,6 +25,8 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
 
 function TutorPage() {
   const { user } = useAuth();
+  const search = Route.useSearch();
+  const subjectId = search.subject;
   const [sessions, setSessions] = useState<Session[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -82,6 +84,26 @@ function TutorPage() {
     setSessions((s) => [data!, ...s]);
     setSessionId(data!.id);
     setMessages([]);
+  };
+
+  const saveAsNote = async (content: string) => {
+    if (!user) return;
+    let color = "#a78bfa";
+    if (subjectId) {
+      const { data: s } = await supabase.from("subjects").select("color").eq("id", subjectId).maybeSingle();
+      if (s?.color) color = s.color;
+    }
+    const title = content.split("\n").find((l) => l.trim())?.slice(0, 80) ?? "Note from tutor";
+    const { error } = await supabase.from("notes").insert({
+      user_id: user.id,
+      subject_id: subjectId ?? null,
+      tag: "key-idea",
+      color,
+      title,
+      body: content,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Saved to notes");
   };
 
   const send = async () => {
