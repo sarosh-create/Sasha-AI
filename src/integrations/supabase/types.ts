@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          code: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          code: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -84,6 +105,117 @@ export type Database = {
           },
         ]
       }
+      daily_challenges: {
+        Row: {
+          code: string
+          completed: boolean
+          created_at: string
+          for_date: string
+          id: string
+          label: string
+          progress: number
+          target: number
+          user_id: string
+        }
+        Insert: {
+          code: string
+          completed?: boolean
+          created_at?: string
+          for_date?: string
+          id?: string
+          label: string
+          progress?: number
+          target: number
+          user_id: string
+        }
+        Update: {
+          code?: string
+          completed?: boolean
+          created_at?: string
+          for_date?: string
+          id?: string
+          label?: string
+          progress?: number
+          target?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      lesson_path: {
+        Row: {
+          activity: string
+          completed_at: string | null
+          created_at: string
+          est_minutes: number
+          id: string
+          position: number
+          status: string
+          subject_id: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          activity: string
+          completed_at?: string | null
+          created_at?: string
+          est_minutes?: number
+          id?: string
+          position: number
+          status?: string
+          subject_id?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          activity?: string
+          completed_at?: string | null
+          created_at?: string
+          est_minutes?: number
+          id?: string
+          position?: number
+          status?: string
+          subject_id?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notes: {
+        Row: {
+          body: string
+          color: string
+          created_at: string
+          id: string
+          subject_id: string | null
+          tag: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          body?: string
+          color?: string
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          tag?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          color?: string
+          created_at?: string
+          id?: string
+          subject_id?: string | null
+          tag?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -91,12 +223,17 @@ export type Database = {
           display_name: string | null
           exam_board: string | null
           exam_date: string | null
+          hearts: number
+          hearts_refill_at: string | null
           id: string
           last_active_date: string | null
+          level: number
           onboarded: boolean
           streak_count: number
+          streak_freezes: number
           updated_at: string
           user_id: string
+          xp: number
         }
         Insert: {
           created_at?: string
@@ -104,12 +241,17 @@ export type Database = {
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          hearts?: number
+          hearts_refill_at?: string | null
           id?: string
           last_active_date?: string | null
+          level?: number
           onboarded?: boolean
           streak_count?: number
+          streak_freezes?: number
           updated_at?: string
           user_id: string
+          xp?: number
         }
         Update: {
           created_at?: string
@@ -117,12 +259,17 @@ export type Database = {
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          hearts?: number
+          hearts_refill_at?: string | null
           id?: string
           last_active_date?: string | null
+          level?: number
           onboarded?: boolean
           streak_count?: number
+          streak_freezes?: number
           updated_at?: string
           user_id?: string
+          xp?: number
         }
         Relationships: []
       }
@@ -176,6 +323,73 @@ export type Database = {
           },
         ]
       }
+      room_messages: {
+        Row: {
+          content: string
+          created_at: string
+          display_name: string | null
+          id: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_messages_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      room_participants: {
+        Row: {
+          display_name: string | null
+          id: string
+          joined_at: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          display_name?: string | null
+          id?: string
+          joined_at?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          display_name?: string | null
+          id?: string
+          joined_at?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "room_participants_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "study_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       study_logs: {
         Row: {
           activity: string
@@ -210,6 +424,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      study_rooms: {
+        Row: {
+          created_at: string
+          host_user_id: string
+          id: string
+          is_public: boolean
+          max_participants: number
+          name: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          host_user_id: string
+          id?: string
+          is_public?: boolean
+          max_participants?: number
+          name: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          host_user_id?: string
+          id?: string
+          is_public?: boolean
+          max_participants?: number
+          name?: string
+          subject?: string | null
+        }
+        Relationships: []
       }
       subjects: {
         Row: {
