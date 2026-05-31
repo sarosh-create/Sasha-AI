@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import { addXp, awardBadge, bumpChallenge, fireConfetti, loseHeart } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/quiz/$id")({
   component: QuizPage,
@@ -96,6 +97,21 @@ function QuizPage() {
         }
       }
       await supabase.from("study_logs").insert({ user_id: user.id, activity: "quiz", minutes: 8 });
+
+      // Gamification
+      const wrong = res.filter((r) => !r.is_correct).length;
+      const xpGain = sc * 10 + (sc === questions.length ? 50 : 0);
+      await addXp(user.id, xpGain);
+      for (let k = 0; k < wrong; k++) await loseHeart(user.id);
+      await awardBadge(user.id, "first_quiz");
+      if (sc === questions.length) {
+        await awardBadge(user.id, "perfect_quiz");
+        fireConfetti();
+      }
+      const pctScore = sc / questions.length;
+      if (pctScore >= 0.8) await bumpChallenge(user.id, "quiz80");
+      await bumpChallenge(user.id, "study20", 8);
+      toast.success(`+${xpGain} XP`);
     } catch (e: any) {
       toast.error(e.message ?? "Failed");
     } finally {

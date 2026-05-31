@@ -3,6 +3,8 @@ import { useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { HeaderStats } from "@/components/header-stats";
+import { ensureDailyChallenges, refillHeartsIfDue } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -15,6 +17,12 @@ function AuthLayout() {
   useEffect(() => {
     if (!loading && !user) nav({ to: "/auth" });
   }, [user, loading, nav]);
+
+  useEffect(() => {
+    if (!user) return;
+    ensureDailyChallenges(user.id);
+    refillHeartsIfDue(user.id);
+  }, [user]);
 
   if (loading || !user) {
     return (
@@ -29,8 +37,9 @@ function AuthLayout() {
       <div className="flex min-h-screen w-full bg-background">
         <AppSidebar />
         <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-12 items-center border-b border-border bg-background/80 px-3 backdrop-blur">
+          <header className="sticky top-0 z-10 flex h-12 items-center justify-between border-b border-border bg-background/80 px-3 backdrop-blur">
             <SidebarTrigger />
+            <HeaderStats />
           </header>
           <main className="flex-1">
             <Outlet />

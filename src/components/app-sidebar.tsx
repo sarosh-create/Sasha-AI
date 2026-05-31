@@ -6,6 +6,10 @@ import {
   BookOpenCheck,
   LogOut,
   Sparkles,
+  StickyNote,
+  Map,
+  Trophy,
+  Users,
 } from "lucide-react";
 import {
   Sidebar,
@@ -22,16 +26,40 @@ import {
 import { useAuth } from "@/lib/auth-context";
 import { Logo } from "./logo";
 
-const items = [
+const study = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
   { title: "Quizzes", url: "/quiz", icon: ScrollText },
+  { title: "Notes", url: "/notes", icon: StickyNote },
   { title: "Revision", url: "/revision", icon: BookOpenCheck },
+];
+const social = [
+  { title: "Study Rooms", url: "/rooms", icon: Users },
+  { title: "Achievements", url: "/achievements", icon: Trophy },
 ];
 
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { signOut, user } = useAuth();
+
+  const renderItems = (items: typeof study) => (
+    <SidebarMenu>
+      {items.map((item) => {
+        const active = path === item.url || path.startsWith(item.url + "/");
+        return (
+          <SidebarMenuItem key={item.url}>
+            <SidebarMenuButton asChild isActive={active}>
+              <Link to={item.url} className="flex items-center gap-2">
+                <item.icon className="h-4 w-4" />
+                <span>{item.title}</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        );
+      })}
+    </SidebarMenu>
+  );
 
   return (
     <Sidebar collapsible="icon">
@@ -41,23 +69,11 @@ export function AppSidebar() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Study</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {items.map((item) => {
-                const active = path === item.url || path.startsWith(item.url + "/");
-                return (
-                  <SidebarMenuItem key={item.url}>
-                    <SidebarMenuButton asChild isActive={active}>
-                      <Link to={item.url} className="flex items-center gap-2">
-                        <item.icon className="h-4 w-4" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                );
-              })}
-            </SidebarMenu>
-          </SidebarGroupContent>
+          <SidebarGroupContent>{renderItems(study)}</SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>Social</SidebarGroupLabel>
+          <SidebarGroupContent>{renderItems(social)}</SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Preferences</SidebarGroupLabel>

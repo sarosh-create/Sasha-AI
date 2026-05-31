@@ -8,7 +8,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tutorSystemPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
-import { Send, Sparkles, Plus } from "lucide-react";
+import { Send, Sparkles, Plus, StickyNote } from "lucide-react";
+import { bumpChallenge } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/tutor")({
   component: TutorPage,
@@ -24,6 +25,8 @@ const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
 
 function TutorPage() {
   const { user } = useAuth();
+  const search = Route.useSearch();
+  const subjectId = search.subject;
   const [sessions, setSessions] = useState<Session[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -81,6 +84,26 @@ function TutorPage() {
     setSessions((s) => [data!, ...s]);
     setSessionId(data!.id);
     setMessages([]);
+  };
+
+  const saveAsNote = async (content: string) => {
+    if (!user) return;
+    let color = "#a78bfa";
+    if (subjectId) {
+      const { data: s } = await supabase.from("subjects").select("color").eq("id", subjectId).maybeSingle();
+      if (s?.color) color = s.color;
+    }
+    const title = content.split("\n").find((l) => l.trim())?.slice(0, 80) ?? "Note from tutor";
+    const { error } = await supabase.from("notes").insert({
+      user_id: user.id,
+      subject_id: subjectId ?? null,
+      tag: "key-idea",
+      color,
+      title,
+      body: content,
+    });
+    if (error) return toast.error(error.message);
+    toast.success("Saved to notes");
   };
 
   const send = async () => {
@@ -166,6 +189,8 @@ function TutorPage() {
         user_id: user.id, activity: "chat", minutes: 3,
       });
       await updateStreak(user.id);
+      await bumpChallenge(user.id, "tutor3");
+      await bumpChallenge(user.id, "study20", 3);
     } catch (e: any) {
       toast.error(e.message ?? "Stream failed");
     } finally {
@@ -209,7 +234,7 @@ function TutorPage() {
             )}
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-card ${
+                <div className={`group max-w-[85%] rounded-2xl px-4 py-3 text-sm shadow-card ${
                   m.role === "user"
                     ? "bg-primary text-primary-foreground"
                     : "bg-card border border-border"
@@ -217,6 +242,14 @@ function TutorPage() {
                   <div className="prose prose-sm max-w-none dark:prose-invert prose-p:my-2 prose-headings:font-display">
                     <ReactMarkdown>{m.content || "…"}</ReactMarkdown>
                   </div>
+                  {m.role === "assistant" && m.content && (
+                    <button
+                      onClick={() => saveAsNote(m.content)}
+                      className="mt-2 inline-flex items-center gap-1 rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground opacity-0 transition group-hover:opacity-100 hover:bg-secondary/80"
+                    >
+                      <StickyNote className="h-3 w-3" /> Save as note
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
