@@ -5,6 +5,9 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { HeaderStats } from "@/components/header-stats";
 import { ensureDailyChallenges, refillHeartsIfDue } from "@/lib/gamification";
+import { A11yProvider } from "@/lib/a11y";
+import { A11yToggle } from "@/components/a11y-toggle";
+import { EmojiBurstLayer } from "@/components/emoji-burst";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -33,19 +36,25 @@ function AuthLayout() {
   }
 
   return (
-    <SidebarProvider>
-      <div className="flex min-h-screen w-full bg-background">
-        <AppSidebar />
-        <div className="flex flex-1 flex-col">
-          <header className="sticky top-0 z-10 flex h-12 items-center justify-between border-b border-border bg-background/80 px-3 backdrop-blur">
-            <SidebarTrigger />
-            <HeaderStats />
-          </header>
-          <main className="flex-1">
-            <Outlet />
-          </main>
+    <A11yProvider>
+      <SidebarProvider>
+        <div className="flex min-h-screen w-full bg-background">
+          <AppSidebar />
+          <div className="flex flex-1 flex-col">
+            <header className="sticky top-0 z-10 flex h-12 items-center justify-between border-b border-border bg-background/80 px-3 backdrop-blur">
+              <SidebarTrigger />
+              <div className="flex items-center gap-2">
+                <HeaderStats />
+                <A11yToggle />
+              </div>
+            </header>
+            <main className="flex-1">
+              <Outlet />
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+        <EmojiBurstLayer />
+      </SidebarProvider>
+    </A11yProvider>
   );
 }

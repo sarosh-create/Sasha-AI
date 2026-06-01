@@ -12,6 +12,8 @@ import {
   Users,
   Film,
   Beaker,
+  Crown,
+  Library,
 } from "lucide-react";
 import {
   Sidebar,
@@ -33,6 +35,7 @@ const study = [
   { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
   { title: "Funny Explainers", url: "/explainers", icon: Film },
+  { title: "Reel Library", url: "/explainers/library", icon: Library },
   { title: "Virtual Lab", url: "/lab", icon: Beaker },
   { title: "Quizzes", url: "/quiz", icon: ScrollText },
   { title: "Notes", url: "/notes", icon: StickyNote },
@@ -40,6 +43,7 @@ const study = [
 ];
 const social = [
   { title: "Study Rooms", url: "/rooms", icon: Users },
+  { title: "Leaderboard", url: "/leaderboard", icon: Crown },
   { title: "Achievements", url: "/achievements", icon: Trophy },
 ];
 
