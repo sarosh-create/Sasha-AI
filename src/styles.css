@@ -150,14 +150,30 @@
 
 @utility bg-aurora {
   background-image:
-    radial-gradient(60% 50% at 10% 0%, oklch(0.74 0.13 295 / 0.18), transparent 60%),
-    radial-gradient(50% 40% at 100% 10%, oklch(0.55 0.15 250 / 0.18), transparent 60%),
-    radial-gradient(60% 60% at 50% 100%, oklch(0.74 0.13 295 / 0.10), transparent 70%);
+    radial-gradient(55% 50% at 8% 0%, oklch(0.88 0.18 95 / 0.35), transparent 60%),
+    radial-gradient(50% 40% at 100% 10%, oklch(0.72 0.21 25 / 0.22), transparent 60%),
+    radial-gradient(45% 45% at 50% 100%, oklch(0.78 0.18 145 / 0.22), transparent 70%),
+    radial-gradient(40% 40% at 95% 90%, oklch(0.68 0.18 250 / 0.20), transparent 70%);
 }
 
 @utility text-gradient {
-  background: linear-gradient(135deg, oklch(0.28 0.09 265), oklch(0.55 0.16 285));
+  background: linear-gradient(120deg, oklch(0.68 0.18 250), oklch(0.72 0.21 25) 55%, oklch(0.78 0.18 145));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
+
+@utility shadow-pop {
+  box-shadow: 0 6px 0 -2px oklch(0.22 0.06 265 / 0.12), 0 14px 32px -16px oklch(0.22 0.06 265 / 0.25);
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+@utility animate-wiggle { animation: wiggle 1.2s ease-in-out infinite; }
+@utility animate-bob { animation: bob 2.4s ease-in-out infinite; }
