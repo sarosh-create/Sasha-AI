@@ -141,6 +141,30 @@ export type Database = {
         }
         Relationships: []
       }
+      explainer_reels: {
+        Row: {
+          created_at: string
+          id: string
+          scenes: Json
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          scenes: Json
+          topic: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          scenes?: Json
+          topic?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       lesson_path: {
         Row: {
           activity: string
@@ -218,6 +242,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          a11y_mode: string
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
@@ -226,7 +251,9 @@ export type Database = {
           hearts: number
           hearts_refill_at: string | null
           id: string
+          lab_xp: number
           last_active_date: string | null
+          leaderboard_opt_in: boolean
           level: number
           onboarded: boolean
           streak_count: number
@@ -234,8 +261,11 @@ export type Database = {
           updated_at: string
           user_id: string
           xp: number
+          xp_week: number
+          xp_week_start: string | null
         }
         Insert: {
+          a11y_mode?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
@@ -244,7 +274,9 @@ export type Database = {
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
+          lab_xp?: number
           last_active_date?: string | null
+          leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean
           streak_count?: number
@@ -252,8 +284,11 @@ export type Database = {
           updated_at?: string
           user_id: string
           xp?: number
+          xp_week?: number
+          xp_week_start?: string | null
         }
         Update: {
+          a11y_mode?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
@@ -262,7 +297,9 @@ export type Database = {
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
+          lab_xp?: number
           last_active_date?: string | null
+          leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean
           streak_count?: number
@@ -270,6 +307,8 @@ export type Database = {
           updated_at?: string
           user_id?: string
           xp?: number
+          xp_week?: number
+          xp_week_start?: string | null
         }
         Relationships: []
       }

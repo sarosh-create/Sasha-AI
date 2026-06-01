@@ -1,51 +1,72 @@
+# Expand Lab, Explainers, Social & A11y
 
-## What I'll build
+Big batch — grouped into 5 deliverables. I'll ship in one pass.
 
-### 1. Color-coded notes
-- New `notes` table: `subject_id`, `tag` (key-idea / confused / memorize / definition / custom), `color`, `title`, `body`, timestamps.
-- New route `/notes`: grid of cards. Each card uses the **subject's color** as the left accent stripe, plus a **tag chip** in its own color. Filter by subject + tag.
-- "New note" dialog from any subject in the dashboard/tutor — pre-fills subject + color.
-- Quick-add from inside a tutor chat: "Save as note" button on any AI message.
+## 1. Virtual Lab: more experiments + unlocks + hints
 
-### 2. Duolingo-style daily roadmap (path of daily lessons)
-- New `lesson_path` table: per-user generated sequence of daily "lessons". Each lesson = 1 subject + 1 activity (teach → quiz → review) + estimated minutes + status (locked / available / done).
-- Path is generated weekly from current mastery + days-to-exam (weak subjects appear more, exam-week pulls heavier).
-- New route `/path`: vertical zig-zag of circular nodes (Duolingo-style), with the active node pulsing. Locked nodes are greyed. Tapping an available node opens the lesson (routes to tutor or quiz with the right subject).
-- Replaces the old "Today's roadmap" card on the dashboard with a compact "Continue your path →" widget that deep-links into `/path`.
+**New experiments** (added to `_authenticated.lab.tsx`):
+- Physics: Pendulum (existing), Ohm's Law circuit, Refraction through prism, Specific heat capacity
+- Chemistry: Titration (existing), Flame tests, Rates of reaction (Mg + HCl), Electrolysis of copper sulphate
+- Biology: Osmosis (existing), Food tests (Benedict/Biuret/iodine), Photosynthesis (pondweed bubble count), Leaf chromatography
 
-### 3. Gamification (Senpai-style fun)
-- Extend `profiles`: `xp`, `level`, `hearts` (max 5), `hearts_refill_at`, `streak_freezes`.
-- New `achievements` table (badge code, earned_at).
-- New `daily_challenges` table (date, goal type, target, progress, completed).
-- Rules:
-  - +10 XP per correct quiz answer, +25 for completing a lesson, +50 for a perfect quiz.
-  - Wrong quiz answer → −1 heart. Hearts refill 1 every 30 min (or instantly with a future "gem" — placeholder).
-  - Streak freeze auto-consumes if you miss a day (max 2 stored, +1 every 7-day streak).
-  - 3 rotating daily challenges (e.g. "Finish 2 lessons", "Score 80%+ on a quiz", "Study 20 min").
-  - Badges: First Quiz, 7-Day Streak, 100 XP, Subject Mastered (≥85), Path Crusher, etc.
-- New `<XPBar />`, `<HeartsRow />`, `<StreakChip />` in the app header. Toast + confetti on level-up / badge earn.
-- New route `/achievements`: badge grid + level history.
+**Unlock system**: Each experiment has `requiredLevel` and `requiredQuizzes` (e.g. "complete 2 chemistry quizzes ≥70%"). Locked cards show a 🔒 with the unlock condition. Computed client-side from `profiles.level` + `quizzes` table reads — no schema change needed.
 
-### 4. Mascot companion ("Kata")
-- Friendly mascot SVG (purple owl-style, matches palette) that lives in a corner of the dashboard, path, and after-quiz screens.
-- Reacts to context: cheers on correct answers, gentle nudge on wrong, celebrates streak milestones, reminds you of daily challenge progress. Speech bubble with rotating mentor lines pulled from a small library (no AI call needed for these).
+**Hint & recovery system**:
+- Each step exposes a `hint` string (always-available "💡 Hint" button → toast).
+- Wrong apparatus pick: shake animation + soft "❌ Not yet — try something that…" toast, NO progress loss (current code just blocks).
+- After 2 wrong tries on a step: auto-reveals correct next item with a dimmed glow ("Guided mode").
+- New "Undo last step" button to recover misorderings instead of restarting.
 
-### 5. Study rooms (chat + video)
-- New `study_rooms` table (name, subject_id, host_user_id, is_public, max_participants, created_at) + `room_messages` table (room_id, user_id, content, created_at) + `room_participants` (room_id, user_id, joined_at).
-- New route `/rooms`: public room directory + "Create room".
-- New route `/rooms/$id`: split layout — left = participants + text chat (Supabase Realtime), right = video tiles.
-- **Video**: peer-to-peer WebRTC using free public STUN servers (Google's `stun:stun.l.google.com:19302`). Signalling happens over a Supabase Realtime channel per room. No TURN server, so it works for most users on the same NAT type but may fail behind strict symmetric NATs — acceptable for an MVP "free study session" feature. Capped at 4 participants per room to keep mesh peer count manageable.
-- Text chat works for everyone regardless of WebRTC support.
+## 2. Funny Explainers: save & replay with timestamps
 
-### Technical notes
-- All new tables: RLS on, scoped to `auth.uid()` for own rows; `study_rooms` + `room_messages` + `room_participants` allow `SELECT` for any authenticated user (rooms are public).
-- Realtime publication enabled for `room_messages` and `room_participants`.
-- Frontend logic only — quiz/tutor edge functions stay as-is; XP/hearts/challenge updates happen client-side after each interaction (RLS protects rows).
-- Mascot uses inline SVG, no extra deps. Confetti uses `canvas-confetti` (tiny, edge-safe).
+**New table `explainer_reels`**: `user_id`, `topic`, `scenes jsonb`, `created_at`. Each scene already has emoji/title/line; I'll add `keyConcept: bool` + `timestampSec: number` (assigned on generate: even spacing across 60s, marking scenes the AI tags as core).
 
-### Out of scope for this pass
-- TURN server (paid) — rooms work without it but may fail on strict NAT.
-- Friends list / 1-to-1 DMs (rooms only, for now).
-- Push notifications.
+**Tweaked SYSTEM prompt** in `explainers.tsx`: ask the model to add `"keyConcept": true` to 2-3 scenes that hold the actual learning beats.
 
-If this looks right, approve and I'll ship it. If "study rooms with video" should be split into its own pass (it's ~40% of the work), tell me and I'll do the other three first.
+**UI additions**:
+- "💾 Save reel" button after generation → inserts row.
+- New `/explainers/library` route: grid of saved reels per topic, click to replay.
+- Replay view: same scene viewer + a timeline strip showing each scene's `timestampSec` with star markers on key concepts; click marker to jump.
+- Auto-play mode with 8s per scene + progress bar.
+
+## 3. Leaderboard
+
+**New route `_authenticated.leaderboard.tsx`**:
+- Tabs: Weekly XP / All-time XP / Lab XP / Streak.
+- Reads `profiles` ordered by relevant column (add `lab_xp` int column; `addLabXp` helper bumps both `xp` and `lab_xp`).
+- For weekly XP: new view computed from `study_logs` + a `weekly_xp` materialized helper — simpler: store `xp_week` int + `xp_week_start` date on profile, reset on first action of new ISO week.
+- Shows top 50; highlights current user's row even if outside top 50 (separate query).
+- Anonymous opt-in: `profiles.leaderboard_opt_in bool default true`; opt-out hides display_name and shows "Anonymous Owl".
+
+**Daily challenges & badges** are already in `gamification.ts`; I'll:
+- Add 3 new lab/streak-themed challenges to the pool ("Run 1 experiment", "Score 100% on a quiz", "Save 1 explainer reel").
+- Add 4 new badges: `lab_3` (3 experiments), `lab_all_p3` (one per subject), `reel_saver` (save 5 reels), `leaderboard_top10`.
+
+## 4. Playful UI polish
+
+- 6 confetti variants in `gamification.ts`: `fireConfetti('default'|'stars'|'hearts'|'school'|'rainbow'|'fireworks')` — wire to level-up, badge, quiz 100%, lab complete, streak milestone, reel save.
+- Emoji reaction bursts: small `<EmojiBurst emoji="🎉" />` component that animates 6 floating emojis upward; used on correct lab step, quiz correct answer, challenge complete.
+- Mascot reacts: extend `Mascot` with `mood="cheer"|"think"|"oops"` triggered by these events via a small zustand store (or context).
+
+## 5. Color-blind-friendly contrast modes
+
+- New `accessibility` section in profile + a header toggle (gear icon dropdown).
+- Modes: `default`, `deuteranopia`, `protanopia`, `tritanopia`, `high-contrast`.
+- Implemented as `data-a11y="..."` on `<html>` with overriding CSS variables in `styles.css` for `--primary`, `--accent`, `--destructive`, `--warning`, `--success` — chosen from CB-safe palettes (e.g. blue/orange instead of red/green).
+- Persisted in `localStorage` + `profiles.a11y_mode` column.
+- Tag-color picker in notes also respects mode (swap red→orange, green→blue).
+
+---
+
+## Database changes (one migration)
+
+1. `ALTER TABLE profiles ADD COLUMN lab_xp int NOT NULL DEFAULT 0, ADD COLUMN xp_week int NOT NULL DEFAULT 0, ADD COLUMN xp_week_start date, ADD COLUMN leaderboard_opt_in bool NOT NULL DEFAULT true, ADD COLUMN a11y_mode text NOT NULL DEFAULT 'default'`
+2. `CREATE TABLE explainer_reels(...)` + grants + RLS (own rows).
+3. Add `quiz_id`/`lab_experiment` columns to `study_logs` if useful (optional — skip for now).
+
+## Order of execution
+
+1. Migration (awaits your approval).
+2. After approval: gamification.ts updates, lab.tsx rewrite, explainers + new library route, leaderboard route, a11y toggle + styles, mascot/emoji-burst components, sidebar links.
+
+Estimated ~10 files touched / created. Ready to start with the migration on your go-ahead.

@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { Sparkles, Film, Wand2, RefreshCw } from "lucide-react";
+import { Sparkles, Film, Wand2, RefreshCw, Save, Library, Star } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { bumpChallenge, checkReelBadges, fireConfetti } from "@/lib/gamification";
+import { fireEmojiBurst } from "@/components/emoji-burst";
 
 export const Route = createFileRoute("/_authenticated/explainers")({
   component: ExplainersPage,
@@ -25,29 +28,40 @@ const SYSTEM = `You are a stand-up comedian who also happens to be the world's b
 Write a SHORT, HILARIOUS 60-second explainer of the topic the student gives you.
 RULES:
 - Strict format: a JSON array of 6 to 8 "scenes", returned in a markdown code block.
-- Each scene: { "emoji": "1-3 emojis", "title": "punchy <6 words", "line": "1 short funny sentence that actually teaches" }
+- Each scene: { "emoji": "1-3 emojis", "title": "punchy <6 words", "line": "1 short funny sentence that actually teaches", "keyConcept": true|false }
+- Mark exactly 2 or 3 scenes with "keyConcept": true — the ones containing the real testable learning. The rest false.
 - The jokes must teach the real concept, not replace it.
 - No preamble, no closing remarks, JUST the json code block.
 Example:
 \`\`\`json
 [
-  {"emoji":"🌱","title":"Meet Planty","line":"Plants are basically solar-powered burrito factories."}
+  {"emoji":"🌱","title":"Meet Planty","line":"Plants are basically solar-powered burrito factories.","keyConcept":false},
+  {"emoji":"☀️","title":"Light + CO₂ + H₂O","line":"Plants eat sunlight and burp out oxygen — net reaction: 6CO₂+6H₂O→C₆H₁₂O₆+6O₂.","keyConcept":true}
 ]
 \`\`\``;
 
-type Scene = { emoji: string; title: string; line: string };
+type Scene = { emoji: string; title: string; line: string; keyConcept?: boolean; timestampSec?: number };
+
+function addTimestamps(scenes: Scene[]): Scene[] {
+  const total = 60;
+  const n = scenes.length;
+  return scenes.map((s, i) => ({ ...s, timestampSec: Math.round((i / Math.max(1, n - 1)) * total) }));
+}
 
 function ExplainersPage() {
+  const { user } = useAuth();
   const [topic, setTopic] = useState("");
   const [loading, setLoading] = useState(false);
   const [scenes, setScenes] = useState<Scene[]>([]);
   const [active, setActive] = useState(0);
+  const [saved, setSaved] = useState(false);
 
   const generate = async (t: string) => {
     if (!t.trim()) return;
     setLoading(true);
     setScenes([]);
     setActive(0);
+    setSaved(false);
     try {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
@@ -90,13 +104,28 @@ function ExplainersPage() {
       }
       const match = acc.match(/```json\s*([\s\S]*?)```/i) ?? acc.match(/\[([\s\S]*)\]/);
       const raw = match ? (match[0].startsWith("[") ? match[0] : match[1]) : acc;
-      const parsed = JSON.parse(raw) as Scene[];
+      const parsed = addTimestamps(JSON.parse(raw) as Scene[]);
       setScenes(parsed);
+      fireEmojiBurst("🎬");
     } catch (e: any) {
       toast.error(e.message ?? "Could not generate explainer");
     } finally {
       setLoading(false);
     }
+  };
+
+  const save = async () => {
+    if (!user || !scenes.length) return;
+    const { error } = await supabase
+      .from("explainer_reels" as any)
+      .insert({ user_id: user.id, topic, scenes });
+    if (error) { toast.error(error.message); return; }
+    setSaved(true);
+    toast.success("Reel saved to your library!");
+    fireConfetti("hearts");
+    fireEmojiBurst("💾");
+    await bumpChallenge(user.id, "reel1");
+    await checkReelBadges(user.id);
   };
 
   return (
@@ -108,6 +137,9 @@ function ExplainersPage() {
           </div>
           <h1 className="font-display text-4xl font-bold text-gradient">Learn it in 60 seconds (with jokes)</h1>
           <p className="mt-2 text-sm text-muted-foreground">Type any topic. Kata writes a tiny comedy reel that actually teaches it.</p>
+          <Button asChild variant="outline" size="sm" className="mt-3">
+            <Link to="/explainers/library"><Library className="h-4 w-4" /> My saved reels</Link>
+          </Button>
         </header>
 
         <div className="rounded-2xl border bg-card p-4 shadow-pop">
@@ -144,9 +176,14 @@ function ExplainersPage() {
                   <div className="animate-bob text-8xl">{scenes[active]?.emoji}</div>
                   <h2 className="mt-4 font-display text-3xl font-bold">{scenes[active]?.title}</h2>
                   <p className="mt-2 max-w-lg text-lg text-muted-foreground">{scenes[active]?.line}</p>
+                  {scenes[active]?.keyConcept && (
+                    <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-warning/40 px-3 py-1 text-xs font-bold">
+                      <Star className="h-3 w-3 fill-current" /> Key concept
+                    </div>
+                  )}
                 </div>
                 <div className="absolute top-3 right-3 rounded-full bg-background/80 px-2 py-0.5 text-xs font-bold backdrop-blur">
-                  {active + 1} / {scenes.length}
+                  {scenes[active]?.timestampSec ?? 0}s
                 </div>
               </div>
               <div className="flex items-center justify-between gap-2 border-t bg-muted/40 p-3">
@@ -154,11 +191,12 @@ function ExplainersPage() {
                   ← Back
                 </Button>
                 <div className="flex flex-1 justify-center gap-1">
-                  {scenes.map((_, i) => (
+                  {scenes.map((s, i) => (
                     <button
                       key={i}
                       onClick={() => setActive(i)}
-                      className={`h-1.5 rounded-full transition-all ${i === active ? "w-8 bg-primary" : "w-3 bg-border"}`}
+                      aria-label={`Scene ${i + 1}`}
+                      className={`h-1.5 rounded-full transition-all ${i === active ? "w-8 bg-primary" : s.keyConcept ? "w-3 bg-warning" : "w-3 bg-border"}`}
                     />
                   ))}
                 </div>
@@ -177,16 +215,23 @@ function ExplainersPage() {
                 >
                   <span className="text-3xl">{s.emoji}</span>
                   <div className="flex-1">
-                    <div className="font-display text-sm font-bold">{s.title}</div>
+                    <div className="font-display text-sm font-bold flex items-center gap-1">
+                      {s.title}
+                      {s.keyConcept && <Star className="h-3 w-3 fill-warning text-warning" />}
+                    </div>
                     <div className="text-xs text-muted-foreground line-clamp-2">{s.line}</div>
                   </div>
+                  <span className="text-xs font-mono text-muted-foreground">{s.timestampSec}s</span>
                 </button>
               ))}
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex justify-center gap-2">
               <Button variant="outline" onClick={() => generate(topic)} disabled={loading}>
-                <RefreshCw className="h-4 w-4" /> Remix this reel
+                <RefreshCw className="h-4 w-4" /> Remix
+              </Button>
+              <Button onClick={save} disabled={saved || !user}>
+                <Save className="h-4 w-4" /> {saved ? "Saved!" : "Save reel"}
               </Button>
             </div>
           </div>
@@ -202,6 +247,3 @@ function ExplainersPage() {
     </div>
   );
 }
-
-// keep import to avoid tree-shaking complaints — markdown reserved for future use
-void ReactMarkdown;
