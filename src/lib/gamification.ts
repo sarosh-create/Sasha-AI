@@ -65,14 +65,14 @@ export type ConfettiVariant =
 
 export function fireConfetti(variant: ConfettiVariant = "default") {
   if (typeof window === "undefined") return;
-  const palettes = {
+  const palettes: Record<ConfettiVariant, string[]> = {
     default: ["#a78bfa", "#7c3aed", "#3b82f6", "#22c55e", "#f59e0b"],
     stars: ["#FFD93D", "#FF6B6B", "#4D96FF", "#a78bfa"],
     hearts: ["#FF6B9D", "#FF85A2", "#FFC4D6", "#C44569"],
     school: ["#4D96FF", "#6BCB77", "#FFD93D", "#FF6B6B"],
     rainbow: ["#FF6B6B", "#FFD93D", "#6BCB77", "#4D96FF", "#a78bfa", "#FF6B9D"],
     fireworks: ["#FFD93D", "#FF6B6B", "#4D96FF"],
-  } as const;
+  };
   const colors = palettes[variant];
 
   if (variant === "fireworks") {
