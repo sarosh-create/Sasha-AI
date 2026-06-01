@@ -10,6 +10,8 @@ import {
   Map,
   Trophy,
   Users,
+  Film,
+  Beaker,
 } from "lucide-react";
 import {
   Sidebar,
@@ -30,6 +32,8 @@ const study = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
+  { title: "Funny Explainers", url: "/explainers", icon: Film },
+  { title: "Virtual Lab", url: "/lab", icon: Beaker },
   { title: "Quizzes", url: "/quiz", icon: ScrollText },
   { title: "Notes", url: "/notes", icon: StickyNote },
   { title: "Revision", url: "/revision", icon: BookOpenCheck },
