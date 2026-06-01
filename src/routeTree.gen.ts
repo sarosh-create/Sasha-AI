@@ -17,6 +17,7 @@ import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
+import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
@@ -26,6 +27,7 @@ import { Route as AuthenticatedQuizIndexRouteImport } from './routes/_authentica
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticated.quiz.new'
 import { Route as AuthenticatedQuizIdRouteImport } from './routes/_authenticated.quiz.$id'
+import { Route as AuthenticatedExplainersLibraryRouteImport } from './routes/_authenticated.explainers.library'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -66,6 +68,12 @@ const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedLeaderboardRoute =
+  AuthenticatedLeaderboardRouteImport.update({
+    id: '/leaderboard',
+    path: '/leaderboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedLabRoute = AuthenticatedLabRouteImport.update({
   id: '/lab',
   path: '/lab',
@@ -112,19 +120,27 @@ const AuthenticatedQuizIdRoute = AuthenticatedQuizIdRouteImport.update({
   path: '/quiz/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedExplainersLibraryRoute =
+  AuthenticatedExplainersLibraryRouteImport.update({
+    id: '/library',
+    path: '/library',
+    getParentRoute: () => AuthenticatedExplainersRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/explainers': typeof AuthenticatedExplainersRoute
+  '/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/lab': typeof AuthenticatedLabRoute
+  '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -136,13 +152,15 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/explainers': typeof AuthenticatedExplainersRoute
+  '/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/lab': typeof AuthenticatedLabRoute
+  '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -156,13 +174,15 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/explainers': typeof AuthenticatedExplainersRoute
+  '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/_authenticated/lab': typeof AuthenticatedLabRoute
+  '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
+  '/_authenticated/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/_authenticated/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -178,11 +198,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/explainers'
     | '/lab'
+    | '/leaderboard'
     | '/notes'
     | '/onboarding'
     | '/path'
     | '/revision'
     | '/tutor'
+    | '/explainers/library'
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
@@ -196,11 +218,13 @@ export interface FileRouteTypes {
     | '/dashboard'
     | '/explainers'
     | '/lab'
+    | '/leaderboard'
     | '/notes'
     | '/onboarding'
     | '/path'
     | '/revision'
     | '/tutor'
+    | '/explainers/library'
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
@@ -215,11 +239,13 @@ export interface FileRouteTypes {
     | '/_authenticated/dashboard'
     | '/_authenticated/explainers'
     | '/_authenticated/lab'
+    | '/_authenticated/leaderboard'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
     | '/_authenticated/path'
     | '/_authenticated/revision'
     | '/_authenticated/tutor'
+    | '/_authenticated/explainers/library'
     | '/_authenticated/quiz/$id'
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
@@ -291,6 +317,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/leaderboard': {
+      id: '/_authenticated/leaderboard'
+      path: '/leaderboard'
+      fullPath: '/leaderboard'
+      preLoaderRoute: typeof AuthenticatedLeaderboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/lab': {
       id: '/_authenticated/lab'
       path: '/lab'
@@ -354,14 +387,36 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedQuizIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/explainers/library': {
+      id: '/_authenticated/explainers/library'
+      path: '/library'
+      fullPath: '/explainers/library'
+      preLoaderRoute: typeof AuthenticatedExplainersLibraryRouteImport
+      parentRoute: typeof AuthenticatedExplainersRoute
+    }
   }
 }
+
+interface AuthenticatedExplainersRouteChildren {
+  AuthenticatedExplainersLibraryRoute: typeof AuthenticatedExplainersLibraryRoute
+}
+
+const AuthenticatedExplainersRouteChildren: AuthenticatedExplainersRouteChildren =
+  {
+    AuthenticatedExplainersLibraryRoute: AuthenticatedExplainersLibraryRoute,
+  }
+
+const AuthenticatedExplainersRouteWithChildren =
+  AuthenticatedExplainersRoute._addFileChildren(
+    AuthenticatedExplainersRouteChildren,
+  )
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRoute
+  AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
+  AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
@@ -377,8 +432,9 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedExplainersRoute: AuthenticatedExplainersRoute,
+  AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
+  AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
