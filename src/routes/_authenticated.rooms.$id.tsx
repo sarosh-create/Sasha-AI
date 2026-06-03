@@ -277,7 +277,7 @@ function RemoteTile({ stream, label }: { stream: MediaStream; label: string }) {
   const ref = useRef<HTMLVideoElement>(null);
   useEffect(() => { if (ref.current) ref.current.srcObject = stream; }, [stream]);
   return (
-    <div className="relative overflow-hidden rounded-xl bg-black">
+    <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
       <video ref={ref} autoPlay playsInline className="h-full w-full object-cover" />
       <span className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs text-white">{label}</span>
     </div>
