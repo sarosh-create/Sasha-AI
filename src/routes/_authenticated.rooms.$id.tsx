@@ -219,7 +219,7 @@ function RoomPage() {
 
       <div className="flex flex-1 overflow-hidden">
         {/* Video grid */}
-        <div className="flex-1 bg-muted/30 p-3">
+        <div className="flex-1 overflow-y-auto bg-muted/30 p-3">
           {!videoOn && Object.keys(remoteStreams).length === 0 ? (
             <div className="grid h-full place-items-center text-center text-muted-foreground">
               <div>
@@ -229,9 +229,9 @@ function RoomPage() {
               </div>
             </div>
           ) : (
-            <div className="grid h-full grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="grid gap-2 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
               {videoOn && (
-                <div className="relative overflow-hidden rounded-xl bg-black">
+                <div className="relative aspect-video overflow-hidden rounded-xl bg-black">
                   <video ref={localVideoRef} autoPlay muted playsInline className="h-full w-full object-cover" />
                   <span className="absolute bottom-2 left-2 rounded bg-black/60 px-2 py-0.5 text-xs text-white">You</span>
                 </div>
