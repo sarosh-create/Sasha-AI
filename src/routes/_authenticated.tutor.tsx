@@ -13,6 +13,14 @@ import { bumpChallenge } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/tutor")({
   component: TutorPage,
+  head: () => ({
+    meta: [
+      { title: "AI Study Tutor — Learn Kata AI" },
+      { name: "description", content: "Chat with your AI study tutor — get step-by-step teaching, instant checks for understanding, and saved notes." },
+      { property: "og:title", content: "AI Study Tutor — Learn Kata AI" },
+      { property: "og:description", content: "Step-by-step AI tutoring tailored to your subjects and exam date." },
+    ],
+  }),
   validateSearch: (s: Record<string, unknown>) => ({
     subject: typeof s.subject === "string" ? s.subject : undefined,
   }),
@@ -223,6 +231,7 @@ function TutorPage() {
       <div className="flex flex-1 flex-col">
         <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
           <div className="mx-auto max-w-3xl space-y-5">
+            <h1 className="sr-only">AI Study Tutor</h1>
             {messages.length === 0 && (
               <div className="rounded-2xl border border-border bg-card p-8 text-center shadow-card">
                 <Sparkles className="mx-auto mb-3 h-6 w-6 text-accent" />
@@ -268,7 +277,7 @@ function TutorPage() {
               rows={1}
               disabled={streaming}
             />
-            <Button onClick={send} disabled={streaming || !input.trim()} size="lg">
+            <Button onClick={send} disabled={streaming || !input.trim()} size="lg" aria-label="Send message">
               <Send className="h-4 w-4" />
             </Button>
           </div>

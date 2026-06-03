@@ -166,7 +166,7 @@ function NotesPage() {
                 {n.body && <p className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground line-clamp-6">{n.body}</p>}
                 <div className="mt-3 flex items-center justify-between">
                   <span className="text-xs text-muted-foreground">{new Date(n.created_at).toLocaleDateString()}</span>
-                  <button onClick={() => remove(n.id)} className="text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive">
+                  <button onClick={() => remove(n.id)} aria-label={`Delete note: ${n.title}`} className="text-muted-foreground opacity-0 transition group-hover:opacity-100 hover:text-destructive">
                     <Trash2 className="h-4 w-4" />
                   </button>
                 </div>

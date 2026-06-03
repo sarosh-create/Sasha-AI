@@ -10,6 +10,14 @@ import { Mascot } from "@/components/mascot";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
+  head: () => ({
+    meta: [
+      { title: "Study Dashboard — Learn Kata AI" },
+      { name: "description", content: "Your daily study roadmap, streaks, mastery progress, and next lesson — all in one calm dashboard." },
+      { property: "og:title", content: "Study Dashboard — Learn Kata AI" },
+      { property: "og:description", content: "Your daily study roadmap, streaks, mastery progress, and next lesson." },
+    ],
+  }),
 });
 
 type Profile = {
@@ -81,7 +89,7 @@ function Dashboard() {
         <div>
           <p className="text-sm text-muted-foreground">Welcome back</p>
           <h1 className="font-display text-3xl font-semibold">
-            Hi {profile.display_name ?? "there"} 👋
+            Study Dashboard — Hi {profile.display_name ?? "there"} 👋
           </h1>
         </div>
         <div className="flex flex-wrap items-center gap-2">
@@ -146,8 +154,8 @@ function Dashboard() {
                 <span className="h-3 w-3 rounded-full" style={{ background: s.color }} />
                 <span className="flex-1 font-medium">{s.name}</span>
                 <span className="text-xs text-muted-foreground">{s.strength_score}/100</span>
-                <Link to="/tutor" search={{ subject: s.id } as any}><Button size="sm" variant="outline"><MessageSquare className="h-3.5 w-3.5" /></Button></Link>
-                <Link to="/quiz/new" search={{ subject: s.id } as any}><Button size="sm"><ScrollText className="h-3.5 w-3.5" /></Button></Link>
+                <Link to="/tutor" search={{ subject: s.id } as any}><Button size="sm" variant="outline" aria-label={`Open tutor for ${s.name}`}><MessageSquare className="h-3.5 w-3.5" /></Button></Link>
+                <Link to="/quiz/new" search={{ subject: s.id } as any}><Button size="sm" aria-label={`Start quiz on ${s.name}`}><ScrollText className="h-3.5 w-3.5" /></Button></Link>
               </li>
             ))}
           </ul>
