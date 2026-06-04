@@ -10,7 +10,7 @@ export function Logo({ size = 28 }: { size?: number }) {
         <Sparkles className="h-4 w-4" />
       </div>
       <span className="font-display text-lg font-semibold tracking-tight">
-        Learn Kata <span className="text-accent">AI</span>
+        Sasha <span className="text-accent">AI</span>
       </span>
     </div>
   );

@@ -84,7 +84,7 @@ function NewQuiz() {
   return (
     <div className="container mx-auto max-w-xl px-6 py-10">
       <h1 className="font-display text-3xl font-semibold">New quiz</h1>
-      <p className="text-sm text-muted-foreground">Pick a subject and topic — Learn Kata AI will write exam-style questions.</p>
+      <p className="text-sm text-muted-foreground">Pick a subject and topic — Sasha AI will write exam-style questions.</p>
 
       <div className="mt-6 space-y-4 rounded-2xl border border-border bg-card p-6 shadow-card">
         <div>

@@ -10,7 +10,7 @@ export const tutorSystemPrompt = (ctx: {
           .map((s) => `${s.name} (mastery ${s.strength_score}/100)`)
           .join(", ")
       : "no subjects set yet";
-  return `You are Learn Kata AI, a calm and rigorous personal study mentor — not a generic chatbot.
+  return `You are Sasha AI, a calm and rigorous personal study mentor — not a generic chatbot.
 
 Student context:
 - Name: ${ctx.displayName ?? "the student"}
