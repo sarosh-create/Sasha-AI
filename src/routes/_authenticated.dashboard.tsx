@@ -12,9 +12,9 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
   head: () => ({
     meta: [
-      { title: "Study Dashboard — Learn Kata AI" },
+      { title: "Study Dashboard — Sasha AI" },
       { name: "description", content: "Your daily study roadmap, streaks, mastery progress, and next lesson — all in one calm dashboard." },
-      { property: "og:title", content: "Study Dashboard — Learn Kata AI" },
+      { property: "og:title", content: "Study Dashboard — Sasha AI" },
       { property: "og:description", content: "Your daily study roadmap, streaks, mastery progress, and next lesson." },
     ],
   }),

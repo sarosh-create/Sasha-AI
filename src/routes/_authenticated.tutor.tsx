@@ -15,9 +15,9 @@ export const Route = createFileRoute("/_authenticated/tutor")({
   component: TutorPage,
   head: () => ({
     meta: [
-      { title: "AI Study Tutor — Learn Kata AI" },
+      { title: "AI Study Tutor — Sasha AI" },
       { name: "description", content: "Chat with your AI study tutor — get step-by-step teaching, instant checks for understanding, and saved notes." },
-      { property: "og:title", content: "AI Study Tutor — Learn Kata AI" },
+      { property: "og:title", content: "AI Study Tutor — Sasha AI" },
       { property: "og:description", content: "Step-by-step AI tutoring tailored to your subjects and exam date." },
     ],
   }),
