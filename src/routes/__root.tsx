@@ -79,15 +79,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Learn Kata AI — Your personal AI study mentor" },
+      { title: "Sasha AI — Your personal AI study mentor" },
       { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and progress tracking. Free for students." },
-      { name: "author", content: "Learn Kata AI" },
-      { property: "og:site_name", content: "Learn Kata AI" },
-      { property: "og:title", content: "Learn Kata AI — Your personal AI study mentor" },
+      { name: "author", content: "Sasha AI" },
+      { property: "og:site_name", content: "Sasha AI" },
+      { property: "og:title", content: "Sasha AI — Your personal AI study mentor" },
       { property: "og:description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and progress tracking." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: "Learn Kata AI — Your personal AI study mentor" },
+      { name: "twitter:title", content: "Sasha AI — Your personal AI study mentor" },
       { name: "twitter:description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and progress tracking." },
     ],
     links: [
@@ -102,7 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
-          name: "Learn Kata AI",
+          name: "Sasha AI",
           url: "https://study-mentor-by-sarosh-ai.lovable.app",
           description: "Personalized AI study mentor that builds adaptive study plans, teaches like a tutor, and grades exam-style quizzes.",
         }),
@@ -112,7 +112,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebSite",
-          name: "Learn Kata AI",
+          name: "Sasha AI",
           url: "https://study-mentor-by-sarosh-ai.lovable.app",
           description: "Your personal AI study mentor for focused exam prep.",
         }),

@@ -107,7 +107,7 @@ function Onboarding() {
     <div className="container mx-auto max-w-3xl px-6 py-10">
       <h1 className="font-display text-3xl font-semibold">Let's set up your study plan</h1>
       <p className="mt-2 text-muted-foreground">
-        Tell Learn Kata AI what you're studying — it will build a daily roadmap around your weak spots.
+        Tell Sasha AI what you're studying — it will build a daily roadmap around your weak spots.
       </p>
 
       <div className="mt-8 space-y-6 rounded-2xl border border-border bg-card p-6 shadow-card">

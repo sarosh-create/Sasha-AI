@@ -12,8 +12,8 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — Learn Kata AI" },
-      { name: "description", content: "Sign in or create a free Learn Kata AI account." },
+      { title: "Sign in — Sasha AI" },
+      { name: "description", content: "Sign in or create a free Sasha AI account." },
     ],
   }),
   component: AuthPage,

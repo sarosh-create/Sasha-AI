@@ -13,9 +13,9 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Learn Kata AI — Your personal AI study mentor" },
+      { title: "Sasha AI — Your personal AI study mentor" },
       { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and streak-based progress tracking. Free for students." },
-      { property: "og:title", content: "Learn Kata AI" },
+      { property: "og:title", content: "Sasha AI" },
       { property: "og:description", content: "Your personal AI study mentor for focused exam prep." },
     ],
   }),
@@ -48,7 +48,7 @@ function Landing() {
               The calm, focused way to <span className="text-gradient">actually learn</span>.
             </h1>
             <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-              Learn Kata AI builds a study roadmap around your weak spots, teaches like a real
+              Sasha AI builds a study roadmap around your weak spots, teaches like a real
               mentor, and grades you strictly so you walk into the exam ready.
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
@@ -100,7 +100,7 @@ function Landing() {
 
       <footer className="container mx-auto flex items-center justify-between px-6 py-8 text-sm text-muted-foreground">
         <Logo size={22} />
-        <span>© {new Date().getFullYear()} Learn Kata AI</span>
+        <span>© {new Date().getFullYear()} Sasha AI</span>
       </footer>
     </div>
   );

@@ -1,10 +1,10 @@
-# Learn Kata AI
+# Sasha AI
 
 > Personalized AI study mentor that builds adaptive study plans, teaches like a tutor, and grades exam-style quizzes strictly so students walk into their exam ready.
 
-Learn Kata AI is a free study platform for students preparing for real exams. It builds a daily roadmap around your weak subjects, runs an AI tutor that teaches step-by-step, and uses strict-marked quizzes to track real mastery.
+Sasha AI is a free study platform for students preparing for real exams. It builds a daily roadmap around your weak subjects, runs an AI tutor that teaches step-by-step, and uses strict-marked quizzes to track real mastery.
 
 ## Pages
 
-- [Home](/): Overview of Learn Kata AI and how the personalized AI study mentor works.
+- [Home](/): Overview of Sasha AI and how the personalized AI study mentor works.
 - [Sign in / Sign up](/auth): Create a free account to get a personalized study plan.
