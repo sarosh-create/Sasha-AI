@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
+import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
@@ -21,7 +22,10 @@ import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
+import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedQuizIndexRouteImport } from './routes/_authenticated.quiz.index'
@@ -52,6 +56,11 @@ const IndexRoute = IndexRouteImport.update({
 const AuthenticatedTutorRoute = AuthenticatedTutorRouteImport.update({
   id: '/tutor',
   path: '/tutor',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
+  id: '/schemes',
+  path: '/schemes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
@@ -90,9 +99,24 @@ const AuthenticatedExplainersRoute = AuthenticatedExplainersRouteImport.update({
   path: '/explainers',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
+  id: '/events',
+  path: '/events',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
+  id: '/classes',
+  path: '/classes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedAchievementsRoute =
@@ -138,7 +162,10 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/events': typeof AuthenticatedEventsRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
@@ -146,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
+  '/schemes': typeof AuthenticatedSchemesRoute
   '/tutor': typeof AuthenticatedTutorRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
@@ -159,7 +187,10 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
+  '/admin': typeof AuthenticatedAdminRoute
+  '/classes': typeof AuthenticatedClassesRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/events': typeof AuthenticatedEventsRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
@@ -167,6 +198,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
+  '/schemes': typeof AuthenticatedSchemesRoute
   '/tutor': typeof AuthenticatedTutorRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
@@ -182,7 +214,10 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
@@ -190,6 +225,7 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
+  '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
   '/_authenticated/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/_authenticated/quiz/$id': typeof AuthenticatedQuizIdRoute
@@ -205,7 +241,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/achievements'
+    | '/admin'
+    | '/classes'
     | '/dashboard'
+    | '/events'
     | '/explainers'
     | '/lab'
     | '/leaderboard'
@@ -213,6 +252,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/path'
     | '/revision'
+    | '/schemes'
     | '/tutor'
     | '/explainers/library'
     | '/quiz/$id'
@@ -226,7 +266,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/achievements'
+    | '/admin'
+    | '/classes'
     | '/dashboard'
+    | '/events'
     | '/explainers'
     | '/lab'
     | '/leaderboard'
@@ -234,6 +277,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/path'
     | '/revision'
+    | '/schemes'
     | '/tutor'
     | '/explainers/library'
     | '/quiz/$id'
@@ -248,7 +292,10 @@ export interface FileRouteTypes {
     | '/auth'
     | '/sitemap.xml'
     | '/_authenticated/achievements'
+    | '/_authenticated/admin'
+    | '/_authenticated/classes'
     | '/_authenticated/dashboard'
+    | '/_authenticated/events'
     | '/_authenticated/explainers'
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
@@ -256,6 +303,7 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding'
     | '/_authenticated/path'
     | '/_authenticated/revision'
+    | '/_authenticated/schemes'
     | '/_authenticated/tutor'
     | '/_authenticated/explainers/library'
     | '/_authenticated/quiz/$id'
@@ -309,6 +357,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTutorRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/schemes': {
+      id: '/_authenticated/schemes'
+      path: '/schemes'
+      fullPath: '/schemes'
+      preLoaderRoute: typeof AuthenticatedSchemesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/revision': {
       id: '/_authenticated/revision'
       path: '/revision'
@@ -358,11 +413,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExplainersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/events': {
+      id: '/_authenticated/events'
+      path: '/events'
+      fullPath: '/events'
+      preLoaderRoute: typeof AuthenticatedEventsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/classes': {
+      id: '/_authenticated/classes'
+      path: '/classes'
+      fullPath: '/classes'
+      preLoaderRoute: typeof AuthenticatedClassesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/achievements': {
@@ -433,7 +509,10 @@ const AuthenticatedExplainersRouteWithChildren =
 
 interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
@@ -441,6 +520,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
+  AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
   AuthenticatedQuizIdRoute: typeof AuthenticatedQuizIdRoute
   AuthenticatedQuizNewRoute: typeof AuthenticatedQuizNewRoute
@@ -451,7 +531,10 @@ interface AuthenticatedRouteChildren {
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
@@ -459,6 +542,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
+  AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
   AuthenticatedQuizIdRoute: AuthenticatedQuizIdRoute,
   AuthenticatedQuizNewRoute: AuthenticatedQuizNewRoute,
