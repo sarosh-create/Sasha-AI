@@ -14,6 +14,10 @@ import {
   Beaker,
   Crown,
   Library,
+  GraduationCap,
+  CalendarDays,
+  BookMarked,
+  Shield,
 } from "lucide-react";
 import {
   Sidebar,
@@ -28,12 +32,16 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useAuth } from "@/lib/auth-context";
+import { useIsAdmin } from "@/lib/use-role";
 import { Logo } from "./logo";
 
 const study = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
+  { title: "Live Classes", url: "/classes", icon: GraduationCap },
+  { title: "Events", url: "/events", icon: CalendarDays },
+  { title: "Schemes", url: "/schemes", icon: BookMarked },
   { title: "Funny Explainers", url: "/explainers", icon: Film },
   { title: "Reel Library", url: "/explainers/library", icon: Library },
   { title: "Virtual Lab", url: "/lab", icon: Beaker },
@@ -50,6 +58,7 @@ const social = [
 export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { signOut, user } = useAuth();
+  const { isAdmin } = useIsAdmin();
 
   const renderItems = (items: typeof study) => (
     <SidebarMenu>
@@ -95,6 +104,16 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={path.startsWith("/admin")}>
+                    <Link to="/admin" className="flex items-center gap-2">
+                      <Shield className="h-4 w-4" />
+                      <span>Admin</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
