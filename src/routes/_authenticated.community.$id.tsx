@@ -1,0 +1,151 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/lib/auth-context";
+import { useRoles } from "@/lib/use-role";
+import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { ChevronLeft, Send, ThumbsUp, Trash2, Shield, GraduationCap } from "lucide-react";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/_authenticated/community/$id")({
+  head: () => ({ meta: [{ title: "Channel — Sasha AI" }] }),
+  component: ChannelPage,
+});
+
+type Msg = { id: string; user_id: string; body: string; created_at: string; pinned: boolean };
+
+function ChannelPage() {
+  const { id } = Route.useParams();
+  const { user } = useAuth();
+  const { isStaff, isTeacher } = useRoles();
+  const [channel, setChannel] = useState<any>(null);
+  const [messages, setMessages] = useState<Msg[]>([]);
+  const [profiles, setProfiles] = useState<Record<string, any>>({});
+  const [roles, setRoles] = useState<Record<string, string[]>>({});
+  const [ratings, setRatings] = useState<Record<string, number>>({});
+  const [myRatings, setMyRatings] = useState<Set<string>>(new Set());
+  const [body, setBody] = useState("");
+  const listRef = useRef<HTMLDivElement>(null);
+
+  const loadProfiles = async (ids: string[]) => {
+    if (!ids.length) return;
+    const missing = ids.filter((i) => !profiles[i]);
+    if (!missing.length) return;
+    const { data } = await supabase.from("profiles").select("user_id, display_name, avatar_url").in("user_id", missing);
+    const p: Record<string, any> = { ...profiles };
+    (data ?? []).forEach((r: any) => (p[r.user_id] = r));
+    setProfiles(p);
+    const { data: rs } = await supabase.from("user_roles").select("user_id, role").in("user_id", missing);
+    const rm: Record<string, string[]> = { ...roles };
+    (rs ?? []).forEach((r: any) => { rm[r.user_id] = [...(rm[r.user_id] ?? []), r.role]; });
+    setRoles(rm);
+  };
+
+  const loadRatings = async (ids: string[]) => {
+    if (!ids.length) return;
+    const { data } = await supabase.from("channel_message_ratings").select("message_id, user_id").in("message_id", ids);
+    const counts: Record<string, number> = {};
+    const mine = new Set<string>();
+    (data ?? []).forEach((r: any) => {
+      counts[r.message_id] = (counts[r.message_id] ?? 0) + 1;
+      if (r.user_id === user?.id) mine.add(r.message_id);
+    });
+    setRatings(counts); setMyRatings(mine);
+  };
+
+  useEffect(() => { (async () => {
+    const { data: c } = await supabase.from("chat_channels").select("*").eq("id", id).maybeSingle();
+    setChannel(c);
+    const { data: m } = await supabase.from("channel_messages").select("*").eq("channel_id", id).order("created_at");
+    setMessages((m ?? []) as Msg[]);
+    await loadProfiles(Array.from(new Set((m ?? []).map((x: any) => x.user_id))));
+    await loadRatings((m ?? []).map((x: any) => x.id));
+  })(); }, [id]);
+
+  useEffect(() => {
+    const ch = supabase.channel(`channel:${id}`)
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "channel_messages", filter: `channel_id=eq.${id}` }, async (payload) => {
+        const m = payload.new as Msg;
+        setMessages((prev) => [...prev, m]);
+        await loadProfiles([m.user_id]);
+      })
+      .on("postgres_changes", { event: "DELETE", schema: "public", table: "channel_messages", filter: `channel_id=eq.${id}` }, (payload) => {
+        setMessages((prev) => prev.filter((x) => x.id !== (payload.old as any).id));
+      })
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [id]);
+
+  useEffect(() => { listRef.current?.scrollTo(0, listRef.current.scrollHeight); }, [messages]);
+
+  const send = async () => {
+    if (!body.trim() || !user) return;
+    const { error } = await supabase.from("channel_messages").insert({ channel_id: id, user_id: user.id, body: body.trim() });
+    if (error) toast.error(error.message);
+    else setBody("");
+  };
+  const rate = async (mid: string) => {
+    if (!user) return;
+    if (myRatings.has(mid)) {
+      await supabase.from("channel_message_ratings").delete().eq("message_id", mid).eq("user_id", user.id);
+      const next = new Set(myRatings); next.delete(mid); setMyRatings(next);
+      setRatings({ ...ratings, [mid]: Math.max(0, (ratings[mid] ?? 1) - 1) });
+    } else {
+      await supabase.from("channel_message_ratings").insert({ message_id: mid, user_id: user.id, value: 1 });
+      const next = new Set(myRatings); next.add(mid); setMyRatings(next);
+      setRatings({ ...ratings, [mid]: (ratings[mid] ?? 0) + 1 });
+    }
+  };
+  const remove = async (mid: string) => {
+    if (!confirm("Delete message?")) return;
+    await supabase.from("channel_messages").delete().eq("id", mid);
+  };
+
+  return (
+    <div className="flex h-[calc(100vh-4rem)] flex-col">
+      <div className="flex items-center gap-2 border-b p-3">
+        <Link to="/community"><Button size="icon" variant="ghost"><ChevronLeft className="h-4 w-4" /></Button></Link>
+        <div>
+          <p className="font-medium">{channel?.name ?? "Channel"}</p>
+          {channel?.description && <p className="text-xs text-muted-foreground">{channel.description}</p>}
+        </div>
+      </div>
+      <div ref={listRef} className="flex-1 space-y-2 overflow-y-auto p-4">
+        {messages.map((m) => {
+          const isMine = m.user_id === user?.id;
+          const author = profiles[m.user_id];
+          const authorRoles = roles[m.user_id] ?? [];
+          const isAdmin = authorRoles.includes("admin") || authorRoles.includes("co_admin");
+          const isT = authorRoles.includes("teacher");
+          return (
+            <div key={m.id} className={`flex ${isMine ? "justify-end" : "justify-start"}`}>
+              <Card className={`max-w-[80%] p-3 ${isMine ? "bg-primary/10" : ""}`}>
+                <div className="mb-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="font-medium text-foreground">{author?.display_name ?? "User"}</span>
+                  {isAdmin && <span className="ml-1 inline-flex items-center gap-0.5 rounded bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-amber-700"><Shield className="h-2.5 w-2.5" /> Admin</span>}
+                  {isT && !isAdmin && <span className="ml-1 inline-flex items-center gap-0.5 rounded bg-blue-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-blue-700"><GraduationCap className="h-2.5 w-2.5" /> Teacher</span>}
+                  <span className="ml-auto">{new Date(m.created_at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</span>
+                </div>
+                <p className="whitespace-pre-wrap text-sm">{m.body}</p>
+                <div className="mt-2 flex items-center gap-2">
+                  <button onClick={() => rate(m.id)} className={`flex items-center gap-1 text-xs ${myRatings.has(m.id) ? "text-primary" : "text-muted-foreground"}`}>
+                    <ThumbsUp className="h-3 w-3" /> {ratings[m.id] ?? 0}
+                  </button>
+                  {(isMine || isStaff) && (
+                    <button onClick={() => remove(m.id)} className="text-xs text-muted-foreground hover:text-destructive"><Trash2 className="h-3 w-3" /></button>
+                  )}
+                </div>
+              </Card>
+            </div>
+          );
+        })}
+      </div>
+      <div className="flex gap-2 border-t p-3">
+        <Input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Type your question…" onKeyDown={(e) => { if (e.key === "Enter") send(); }} />
+        <Button onClick={send}><Send className="h-4 w-4" /></Button>
+      </div>
+    </div>
+  );
+}
