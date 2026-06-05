@@ -1,72 +1,60 @@
-# Expand Lab, Explainers, Social & A11y
+# Build plan
 
-Big batch — grouped into 5 deliverables. I'll ship in one pass.
+Six-part build. I'll ship in this order so you can review each piece.
 
-## 1. Virtual Lab: more experiments + unlocks + hints
+## 1. Duolingo-style lessons (replaces tutor redirect)
 
-**New experiments** (added to `_authenticated.lab.tsx`):
-- Physics: Pendulum (existing), Ohm's Law circuit, Refraction through prism, Specific heat capacity
-- Chemistry: Titration (existing), Flame tests, Rates of reaction (Mg + HCl), Electrolysis of copper sulphate
-- Biology: Osmosis (existing), Food tests (Benedict/Biuret/iodine), Photosynthesis (pondweed bubble count), Leaf chromatography
+- New `lesson_content` table: per `subject + topic + grade_level + board`, stores intro slides (JSON: title, body, image_url, emoji), worked example, mini-quiz (3-5 MCQ).
+- New route `/lesson/$id` renders slides → "Got it" → built-in quiz → mark lesson done. Never jumps to AI tutor.
+- Study path lessons now link here instead of `/tutor`.
+- **Hybrid content**: when a student opens a lesson with no content yet, an edge function calls Lovable AI (Gemini 3) to draft slides + quiz tailored to their grade/board, saves draft to DB with `status='draft'`. Admin sees drafts in panel and one-click approves/edits before publishing.
+- Subject-aware visuals: AI prompt instructs labeled diagrams (e.g. cell organelles for Bio), step-by-step math working, etc.
 
-**Unlock system**: Each experiment has `requiredLevel` and `requiredQuizzes` (e.g. "complete 2 chemistry quizzes ≥70%"). Locked cards show a 🔒 with the unlock condition. Computed client-side from `profiles.level` + `quizzes` table reads — no schema change needed.
+## 2. Teachers CRUD + student access
 
-**Hint & recovery system**:
-- Each step exposes a `hint` string (always-available "💡 Hint" button → toast).
-- Wrong apparatus pick: shake animation + soft "❌ Not yet — try something that…" toast, NO progress loss (current code just blocks).
-- After 2 wrong tries on a step: auto-reveals correct next item with a dimmed glow ("Guided mode").
-- New "Undo last step" button to recover misorderings instead of restarting.
+- Admin Teachers tab gets a real form (name, subject, bio, avatar upload to `sasha` bucket).
+- New `teacher_students` link table; admin assigns students to teachers (or teacher's subject auto-matches student subjects).
+- Approved teachers get `teacher` role → new `/teacher` dashboard: list of their students, view profile, study path, recent quiz scores, open 1:1 chat.
+- RLS: teachers can read profiles/subjects/quizzes for linked students only.
 
-## 2. Funny Explainers: save & replay with timestamps
+## 3. Lock creator actions to admin + co-admins
 
-**New table `explainer_reels`**: `user_id`, `topic`, `scenes jsonb`, `created_at`. Each scene already has emoji/title/line; I'll add `keyConcept: bool` + `timestampSec: number` (assigned on generate: even spacing across 60s, marking scenes the AI tags as core).
+- Extend `app_role` with `co_admin`. `msn4sg@gmail.com` stays primary admin.
+- New Admin tab "Co-admins": invite by email, grant/revoke.
+- RLS on `events`, `schemes`, `live_classes`: insert/update/delete only if `has_role(admin)` OR `has_role(co_admin)`. Students keep read access.
 
-**Tweaked SYSTEM prompt** in `explainers.tsx`: ask the model to add `"keyConcept": true` to 2-3 scenes that hold the actual learning beats.
+## 4. Past papers library
 
-**UI additions**:
-- "💾 Save reel" button after generation → inserts row.
-- New `/explainers/library` route: grid of saved reels per topic, click to replay.
-- Replay view: same scene viewer + a timeline strip showing each scene's `timestampSec` with star markers on key concepts; click marker to jump.
-- Auto-play mode with 8s per scene + progress bar.
+- New `past_papers` table: title, board, level, subject, year, paper_type, pdf_url, marking_scheme_url.
+- Storage bucket `past-papers` (public read).
+- Admin tab: upload PDF + metadata.
+- Student route `/papers`: filter by board/subject/year, download PDF + scheme.
 
-## 3. Leaderboard
+## 5. Community Q&A chat (WhatsApp-style)
 
-**New route `_authenticated.leaderboard.tsx`**:
-- Tabs: Weekly XP / All-time XP / Lab XP / Streak.
-- Reads `profiles` ordered by relevant column (add `lab_xp` int column; `addLabXp` helper bumps both `xp` and `lab_xp`).
-- For weekly XP: new view computed from `study_logs` + a `weekly_xp` materialized helper — simpler: store `xp_week` int + `xp_week_start` date on profile, reset on first action of new ISO week.
-- Shows top 50; highlights current user's row even if outside top 50 (separate query).
-- Anonymous opt-in: `profiles.leaderboard_opt_in bool default true`; opt-out hides display_name and shows "Anonymous Owl".
+- New `chat_channels` table (name, subject, board, created_by) — admin/co-admin creates.
+- `channel_messages` (channel_id, user_id, body, parent_id for replies).
+- `channel_message_ratings` (thumbs up on helpful answers).
+- Realtime enabled; RLS: anyone signed in can read + post; only admin/co-admin/teachers can pin or delete.
+- Sidebar entry "Community". Channel list → channel view with live messages, rating buttons, teacher/admin badges.
 
-**Daily challenges & badges** are already in `gamification.ts`; I'll:
-- Add 3 new lab/streak-themed challenges to the pool ("Run 1 experiment", "Score 100% on a quiz", "Save 1 explainer reel").
-- Add 4 new badges: `lab_3` (3 experiments), `lab_all_p3` (one per subject), `reel_saver` (save 5 reels), `leaderboard_top10`.
+## 6. SEO boost
 
-## 4. Playful UI polish
+- Per-route head() metadata on public routes (already partial).
+- JSON-LD `EducationalOrganization` + `Course` schema on landing/lesson pages.
+- Sitemap regenerated to include new public routes.
+- Open Graph image for landing page.
 
-- 6 confetti variants in `gamification.ts`: `fireConfetti('default'|'stars'|'hearts'|'school'|'rainbow'|'fireworks')` — wire to level-up, badge, quiz 100%, lab complete, streak milestone, reel save.
-- Emoji reaction bursts: small `<EmojiBurst emoji="🎉" />` component that animates 6 floating emojis upward; used on correct lab step, quiz correct answer, challenge complete.
-- Mascot reacts: extend `Mascot` with `mood="cheer"|"think"|"oops"` triggered by these events via a small zustand store (or context).
+## Technical notes
 
-## 5. Color-blind-friendly contrast modes
+- All schema changes in one migration per part; RLS + GRANTs included.
+- Lesson AI drafting via `createServerFn` calling Lovable AI Gateway (`google/gemini-3-flash-preview`).
+- Avatar/PDF uploads use existing `sasha` bucket + new `past-papers` bucket.
+- Realtime chat uses Supabase Realtime on `channel_messages`.
 
-- New `accessibility` section in profile + a header toggle (gear icon dropdown).
-- Modes: `default`, `deuteranopia`, `protanopia`, `tritanopia`, `high-contrast`.
-- Implemented as `data-a11y="..."` on `<html>` with overriding CSS variables in `styles.css` for `--primary`, `--accent`, `--destructive`, `--warning`, `--success` — chosen from CB-safe palettes (e.g. blue/orange instead of red/green).
-- Persisted in `localStorage` + `profiles.a11y_mode` column.
-- Tag-color picker in notes also respects mode (swap red→orange, green→blue).
+## Out of scope this round
 
----
+- Email notifications (needs custom domain setup separately).
+- Video calls inside live classes (still external meeting URL).
 
-## Database changes (one migration)
-
-1. `ALTER TABLE profiles ADD COLUMN lab_xp int NOT NULL DEFAULT 0, ADD COLUMN xp_week int NOT NULL DEFAULT 0, ADD COLUMN xp_week_start date, ADD COLUMN leaderboard_opt_in bool NOT NULL DEFAULT true, ADD COLUMN a11y_mode text NOT NULL DEFAULT 'default'`
-2. `CREATE TABLE explainer_reels(...)` + grants + RLS (own rows).
-3. Add `quiz_id`/`lab_experiment` columns to `study_logs` if useful (optional — skip for now).
-
-## Order of execution
-
-1. Migration (awaits your approval).
-2. After approval: gamification.ts updates, lab.tsx rewrite, explainers + new library route, leaderboard route, a11y toggle + styles, mascot/emoji-burst components, sidebar links.
-
-Estimated ~10 files touched / created. Ready to start with the migration on your go-ahead.
+Reply "go" to start with part 1, or tell me to reorder / drop anything.
