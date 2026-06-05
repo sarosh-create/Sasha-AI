@@ -16,8 +16,22 @@ type Lesson = {
   id: string; subject_id: string | null; position: number;
   activity: "teach" | "quiz" | "review"; title: string; est_minutes: number;
   status: "locked" | "available" | "done";
+  content?: string | null; lesson_steps?: string[] | null; practice_prompt?: string | null;
 };
 type Subject = { id: string; name: string; color: string; strength_score: number };
+
+const lessonContent = (subject: Subject, activity: Lesson["activity"]) => {
+  const focus = subject.strength_score < 45 ? "core basics" : subject.strength_score < 70 ? "exam application" : "high-mark practice";
+  return {
+    content: `${activity === "quiz" ? "Practice" : activity === "review" ? "Review" : "Learn"} ${subject.name} through ${focus}. Sasha AI will connect the lesson to your chosen subject, then check whether you can explain and apply it.` ,
+    lesson_steps: [
+      `Recall the main ${subject.name} idea in your own words.`,
+      `Work through one guided example from your level.`,
+      `Answer a short exam-style question and fix mistakes.`,
+    ],
+    practice_prompt: `Create one ${subject.name} question on today's weakest topic, then mark my answer strictly.`,
+  };
+};
 
 export async function generatePathFor(userId: string) {
   const { data: subs } = await supabase
@@ -35,6 +49,7 @@ export async function generatePathFor(userId: string) {
   for (let i = 0; i < 14; i++) {
     const s = weighted[Math.floor(Math.random() * weighted.length)];
     const act = activities[i % 3];
+    const details = lessonContent(s, act);
     rows.push({
       user_id: userId,
       subject_id: s.id,
@@ -46,6 +61,7 @@ export async function generatePathFor(userId: string) {
         `Review: ${s.name}`,
       est_minutes: act === "quiz" ? 8 : 10,
       status: i === 0 ? "available" : "locked",
+      ...details,
     });
   }
   await supabase.from("lesson_path").insert(rows);
@@ -159,6 +175,13 @@ function PathPage() {
                   {sub && <span className="text-xs text-muted-foreground">• {sub.name}</span>}
                 </div>
                 <p className="text-xs text-muted-foreground">{l.est_minutes} min · {l.activity}</p>
+                {l.content && <p className="mt-1 text-sm text-muted-foreground">{l.content}</p>}
+                {!!l.lesson_steps?.length && (
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
+                    {l.lesson_steps.map((step) => <li key={step}>{step}</li>)}
+                  </ul>
+                )}
+                {l.practice_prompt && <p className="mt-2 text-xs font-medium text-foreground">Practice: {l.practice_prompt}</p>}
                 {l.status === "available" && (
                   <div className="mt-2 flex gap-2">
                     <Button size="sm" onClick={() => start(l)}>Start</Button>
