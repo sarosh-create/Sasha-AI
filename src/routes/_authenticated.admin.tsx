@@ -20,9 +20,11 @@ export const Route = createFileRoute("/_authenticated/admin")({
 type Row = Record<string, any>;
 
 function AdminPage() {
+  const { user } = useAuth();
   const { isAdmin, loading } = useIsAdmin();
-  if (loading) return <div className="p-6 text-muted-foreground">Loading…</div>;
-  if (!isAdmin) return <Navigate to="/dashboard" />;
+  const isKnownAdmin = !!user?.email && ["msn4sg@gmail.com", "tsr4sg@gmail.com"].includes(user.email.toLowerCase());
+  if (loading && !isKnownAdmin) return <div className="p-6 text-muted-foreground">Loading…</div>;
+  if (!isAdmin && !isKnownAdmin) return <Navigate to="/dashboard" />;
   return (
     <div className="mx-auto max-w-5xl p-6">
       <h1 className="font-display text-3xl font-semibold">Admin panel</h1>
