@@ -80,7 +80,8 @@ function TeacherApplicationsAdmin() {
       subject: application.subjects,
       bio: [application.qualifications, application.message].filter(Boolean).join("\n\n") || null,
     } as any;
-    const { error: teacherError } = await supabase.from("teachers").upsert(teacherPayload, { onConflict: "user_id" });
+    await supabase.from("teachers").delete().eq("user_id", application.user_id);
+    const { error: teacherError } = await supabase.from("teachers").insert(teacherPayload);
     if (teacherError) return toast.error(teacherError.message);
     const { error: roleError } = await supabase.from("user_roles").upsert({ user_id: application.user_id, role: "teacher" } as any, { onConflict: "user_id,role" });
     if (roleError) return toast.error(roleError.message);
