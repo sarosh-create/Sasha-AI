@@ -14,9 +14,11 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
+import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
+import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
@@ -24,6 +26,7 @@ import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.la
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
@@ -32,7 +35,9 @@ import { Route as AuthenticatedQuizIndexRouteImport } from './routes/_authentica
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticated.quiz.new'
 import { Route as AuthenticatedQuizIdRouteImport } from './routes/_authenticated.quiz.$id'
+import { Route as AuthenticatedLessonIdRouteImport } from './routes/_authenticated.lesson.$id'
 import { Route as AuthenticatedExplainersLibraryRouteImport } from './routes/_authenticated.explainers.library'
+import { Route as AuthenticatedCommunityIdRouteImport } from './routes/_authenticated.community.$id'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -58,6 +63,11 @@ const AuthenticatedTutorRoute = AuthenticatedTutorRouteImport.update({
   path: '/tutor',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
+  id: '/teacher',
+  path: '/teacher',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
   id: '/schemes',
   path: '/schemes',
@@ -71,6 +81,11 @@ const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
 const AuthenticatedPathRoute = AuthenticatedPathRouteImport.update({
   id: '/path',
   path: '/path',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPapersRoute = AuthenticatedPapersRouteImport.update({
+  id: '/papers',
+  path: '/papers',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
@@ -107,6 +122,11 @@ const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
@@ -150,11 +170,22 @@ const AuthenticatedQuizIdRoute = AuthenticatedQuizIdRouteImport.update({
   path: '/quiz/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedLessonIdRoute = AuthenticatedLessonIdRouteImport.update({
+  id: '/lesson/$id',
+  path: '/lesson/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedExplainersLibraryRoute =
   AuthenticatedExplainersLibraryRouteImport.update({
     id: '/library',
     path: '/library',
     getParentRoute: () => AuthenticatedExplainersRoute,
+  } as any)
+const AuthenticatedCommunityIdRoute =
+  AuthenticatedCommunityIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedCommunityRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -164,6 +195,7 @@ export interface FileRoutesByFullPath {
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
+  '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -171,11 +203,15 @@ export interface FileRoutesByFullPath {
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
+  '/lesson/$id': typeof AuthenticatedLessonIdRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -189,6 +225,7 @@ export interface FileRoutesByTo {
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
+  '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -196,11 +233,15 @@ export interface FileRoutesByTo {
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
+  '/lesson/$id': typeof AuthenticatedLessonIdRoute
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -216,6 +257,7 @@ export interface FileRoutesById {
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
+  '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -223,11 +265,15 @@ export interface FileRoutesById {
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
+  '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
+  '/_authenticated/community/$id': typeof AuthenticatedCommunityIdRoute
   '/_authenticated/explainers/library': typeof AuthenticatedExplainersLibraryRoute
+  '/_authenticated/lesson/$id': typeof AuthenticatedLessonIdRoute
   '/_authenticated/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
@@ -243,6 +289,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/admin'
     | '/classes'
+    | '/community'
     | '/dashboard'
     | '/events'
     | '/explainers'
@@ -250,11 +297,15 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/notes'
     | '/onboarding'
+    | '/papers'
     | '/path'
     | '/revision'
     | '/schemes'
+    | '/teacher'
     | '/tutor'
+    | '/community/$id'
     | '/explainers/library'
+    | '/lesson/$id'
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
@@ -268,6 +319,7 @@ export interface FileRouteTypes {
     | '/achievements'
     | '/admin'
     | '/classes'
+    | '/community'
     | '/dashboard'
     | '/events'
     | '/explainers'
@@ -275,11 +327,15 @@ export interface FileRouteTypes {
     | '/leaderboard'
     | '/notes'
     | '/onboarding'
+    | '/papers'
     | '/path'
     | '/revision'
     | '/schemes'
+    | '/teacher'
     | '/tutor'
+    | '/community/$id'
     | '/explainers/library'
+    | '/lesson/$id'
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
@@ -294,6 +350,7 @@ export interface FileRouteTypes {
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
     | '/_authenticated/classes'
+    | '/_authenticated/community'
     | '/_authenticated/dashboard'
     | '/_authenticated/events'
     | '/_authenticated/explainers'
@@ -301,11 +358,15 @@ export interface FileRouteTypes {
     | '/_authenticated/leaderboard'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
+    | '/_authenticated/papers'
     | '/_authenticated/path'
     | '/_authenticated/revision'
     | '/_authenticated/schemes'
+    | '/_authenticated/teacher'
     | '/_authenticated/tutor'
+    | '/_authenticated/community/$id'
     | '/_authenticated/explainers/library'
+    | '/_authenticated/lesson/$id'
     | '/_authenticated/quiz/$id'
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
@@ -357,6 +418,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTutorRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/teacher': {
+      id: '/_authenticated/teacher'
+      path: '/teacher'
+      fullPath: '/teacher'
+      preLoaderRoute: typeof AuthenticatedTeacherRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/schemes': {
       id: '/_authenticated/schemes'
       path: '/schemes'
@@ -376,6 +444,13 @@ declare module '@tanstack/react-router' {
       path: '/path'
       fullPath: '/path'
       preLoaderRoute: typeof AuthenticatedPathRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/papers': {
+      id: '/_authenticated/papers'
+      path: '/papers'
+      fullPath: '/papers'
+      preLoaderRoute: typeof AuthenticatedPapersRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/onboarding': {
@@ -425,6 +500,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/community': {
+      id: '/_authenticated/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof AuthenticatedCommunityRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/classes': {
@@ -483,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedQuizIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/lesson/$id': {
+      id: '/_authenticated/lesson/$id'
+      path: '/lesson/$id'
+      fullPath: '/lesson/$id'
+      preLoaderRoute: typeof AuthenticatedLessonIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/explainers/library': {
       id: '/_authenticated/explainers/library'
       path: '/library'
@@ -490,8 +579,29 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedExplainersLibraryRouteImport
       parentRoute: typeof AuthenticatedExplainersRoute
     }
+    '/_authenticated/community/$id': {
+      id: '/_authenticated/community/$id'
+      path: '/$id'
+      fullPath: '/community/$id'
+      preLoaderRoute: typeof AuthenticatedCommunityIdRouteImport
+      parentRoute: typeof AuthenticatedCommunityRoute
+    }
   }
 }
+
+interface AuthenticatedCommunityRouteChildren {
+  AuthenticatedCommunityIdRoute: typeof AuthenticatedCommunityIdRoute
+}
+
+const AuthenticatedCommunityRouteChildren: AuthenticatedCommunityRouteChildren =
+  {
+    AuthenticatedCommunityIdRoute: AuthenticatedCommunityIdRoute,
+  }
+
+const AuthenticatedCommunityRouteWithChildren =
+  AuthenticatedCommunityRoute._addFileChildren(
+    AuthenticatedCommunityRouteChildren,
+  )
 
 interface AuthenticatedExplainersRouteChildren {
   AuthenticatedExplainersLibraryRoute: typeof AuthenticatedExplainersLibraryRoute
@@ -511,6 +621,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
+  AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
@@ -518,10 +629,13 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
+  AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
+  AuthenticatedLessonIdRoute: typeof AuthenticatedLessonIdRoute
   AuthenticatedQuizIdRoute: typeof AuthenticatedQuizIdRoute
   AuthenticatedQuizNewRoute: typeof AuthenticatedQuizNewRoute
   AuthenticatedRoomsIdRoute: typeof AuthenticatedRoomsIdRoute
@@ -533,6 +647,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
+  AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
@@ -540,10 +655,13 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
+  AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
+  AuthenticatedLessonIdRoute: AuthenticatedLessonIdRoute,
   AuthenticatedQuizIdRoute: AuthenticatedQuizIdRoute,
   AuthenticatedQuizNewRoute: AuthenticatedQuizNewRoute,
   AuthenticatedRoomsIdRoute: AuthenticatedRoomsIdRoute,

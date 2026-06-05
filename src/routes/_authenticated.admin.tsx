@@ -30,17 +30,25 @@ function AdminPage() {
       <Tabs defaultValue="classes">
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="classes">Live classes</TabsTrigger>
-          <TabsTrigger value="applications">Teacher applications</TabsTrigger>
+          <TabsTrigger value="applications">Applications</TabsTrigger>
           <TabsTrigger value="teachers">Teachers</TabsTrigger>
+          <TabsTrigger value="assign">Assign students</TabsTrigger>
+          <TabsTrigger value="coadmins">Co-admins</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
           <TabsTrigger value="schemes">Schemes</TabsTrigger>
+          <TabsTrigger value="papers">Past papers</TabsTrigger>
+          <TabsTrigger value="channels">Channels</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
         </TabsList>
         <TabsContent value="classes"><LiveClassesAdmin /></TabsContent>
         <TabsContent value="applications"><TeacherApplicationsAdmin /></TabsContent>
         <TabsContent value="teachers"><TeachersAdmin /></TabsContent>
+        <TabsContent value="assign"><AssignStudentsAdmin /></TabsContent>
+        <TabsContent value="coadmins"><CoAdminsAdmin /></TabsContent>
         <TabsContent value="events"><EventsAdmin /></TabsContent>
         <TabsContent value="schemes"><SchemesAdmin /></TabsContent>
+        <TabsContent value="papers"><PastPapersAdmin /></TabsContent>
+        <TabsContent value="channels"><ChannelsAdmin /></TabsContent>
         <TabsContent value="videos"><VideosAdmin /></TabsContent>
       </Tabs>
     </div>
@@ -336,6 +344,193 @@ function VideosAdmin() {
               {v.topic && <p className="text-xs text-muted-foreground">{v.topic}</p>}
             </div>
             <Button size="icon" variant="ghost" onClick={() => del("explainer_reels", v.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AssignStudentsAdmin() {
+  const { rows: links, reload } = useTable("teacher_students");
+  const [teachers, setTeachers] = useState<Row[]>([]);
+  const [students, setStudents] = useState<Row[]>([]);
+  const [teacherId, setTeacherId] = useState("");
+  const [studentId, setStudentId] = useState("");
+  useEffect(() => { (async () => {
+    const { data: rs } = await supabase.from("user_roles").select("user_id").eq("role", "teacher" as any);
+    const tIds = (rs ?? []).map((r: any) => r.user_id);
+    const { data: t } = tIds.length ? await supabase.from("profiles").select("user_id, display_name").in("user_id", tIds) : { data: [] } as any;
+    setTeachers(t ?? []);
+    const { data: s } = await supabase.from("profiles").select("user_id, display_name, account_type").eq("account_type", "student");
+    setStudents(s ?? []);
+  })(); }, []);
+  const link = async () => {
+    if (!teacherId || !studentId) return toast.error("Pick both");
+    const { error } = await supabase.from("teacher_students").insert({ teacher_user_id: teacherId, student_user_id: studentId });
+    if (error) return toast.error(error.message);
+    toast.success("Linked"); reload();
+  };
+  return (
+    <div className="mt-4 space-y-4">
+      <Card className="space-y-3 p-4">
+        <h3 className="font-display font-semibold">Link student to teacher</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div><Label>Teacher</Label>
+            <select className="w-full rounded-md border px-3 py-2 text-sm" value={teacherId} onChange={(e) => setTeacherId(e.target.value)}>
+              <option value="">— pick —</option>
+              {teachers.map((t) => <option key={t.user_id} value={t.user_id}>{t.display_name}</option>)}
+            </select>
+          </div>
+          <div><Label>Student</Label>
+            <select className="w-full rounded-md border px-3 py-2 text-sm" value={studentId} onChange={(e) => setStudentId(e.target.value)}>
+              <option value="">— pick —</option>
+              {students.map((s) => <option key={s.user_id} value={s.user_id}>{s.display_name}</option>)}
+            </select>
+          </div>
+        </div>
+        <Button onClick={link}><Plus className="h-4 w-4" /> Link</Button>
+      </Card>
+      <div className="space-y-1">
+        {links.map((l) => (
+          <Card key={l.id} className="flex items-center justify-between p-3 text-sm">
+            <span>{teachers.find((t) => t.user_id === l.teacher_user_id)?.display_name ?? l.teacher_user_id} → {students.find((s) => s.user_id === l.student_user_id)?.display_name ?? l.student_user_id}</span>
+            <Button size="icon" variant="ghost" onClick={() => del("teacher_students", l.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CoAdminsAdmin() {
+  const [rows, setRows] = useState<Row[]>([]);
+  const [email, setEmail] = useState("");
+  const reload = async () => {
+    const { data: r } = await supabase.from("user_roles").select("user_id, role").eq("role", "co_admin" as any);
+    const ids = (r ?? []).map((x: any) => x.user_id);
+    if (!ids.length) { setRows([]); return; }
+    const { data: p } = await supabase.from("profiles").select("user_id, display_name").in("user_id", ids);
+    setRows(p ?? []);
+  };
+  useEffect(() => { reload(); }, []);
+  const grant = async () => {
+    if (!email.trim()) return;
+    const { data: p } = await supabase.from("profiles").select("user_id").ilike("display_name", email).maybeSingle();
+    let uid = p?.user_id;
+    if (!uid) {
+      const { data: bymail } = await supabase.from("teacher_applications").select("user_id").eq("email", email.trim()).maybeSingle();
+      uid = bymail?.user_id;
+    }
+    if (!uid) return toast.error("User not found — they need to sign up first");
+    const { error } = await supabase.from("user_roles").insert({ user_id: uid, role: "co_admin" as any });
+    if (error) return toast.error(error.message);
+    setEmail(""); toast.success("Co-admin granted"); reload();
+  };
+  const revoke = async (uid: string) => {
+    await supabase.from("user_roles").delete().eq("user_id", uid).eq("role", "co_admin" as any);
+    toast.success("Revoked"); reload();
+  };
+  return (
+    <div className="mt-4 space-y-4">
+      <Card className="space-y-3 p-4">
+        <h3 className="font-display font-semibold">Grant co-admin</h3>
+        <p className="text-xs text-muted-foreground">Co-admins can create events, schemes, live classes and channels.</p>
+        <div className="flex gap-2">
+          <Input placeholder="display name or signup email" value={email} onChange={(e) => setEmail(e.target.value)} />
+          <Button onClick={grant}>Grant</Button>
+        </div>
+      </Card>
+      <div className="space-y-1">
+        {rows.map((r) => (
+          <Card key={r.user_id} className="flex items-center justify-between p-3 text-sm">
+            <span>{r.display_name}</span>
+            <Button size="sm" variant="ghost" onClick={() => revoke(r.user_id)}>Revoke</Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PastPapersAdmin() {
+  const { rows, reload } = useTable("past_papers");
+  const { user } = useAuth();
+  const [form, setForm] = useState({ title: "", exam_board: "", level: "", subject: "", year: new Date().getFullYear(), paper_type: "" });
+  const [file, setFile] = useState<File | null>(null);
+  const [scheme, setScheme] = useState<File | null>(null);
+  const upload = async (f: File) => {
+    const path = `${user?.id}/${Date.now()}-${f.name}`;
+    const { error } = await supabase.storage.from("past-papers").upload(path, f);
+    if (error) throw error;
+    return path;
+  };
+  const add = async () => {
+    if (!form.title || !file) return toast.error("Title and PDF required");
+    try {
+      const pdf_url = await upload(file);
+      const marking_scheme_url = scheme ? await upload(scheme) : null;
+      const { error } = await supabase.from("past_papers").insert({ ...form, pdf_url, marking_scheme_url, uploaded_by: user?.id });
+      if (error) throw error;
+      setForm({ title: "", exam_board: "", level: "", subject: "", year: new Date().getFullYear(), paper_type: "" });
+      setFile(null); setScheme(null); toast.success("Uploaded"); reload();
+    } catch (e: any) { toast.error(e.message); }
+  };
+  return (
+    <div className="mt-4 space-y-4">
+      <Card className="space-y-3 p-4">
+        <h3 className="font-display font-semibold">Upload past paper</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div><Label>Title</Label><Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} /></div>
+          <div><Label>Board</Label><Input value={form.exam_board} onChange={(e) => setForm({ ...form, exam_board: e.target.value })} placeholder="Cambridge / Edexcel / FBISE…" /></div>
+          <div><Label>Level</Label><Input value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })} placeholder="O Level / A Level / Class 10…" /></div>
+          <div><Label>Subject</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} /></div>
+          <div><Label>Year</Label><Input type="number" value={form.year} onChange={(e) => setForm({ ...form, year: Number(e.target.value) })} /></div>
+          <div><Label>Paper type</Label><Input value={form.paper_type} onChange={(e) => setForm({ ...form, paper_type: e.target.value })} placeholder="Paper 1 / 2 / Variant 3…" /></div>
+          <div><Label>PDF</Label><Input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files?.[0] ?? null)} /></div>
+          <div><Label>Marking scheme (optional)</Label><Input type="file" accept="application/pdf" onChange={(e) => setScheme(e.target.files?.[0] ?? null)} /></div>
+        </div>
+        <Button onClick={add}><Plus className="h-4 w-4" /> Upload</Button>
+      </Card>
+      <div className="space-y-1">
+        {rows.map((p) => (
+          <Card key={p.id} className="flex items-center justify-between p-3 text-sm">
+            <span>{p.title} <span className="text-muted-foreground">· {[p.exam_board, p.level, p.subject, p.year].filter(Boolean).join(" · ")}</span></span>
+            <Button size="icon" variant="ghost" onClick={() => del("past_papers", p.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+          </Card>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ChannelsAdmin() {
+  const { rows, reload } = useTable("chat_channels");
+  const { user } = useAuth();
+  const [form, setForm] = useState({ name: "", description: "", subject: "", exam_board: "" });
+  const add = async () => {
+    if (!form.name) return toast.error("Name required");
+    const { error } = await supabase.from("chat_channels").insert({ ...form, created_by: user?.id });
+    if (error) return toast.error(error.message);
+    setForm({ name: "", description: "", subject: "", exam_board: "" }); toast.success("Channel created"); reload();
+  };
+  return (
+    <div className="mt-4 space-y-4">
+      <Card className="space-y-3 p-4">
+        <h3 className="font-display font-semibold">Create channel</h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          <div><Label>Name</Label><Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} /></div>
+          <div><Label>Subject</Label><Input value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} /></div>
+          <div><Label>Board</Label><Input value={form.exam_board} onChange={(e) => setForm({ ...form, exam_board: e.target.value })} /></div>
+          <div className="sm:col-span-2"><Label>Description</Label><Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} /></div>
+        </div>
+        <Button onClick={add}><Plus className="h-4 w-4" /> Create</Button>
+      </Card>
+      <div className="space-y-1">
+        {rows.map((c) => (
+          <Card key={c.id} className="flex items-center justify-between p-3 text-sm">
+            <span>{c.name} <span className="text-muted-foreground">· {[c.subject, c.exam_board].filter(Boolean).join(" · ")}</span></span>
+            <Button size="icon" variant="ghost" onClick={() => del("chat_channels", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>

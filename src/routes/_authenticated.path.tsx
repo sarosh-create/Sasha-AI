@@ -96,12 +96,7 @@ function PathPage() {
   const start = async (l: Lesson) => {
     if (l.status === "locked") return;
     if (l.status === "done") return;
-    // Route to activity
-    if (l.activity === "teach" || l.activity === "review") {
-      nav({ to: "/tutor", search: { subject: l.subject_id ?? undefined } as any });
-    } else {
-      nav({ to: "/quiz/new", search: { subject: l.subject_id ?? undefined } as any });
-    }
+    nav({ to: "/lesson/$id", params: { id: l.id } });
   };
 
   const markDone = async (l: Lesson) => {

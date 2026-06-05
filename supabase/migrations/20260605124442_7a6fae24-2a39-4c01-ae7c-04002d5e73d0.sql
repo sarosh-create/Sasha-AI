@@ -1,0 +1,3 @@
+CREATE POLICY "read past papers files" ON storage.objects FOR SELECT TO authenticated USING (bucket_id = 'past-papers');
+CREATE POLICY "staff upload past papers" ON storage.objects FOR INSERT TO authenticated WITH CHECK (bucket_id = 'past-papers' AND public.is_staff(auth.uid()));
+CREATE POLICY "staff delete past papers" ON storage.objects FOR DELETE TO authenticated USING (bucket_id = 'past-papers' AND public.is_staff(auth.uid()));

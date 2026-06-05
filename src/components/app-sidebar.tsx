@@ -46,10 +46,12 @@ const study = [
   { title: "Reel Library", url: "/explainers/library", icon: Library },
   { title: "Virtual Lab", url: "/lab", icon: Beaker },
   { title: "Quizzes", url: "/quiz", icon: ScrollText },
+  { title: "Past Papers", url: "/papers", icon: BookOpenCheck },
   { title: "Notes", url: "/notes", icon: StickyNote },
   { title: "Revision", url: "/revision", icon: BookOpenCheck },
 ];
 const social = [
+  { title: "Community", url: "/community", icon: MessageSquare },
   { title: "Study Rooms", url: "/rooms", icon: Users },
   { title: "Leaderboard", url: "/leaderboard", icon: Crown },
   { title: "Achievements", url: "/achievements", icon: Trophy },
@@ -105,14 +107,18 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               {isAdmin && (
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild isActive={path.startsWith("/admin")}>
-                    <Link to="/admin" className="flex items-center gap-2">
-                      <Shield className="h-4 w-4" />
-                      <span>Admin</span>
-                    </Link>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={path.startsWith("/admin")}>
+                      <Link to="/admin" className="flex items-center gap-2"><Shield className="h-4 w-4" /><span>Admin</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                  <SidebarMenuItem>
+                    <SidebarMenuButton asChild isActive={path.startsWith("/teacher")}>
+                      <Link to="/teacher" className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /><span>Teacher panel</span></Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </>
               )}
             </SidebarMenu>
           </SidebarGroupContent>

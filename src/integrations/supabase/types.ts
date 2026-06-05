@@ -35,6 +35,110 @@ export type Database = {
         }
         Relationships: []
       }
+      channel_message_ratings: {
+        Row: {
+          created_at: string
+          message_id: string
+          user_id: string
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          message_id: string
+          user_id: string
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          message_id?: string
+          user_id?: string
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_message_ratings_message_id_fkey"
+            columns: ["message_id"]
+            isOneToOne: false
+            referencedRelation: "channel_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      channel_messages: {
+        Row: {
+          body: string
+          channel_id: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          pinned: boolean
+          user_id: string
+        }
+        Insert: {
+          body: string
+          channel_id: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          pinned?: boolean
+          user_id: string
+        }
+        Update: {
+          body?: string
+          channel_id?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          pinned?: boolean
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "channel_messages_channel_id_fkey"
+            columns: ["channel_id"]
+            isOneToOne: false
+            referencedRelation: "chat_channels"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "channel_messages_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "channel_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_channels: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          exam_board: string | null
+          id: string
+          name: string
+          subject: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          exam_board?: string | null
+          id?: string
+          name: string
+          subject?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          exam_board?: string | null
+          id?: string
+          name?: string
+          subject?: string | null
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           content: string
@@ -245,6 +349,51 @@ export type Database = {
         }
         Relationships: []
       }
+      lesson_content: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          exam_board: string | null
+          grade_level: string | null
+          id: string
+          quiz: Json
+          slides: Json
+          status: string
+          subject_name: string
+          topic: string
+          updated_at: string
+          worked_example: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          exam_board?: string | null
+          grade_level?: string | null
+          id?: string
+          quiz?: Json
+          slides?: Json
+          status?: string
+          subject_name: string
+          topic: string
+          updated_at?: string
+          worked_example?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          exam_board?: string | null
+          grade_level?: string | null
+          id?: string
+          quiz?: Json
+          slides?: Json
+          status?: string
+          subject_name?: string
+          topic?: string
+          updated_at?: string
+          worked_example?: string | null
+        }
+        Relationships: []
+      }
       lesson_path: {
         Row: {
           activity: string
@@ -253,12 +402,14 @@ export type Database = {
           created_at: string
           est_minutes: number
           id: string
+          lesson_content_id: string | null
           lesson_steps: Json
           position: number
           practice_prompt: string | null
           status: string
           subject_id: string | null
           title: string
+          topic: string | null
           user_id: string
         }
         Insert: {
@@ -268,12 +419,14 @@ export type Database = {
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_content_id?: string | null
           lesson_steps?: Json
           position: number
           practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title: string
+          topic?: string | null
           user_id: string
         }
         Update: {
@@ -283,15 +436,25 @@ export type Database = {
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_content_id?: string | null
           lesson_steps?: Json
           position?: number
           practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title?: string
+          topic?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "lesson_path_lesson_content_id_fkey"
+            columns: ["lesson_content_id"]
+            isOneToOne: false
+            referencedRelation: "lesson_content"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       live_classes: {
         Row: {
@@ -392,6 +555,48 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      past_papers: {
+        Row: {
+          created_at: string
+          exam_board: string | null
+          id: string
+          level: string | null
+          marking_scheme_url: string | null
+          paper_type: string | null
+          pdf_url: string
+          subject: string | null
+          title: string
+          uploaded_by: string | null
+          year: number | null
+        }
+        Insert: {
+          created_at?: string
+          exam_board?: string | null
+          id?: string
+          level?: string | null
+          marking_scheme_url?: string | null
+          paper_type?: string | null
+          pdf_url: string
+          subject?: string | null
+          title: string
+          uploaded_by?: string | null
+          year?: number | null
+        }
+        Update: {
+          created_at?: string
+          exam_board?: string | null
+          id?: string
+          level?: string | null
+          marking_scheme_url?: string | null
+          paper_type?: string | null
+          pdf_url?: string
+          subject?: string | null
+          title?: string
+          uploaded_by?: string | null
+          year?: number | null
         }
         Relationships: []
       }
@@ -766,6 +971,27 @@ export type Database = {
         }
         Relationships: []
       }
+      teacher_students: {
+        Row: {
+          created_at: string
+          id: string
+          student_user_id: string
+          teacher_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          student_user_id: string
+          teacher_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          student_user_id?: string
+          teacher_user_id?: string
+        }
+        Relationships: []
+      }
       teachers: {
         Row: {
           avatar_url: string | null
@@ -835,9 +1061,11 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_my_student: { Args: { _student: string }; Returns: boolean }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "teacher" | "user"
+      app_role: "admin" | "teacher" | "user" | "co_admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -965,7 +1193,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "teacher", "user"],
+      app_role: ["admin", "teacher", "user", "co_admin"],
     },
   },
 } as const
