@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { Trash2, Plus } from "lucide-react";
+import { CheckCircle2, Mail, MessageCircle, Trash2, Plus, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({ meta: [{ title: "Admin — Sasha AI" }] }),
@@ -30,12 +30,14 @@ function AdminPage() {
       <Tabs defaultValue="classes">
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="classes">Live classes</TabsTrigger>
+          <TabsTrigger value="applications">Teacher applications</TabsTrigger>
           <TabsTrigger value="teachers">Teachers</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
           <TabsTrigger value="schemes">Schemes</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
         </TabsList>
         <TabsContent value="classes"><LiveClassesAdmin /></TabsContent>
+        <TabsContent value="applications"><TeacherApplicationsAdmin /></TabsContent>
         <TabsContent value="teachers"><TeachersAdmin /></TabsContent>
         <TabsContent value="events"><EventsAdmin /></TabsContent>
         <TabsContent value="schemes"><SchemesAdmin /></TabsContent>
@@ -66,17 +68,74 @@ async function del(table: string, id: string, reload: () => void) {
   else { toast.success("Deleted"); reload(); }
 }
 
+function TeacherApplicationsAdmin() {
+  const { rows, reload } = useTable("teacher_applications");
+  const { user } = useAuth();
+
+  const approve = async (application: Row) => {
+    const teacherPayload = {
+      user_id: application.user_id,
+      name: application.name,
+      email: application.email,
+      subject: application.subjects,
+      bio: [application.qualifications, application.message].filter(Boolean).join("\n\n") || null,
+    } as any;
+    const { error: teacherError } = await supabase.from("teachers").upsert(teacherPayload, { onConflict: "user_id" });
+    if (teacherError) return toast.error(teacherError.message);
+    const { error: roleError } = await supabase.from("user_roles").upsert({ user_id: application.user_id, role: "teacher" } as any, { onConflict: "user_id,role" });
+    if (roleError) return toast.error(roleError.message);
+    await supabase.from("profiles").update({ account_type: "teacher" } as any).eq("user_id", application.user_id);
+    const { error } = await supabase.from("teacher_applications" as any).update({ status: "approved", reviewed_by: user?.id, reviewed_at: new Date().toISOString() }).eq("id", application.id);
+    if (error) return toast.error(error.message);
+    toast.success("Teacher approved and added");
+    reload();
+  };
+
+  const reject = async (application: Row) => {
+    const { error } = await supabase.from("teacher_applications" as any).update({ status: "rejected", reviewed_by: user?.id, reviewed_at: new Date().toISOString() }).eq("id", application.id);
+    if (error) return toast.error(error.message);
+    toast.success("Application rejected");
+    reload();
+  };
+
+  return (
+    <div className="mt-4 space-y-3">
+      {rows.length === 0 && <Card className="p-4 text-sm text-muted-foreground">No teacher applications yet.</Card>}
+      {rows.map((application) => (
+        <Card key={application.id} className="space-y-3 p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-display text-lg font-semibold">{application.name}</p>
+              <p className="text-sm text-muted-foreground">{application.email} · {application.subjects}</p>
+            </div>
+            <span className="rounded-full bg-muted px-3 py-1 text-xs font-medium capitalize text-muted-foreground">{application.status}</span>
+          </div>
+          {application.qualifications && <p className="text-sm"><b>Experience:</b> {application.qualifications}</p>}
+          {application.message && <p className="text-sm"><b>Message:</b> {application.message}</p>}
+          <div className="flex flex-wrap gap-2">
+            <Button asChild size="sm" variant="outline"><a href={`mailto:${application.email}`}><Mail className="h-4 w-4" /> Email</a></Button>
+            <Button asChild size="sm" variant="outline"><a href={`mailto:${application.email}?subject=Sasha AI teacher chat`}><MessageCircle className="h-4 w-4" /> Chat by email</a></Button>
+            {application.status !== "approved" && <Button size="sm" onClick={() => approve(application)}><CheckCircle2 className="h-4 w-4" /> Approve</Button>}
+            {application.status === "pending" && <Button size="sm" variant="destructive" onClick={() => reject(application)}><XCircle className="h-4 w-4" /> Reject</Button>}
+          </div>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
 function TeachersAdmin() {
   const { rows, reload } = useTable("teachers");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [bio, setBio] = useState("");
   const [avatar, setAvatar] = useState("");
   const add = async () => {
     if (!name.trim()) return toast.error("Name required");
-    const { error } = await supabase.from("teachers").insert({ name, subject, bio, avatar_url: avatar });
+    const { error } = await supabase.from("teachers").insert({ name, email, subject, bio, avatar_url: avatar } as any);
     if (error) return toast.error(error.message);
-    setName(""); setSubject(""); setBio(""); setAvatar(""); toast.success("Teacher added"); reload();
+    setName(""); setEmail(""); setSubject(""); setBio(""); setAvatar(""); toast.success("Teacher added"); reload();
   };
   return (
     <div className="mt-4 space-y-4">
@@ -84,6 +143,7 @@ function TeachersAdmin() {
         <h3 className="font-display font-semibold">Add teacher</h3>
         <div className="grid gap-3 sm:grid-cols-2">
           <div><Label>Name</Label><Input value={name} onChange={(e) => setName(e.target.value)} /></div>
+          <div><Label>Email</Label><Input type="email" value={email} onChange={(e) => setEmail(e.target.value)} /></div>
           <div><Label>Subject</Label><Input value={subject} onChange={(e) => setSubject(e.target.value)} /></div>
           <div className="sm:col-span-2"><Label>Avatar URL</Label><Input value={avatar} onChange={(e) => setAvatar(e.target.value)} /></div>
           <div className="sm:col-span-2"><Label>Bio</Label><Textarea value={bio} onChange={(e) => setBio(e.target.value)} /></div>
