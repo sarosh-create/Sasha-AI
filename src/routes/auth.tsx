@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 
@@ -26,6 +27,10 @@ function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [accountType, setAccountType] = useState<"student" | "teacher">("student");
+  const [teacherSubjects, setTeacherSubjects] = useState("");
+  const [teacherQualifications, setTeacherQualifications] = useState("");
+  const [teacherMessage, setTeacherMessage] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -37,14 +42,49 @@ function AuthPage() {
     setBusy(true);
     try {
       if (mode === "signup") {
+        if (accountType === "teacher" && !teacherSubjects.trim()) {
+          toast.error("Tell us which subjects you can teach");
+          setBusy(false);
+          return;
+        }
         const redirectUrl = `${window.location.origin}/dashboard`;
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: redirectUrl, data: { name } },
+          options: { emailRedirectTo: redirectUrl, data: { name, account_type: accountType } },
         });
         if (error) throw error;
-        toast.success("Check your email to confirm your account.");
+        if (data.user) {
+          await supabase.from("profiles").upsert(
+            {
+              user_id: data.user.id,
+              display_name: name || email.split("@")[0],
+              account_type: accountType,
+            } as any,
+            { onConflict: "user_id" },
+          );
+          if (accountType === "teacher") {
+            const { error: applicationError } = await supabase.from("teacher_applications" as any).upsert(
+              {
+                user_id: data.user.id,
+                name: name || email.split("@")[0],
+                email,
+                subjects: teacherSubjects.trim(),
+                qualifications: teacherQualifications.trim() || null,
+                message: teacherMessage.trim() || null,
+                status: "pending",
+              },
+              { onConflict: "user_id" },
+            );
+            if (applicationError) throw applicationError;
+            toast.success("Teacher application sent for admin review.");
+          } else {
+            toast.success("Account created. Let's set up your study plan.");
+          }
+          nav({ to: "/onboarding" });
+        } else {
+          toast.success("Check your email to confirm your account.");
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -86,6 +126,23 @@ function AuthPage() {
           </p>
         </div>
 
+        <div className="mb-4 grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
+          <button
+            type="button"
+            onClick={() => setMode("signup")}
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${mode === "signup" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            Create account
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("signin")}
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${mode === "signin" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            Sign in
+          </button>
+        </div>
+
         <Button
           variant="outline"
           className="w-full"
@@ -104,10 +161,35 @@ function AuthPage() {
 
         <form onSubmit={submit} className="space-y-3">
           {mode === "signup" && (
-            <div>
-              <Label htmlFor="name">Your name</Label>
-              <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex" />
-            </div>
+            <>
+              <div>
+                <Label htmlFor="name">Your name</Label>
+                <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Alex" />
+              </div>
+              <div>
+                <Label>Account type</Label>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <Button type="button" variant={accountType === "student" ? "default" : "outline"} onClick={() => setAccountType("student")}>Student</Button>
+                  <Button type="button" variant={accountType === "teacher" ? "default" : "outline"} onClick={() => setAccountType("teacher")}>Teacher</Button>
+                </div>
+              </div>
+              {accountType === "teacher" && (
+                <div className="space-y-3 rounded-xl border border-border bg-background p-3">
+                  <div>
+                    <Label htmlFor="teacher-subjects">Subjects you teach</Label>
+                    <Input id="teacher-subjects" required value={teacherSubjects} onChange={(e) => setTeacherSubjects(e.target.value)} placeholder="Maths, Physics, O Level Chemistry" />
+                  </div>
+                  <div>
+                    <Label htmlFor="teacher-qualifications">Qualifications / experience</Label>
+                    <Textarea id="teacher-qualifications" value={teacherQualifications} onChange={(e) => setTeacherQualifications(e.target.value)} placeholder="Your teaching experience, boards, or certificates" />
+                  </div>
+                  <div>
+                    <Label htmlFor="teacher-message">Message for admin</Label>
+                    <Textarea id="teacher-message" value={teacherMessage} onChange={(e) => setTeacherMessage(e.target.value)} placeholder="Availability, rates, class types, etc." />
+                  </div>
+                </div>
+              )}
+            </>
           )}
           <div>
             <Label htmlFor="email">Email</Label>
@@ -126,7 +208,7 @@ function AuthPage() {
           {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
           <button
             type="button"
-            onClick={() => setMode(mode === "signup" ? "signin" : "signup")}
+            onClick={() => setMode((current) => (current === "signup" ? "signin" : "signup"))}
             className="font-medium text-accent-foreground underline-offset-4 hover:underline"
           >
             {mode === "signup" ? "Sign in" : "Create one"}
