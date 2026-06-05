@@ -25,7 +25,7 @@ export function Mascot({ mood = "idle", message }: { mood?: MascotMood; message?
 
   return (
     <div className="flex items-end gap-3">
-      <KataOwl mood={mood} />
+      <SashaOwl mood={mood} />
       <div className="relative max-w-[220px] rounded-2xl rounded-bl-sm border border-border bg-card px-3 py-2 text-sm shadow-card">
         {line}
       </div>
@@ -33,7 +33,7 @@ export function Mascot({ mood = "idle", message }: { mood?: MascotMood; message?
   );
 }
 
-function KataOwl({ mood }: { mood: MascotMood }) {
+function SashaOwl({ mood }: { mood: MascotMood }) {
   const anim =
     mood === "cheer" ? "animate-bounce" :
     mood === "oops" ? "animate-wiggle" :
@@ -43,15 +43,15 @@ function KataOwl({ mood }: { mood: MascotMood }) {
       width="72" height="72" viewBox="0 0 72 72" fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={`shrink-0 drop-shadow-md ${anim}`}
-      aria-label="Kata the study owl"
+      aria-label="Sasha AI study owl"
     >
       <defs>
-        <linearGradient id="kataBody" x1="0" y1="0" x2="0" y2="1">
+        <linearGradient id="sashaBody" x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stopColor="#a78bfa" />
           <stop offset="100%" stopColor="#7c3aed" />
         </linearGradient>
       </defs>
-      <ellipse cx="36" cy="42" rx="24" ry="26" fill="url(#kataBody)" />
+      <ellipse cx="36" cy="42" rx="24" ry="26" fill="url(#sashaBody)" />
       <ellipse cx="36" cy="48" rx="14" ry="16" fill="#f5f0ff" />
       <path d="M14 22 L20 12 L24 22 Z" fill="#7c3aed" />
       <path d="M58 22 L52 12 L48 22 Z" fill="#7c3aed" />
