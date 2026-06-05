@@ -61,6 +61,8 @@ export function AppSidebar() {
   const path = useRouterState({ select: (r) => r.location.pathname });
   const { signOut, user } = useAuth();
   const { isAdmin } = useIsAdmin();
+  const isKnownAdmin = !!user?.email && ["msn4sg@gmail.com", "tsr4sg@gmail.com"].includes(user.email.toLowerCase());
+  const showAdmin = isAdmin || isKnownAdmin;
 
   const renderItems = (items: typeof study) => (
     <SidebarMenu>
