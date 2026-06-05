@@ -17,13 +17,30 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 
 type Subject = { name: string; strength_score: number };
 
-const BOARDS = ["AQA", "Edexcel", "OCR", "WJEC/Eduqas", "CIE / Cambridge", "IB", "Other"];
+const BOARDS = [
+  "AQA",
+  "Edexcel GCSE",
+  "Pearson Edexcel International GCSE",
+  "Pearson Edexcel A Level",
+  "OCR",
+  "WJEC/Eduqas",
+  "Cambridge O Level",
+  "Cambridge IGCSE",
+  "Cambridge AS & A Level",
+  "A Levels AMTIC",
+  "FSc / Intermediate",
+  "IB",
+  "Other",
+];
+const LEVELS = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "O Level", "IGCSE", "AS Level", "A Level", "FSc / Intermediate"];
 
 function Onboarding() {
   const { user } = useAuth();
   const nav = useNavigate();
   const [name, setName] = useState("");
+  const [accountType, setAccountType] = useState<"student" | "teacher">("student");
   const [board, setBoard] = useState("AQA");
+  const [gradeLevel, setGradeLevel] = useState("Class 10");
   const [examDate, setExamDate] = useState("");
   const [dailyMinutes, setDailyMinutes] = useState(45);
   const [subjects, setSubjects] = useState<Subject[]>([
@@ -38,12 +55,14 @@ function Onboarding() {
     (async () => {
       const { data } = await supabase
         .from("profiles")
-        .select("display_name, exam_board, exam_date, daily_minutes_goal")
+        .select("display_name, account_type, exam_board, grade_level, exam_date, daily_minutes_goal")
         .eq("user_id", user.id)
         .maybeSingle();
       if (data) {
         setName(data.display_name ?? "");
+        setAccountType((data.account_type as "student" | "teacher") ?? "student");
         setBoard(data.exam_board ?? "AQA");
+        setGradeLevel(data.grade_level ?? "Class 10");
         setExamDate(data.exam_date ?? "");
         setDailyMinutes(data.daily_minutes_goal ?? 45);
       }
@@ -73,7 +92,9 @@ function Onboarding() {
         {
           user_id: user.id,
           display_name: name || null,
+          account_type: accountType,
           exam_board: board,
+          grade_level: gradeLevel,
           exam_date: examDate || null,
           daily_minutes_goal: dailyMinutes,
           onboarded: true,
@@ -107,7 +128,7 @@ function Onboarding() {
     <div className="container mx-auto max-w-3xl px-6 py-10">
       <h1 className="font-display text-3xl font-semibold">Let's set up your study plan</h1>
       <p className="mt-2 text-muted-foreground">
-        Tell Sasha AI what you're studying — it will build a daily roadmap around your weak spots.
+        Tell Sasha AI your board, class, and subjects — it will build lessons around your weak spots.
       </p>
 
       <div className="mt-8 space-y-6 rounded-2xl border border-border bg-card p-6 shadow-card">
@@ -117,11 +138,30 @@ function Onboarding() {
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
           <div>
+            <Label>Account type</Label>
+            <Select value={accountType} onValueChange={(v) => setAccountType(v as "student" | "teacher")}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="teacher">Teacher</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
             <Label>Exam board</Label>
             <Select value={board} onValueChange={setBoard}>
               <SelectTrigger><SelectValue /></SelectTrigger>
               <SelectContent>
                 {BOARDS.map((b) => <SelectItem key={b} value={b}>{b}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label>Class / level</Label>
+            <Select value={gradeLevel} onValueChange={setGradeLevel}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                {LEVELS.map((level) => <SelectItem key={level} value={level}>{level}</SelectItem>)}
               </SelectContent>
             </Select>
           </div>

@@ -217,22 +217,31 @@ export type Database = {
           created_at: string
           id: string
           scenes: Json
+          thumbnail_url: string | null
+          title: string | null
           topic: string
           user_id: string
+          video_url: string | null
         }
         Insert: {
           created_at?: string
           id?: string
           scenes: Json
+          thumbnail_url?: string | null
+          title?: string | null
           topic: string
           user_id: string
+          video_url?: string | null
         }
         Update: {
           created_at?: string
           id?: string
           scenes?: Json
+          thumbnail_url?: string | null
+          title?: string | null
           topic?: string
           user_id?: string
+          video_url?: string | null
         }
         Relationships: []
       }
@@ -240,10 +249,13 @@ export type Database = {
         Row: {
           activity: string
           completed_at: string | null
+          content: string | null
           created_at: string
           est_minutes: number
           id: string
+          lesson_steps: Json
           position: number
+          practice_prompt: string | null
           status: string
           subject_id: string | null
           title: string
@@ -252,10 +264,13 @@ export type Database = {
         Insert: {
           activity: string
           completed_at?: string | null
+          content?: string | null
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_steps?: Json
           position: number
+          practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title: string
@@ -264,10 +279,13 @@ export type Database = {
         Update: {
           activity?: string
           completed_at?: string | null
+          content?: string | null
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_steps?: Json
           position?: number
+          practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title?: string
@@ -380,11 +398,13 @@ export type Database = {
       profiles: {
         Row: {
           a11y_mode: string
+          account_type: string
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
           exam_board: string | null
           exam_date: string | null
+          grade_level: string | null
           hearts: number
           hearts_refill_at: string | null
           id: string
@@ -403,11 +423,13 @@ export type Database = {
         }
         Insert: {
           a11y_mode?: string
+          account_type?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          grade_level?: string | null
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
@@ -426,11 +448,13 @@ export type Database = {
         }
         Update: {
           a11y_mode?: string
+          account_type?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          grade_level?: string | null
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
@@ -697,11 +721,57 @@ export type Database = {
         }
         Relationships: []
       }
+      teacher_applications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          qualifications: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          subjects: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          qualifications?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subjects: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          qualifications?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subjects?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       teachers: {
         Row: {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          email: string | null
           id: string
           name: string
           subject: string | null
@@ -712,6 +782,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name: string
           subject?: string | null
@@ -722,6 +793,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email?: string | null
           id?: string
           name?: string
           subject?: string | null

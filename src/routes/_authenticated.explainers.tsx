@@ -136,7 +136,7 @@ function ExplainersPage() {
             <Film className="h-3.5 w-3.5" /> Funny Explainers
           </div>
           <h1 className="font-display text-4xl font-bold text-gradient">Learn it in 60 seconds (with jokes)</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Type any topic. Kata writes a tiny comedy reel that actually teaches it.</p>
+          <p className="mt-2 text-sm text-muted-foreground">Type any topic. Sasha AI writes a tiny comedy reel that actually teaches it.</p>
           <Button asChild variant="outline" size="sm" className="mt-3">
             <Link to="/explainers/library"><Library className="h-4 w-4" /> My saved reels</Link>
           </Button>
@@ -240,7 +240,7 @@ function ExplainersPage() {
         {loading && scenes.length === 0 && (
           <div className="rounded-2xl border bg-card p-10 text-center shadow-pop">
             <div className="animate-wiggle text-6xl">🎬</div>
-            <div className="mt-3 text-sm text-muted-foreground">Kata is writing your comedy script…</div>
+            <div className="mt-3 text-sm text-muted-foreground">Sasha AI is writing your comedy script…</div>
           </div>
         )}
       </div>

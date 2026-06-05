@@ -240,10 +240,24 @@ const SUBJECT_META = {
   biology:   { color: "#6BCB77", icon: Leaf,   label: "Biology" },
 } as const;
 
+function labSubjectsFor(subjects: { name: string }[]): Experiment["subject"][] {
+  const names = subjects.map((s) => s.name.toLowerCase());
+  const chosen = new Set<Experiment["subject"]>();
+  if (names.some((name) => name.includes("physics") || name.includes("science"))) chosen.add("physics");
+  if (names.some((name) => name.includes("chem") || name.includes("science"))) chosen.add("chemistry");
+  if (names.some((name) => name.includes("bio") || name.includes("science"))) chosen.add("biology");
+  return [...chosen];
+}
+
 function LabPage() {
   const { user } = useAuth();
   const [activeId, setActiveId] = useState<string | null>(null);
   const active = useMemo(() => EXPERIMENTS.find((e) => e.id === activeId) ?? null, [activeId]);
+  const [allowedSubjects, setAllowedSubjects] = useState<Experiment["subject"][]>([]);
+  const relevantExperiments = useMemo(
+    () => EXPERIMENTS.filter((experiment) => allowedSubjects.includes(experiment.subject)),
+    [allowedSubjects],
+  );
 
   const [level, setLevel] = useState(1);
   const [passedQuizzes, setPassedQuizzes] = useState(0);
@@ -251,11 +265,13 @@ function LabPage() {
   useEffect(() => {
     if (!user) return;
     (async () => {
-      const [{ data: p }, { data: q }] = await Promise.all([
+      const [{ data: p }, { data: q }, { data: subjects }] = await Promise.all([
         supabase.from("profiles").select("level").eq("user_id", user.id).maybeSingle(),
         supabase.from("quizzes").select("id, score, total, completed").eq("user_id", user.id).eq("completed", true),
+        supabase.from("subjects").select("name").eq("user_id", user.id),
       ]);
       setLevel(p?.level ?? 1);
+      setAllowedSubjects(labSubjectsFor(subjects ?? []));
       const passed = (q ?? []).filter((x: any) => x.total && (x.score ?? 0) / x.total >= 0.7).length;
       setPassedQuizzes(passed);
     })();
@@ -276,8 +292,13 @@ function LabPage() {
               <span className="text-xs">You're Level <b className="text-primary">{level}</b> • Passed quizzes: <b className="text-primary">{passedQuizzes}</b></span>
             </p>
           </header>
+          {relevantExperiments.length === 0 && (
+            <Card className="p-5 text-center text-sm text-muted-foreground">
+              Add Physics, Chemistry, Biology, or Science in Study setup to unlock matching lab practicals.
+            </Card>
+          )}
           <div className="grid gap-4 md:grid-cols-3">
-            {EXPERIMENTS.map((e) => {
+            {relevantExperiments.map((e) => {
               const meta = SUBJECT_META[e.subject];
               const Icon = meta.icon;
               const locked = level < e.requiredLevel || passedQuizzes < e.requiredQuizzes;
@@ -477,7 +498,7 @@ function ExperimentRunner({
                   </div>
                   {revealNext && expected && (
                     <div className="mt-2 rounded-xl border border-warning bg-warning/15 p-2 text-xs">
-                      🦉 Kata suggests: <b>{expected.label}</b> — {expected.hint}
+                      🦉 Sasha AI suggests: <b>{expected.label}</b> — {expected.hint}
                     </div>
                   )}
                 </div>
