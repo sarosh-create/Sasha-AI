@@ -240,10 +240,13 @@ export type Database = {
         Row: {
           activity: string
           completed_at: string | null
+          content: string | null
           created_at: string
           est_minutes: number
           id: string
+          lesson_steps: Json
           position: number
+          practice_prompt: string | null
           status: string
           subject_id: string | null
           title: string
@@ -252,10 +255,13 @@ export type Database = {
         Insert: {
           activity: string
           completed_at?: string | null
+          content?: string | null
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_steps?: Json
           position: number
+          practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title: string
@@ -264,10 +270,13 @@ export type Database = {
         Update: {
           activity?: string
           completed_at?: string | null
+          content?: string | null
           created_at?: string
           est_minutes?: number
           id?: string
+          lesson_steps?: Json
           position?: number
+          practice_prompt?: string | null
           status?: string
           subject_id?: string | null
           title?: string
