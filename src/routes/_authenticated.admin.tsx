@@ -308,10 +308,11 @@ function SchemesAdmin() {
 
 function VideosAdmin() {
   const { rows, reload } = useTable("explainer_reels");
+  const { user } = useAuth();
   const [form, setForm] = useState({ title: "", topic: "", video_url: "", thumbnail_url: "" });
   const add = async () => {
     if (!form.title || !form.video_url) return toast.error("Title and video URL required");
-    const { error } = await supabase.from("explainer_reels").insert(form as any);
+    const { error } = await supabase.from("explainer_reels").insert({ ...form, user_id: user?.id, scenes: [] } as any);
     if (error) return toast.error(error.message);
     setForm({ title: "", topic: "", video_url: "", thumbnail_url: "" }); toast.success("Video added"); reload();
   };
