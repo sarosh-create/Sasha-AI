@@ -380,11 +380,13 @@ export type Database = {
       profiles: {
         Row: {
           a11y_mode: string
+          account_type: string
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
           exam_board: string | null
           exam_date: string | null
+          grade_level: string | null
           hearts: number
           hearts_refill_at: string | null
           id: string
@@ -403,11 +405,13 @@ export type Database = {
         }
         Insert: {
           a11y_mode?: string
+          account_type?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          grade_level?: string | null
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
@@ -426,11 +430,13 @@ export type Database = {
         }
         Update: {
           a11y_mode?: string
+          account_type?: string
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
           exam_board?: string | null
           exam_date?: string | null
+          grade_level?: string | null
           hearts?: number
           hearts_refill_at?: string | null
           id?: string
@@ -693,6 +699,51 @@ export type Database = {
           name?: string
           priority?: number
           strength_score?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teacher_applications: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          message: string | null
+          name: string
+          qualifications: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+          subjects: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          message?: string | null
+          name: string
+          qualifications?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subjects: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          message?: string | null
+          name?: string
+          qualifications?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+          subjects?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
