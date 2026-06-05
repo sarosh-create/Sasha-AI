@@ -30,17 +30,25 @@ function AdminPage() {
       <Tabs defaultValue="classes">
         <TabsList className="flex flex-wrap">
           <TabsTrigger value="classes">Live classes</TabsTrigger>
-          <TabsTrigger value="applications">Teacher applications</TabsTrigger>
+          <TabsTrigger value="applications">Applications</TabsTrigger>
           <TabsTrigger value="teachers">Teachers</TabsTrigger>
+          <TabsTrigger value="assign">Assign students</TabsTrigger>
+          <TabsTrigger value="coadmins">Co-admins</TabsTrigger>
           <TabsTrigger value="events">Events</TabsTrigger>
           <TabsTrigger value="schemes">Schemes</TabsTrigger>
+          <TabsTrigger value="papers">Past papers</TabsTrigger>
+          <TabsTrigger value="channels">Channels</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
         </TabsList>
         <TabsContent value="classes"><LiveClassesAdmin /></TabsContent>
         <TabsContent value="applications"><TeacherApplicationsAdmin /></TabsContent>
         <TabsContent value="teachers"><TeachersAdmin /></TabsContent>
+        <TabsContent value="assign"><AssignStudentsAdmin /></TabsContent>
+        <TabsContent value="coadmins"><CoAdminsAdmin /></TabsContent>
         <TabsContent value="events"><EventsAdmin /></TabsContent>
         <TabsContent value="schemes"><SchemesAdmin /></TabsContent>
+        <TabsContent value="papers"><PastPapersAdmin /></TabsContent>
+        <TabsContent value="channels"><ChannelsAdmin /></TabsContent>
         <TabsContent value="videos"><VideosAdmin /></TabsContent>
       </Tabs>
     </div>
