@@ -46,10 +46,12 @@ const study = [
   { title: "Reel Library", url: "/explainers/library", icon: Library },
   { title: "Virtual Lab", url: "/lab", icon: Beaker },
   { title: "Quizzes", url: "/quiz", icon: ScrollText },
+  { title: "Past Papers", url: "/papers", icon: BookOpenCheck },
   { title: "Notes", url: "/notes", icon: StickyNote },
   { title: "Revision", url: "/revision", icon: BookOpenCheck },
 ];
 const social = [
+  { title: "Community", url: "/community", icon: MessageSquare },
   { title: "Study Rooms", url: "/rooms", icon: Users },
   { title: "Leaderboard", url: "/leaderboard", icon: Crown },
   { title: "Achievements", url: "/achievements", icon: Trophy },
