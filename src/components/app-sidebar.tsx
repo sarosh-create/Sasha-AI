@@ -86,6 +86,25 @@ export function AppSidebar() {
         <Logo />
       </SidebarHeader>
       <SidebarContent>
+        {isAdmin && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Admin</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={path.startsWith("/admin")}>
+                    <Link to="/admin" className="flex items-center gap-2"><Shield className="h-4 w-4" /><span>Admin panel</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={path.startsWith("/teacher")}>
+                    <Link to="/teacher" className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /><span>Teacher panel</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
         <SidebarGroup>
           <SidebarGroupLabel>Study</SidebarGroupLabel>
           <SidebarGroupContent>{renderItems(study)}</SidebarGroupContent>
@@ -106,24 +125,11 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
-              {isAdmin && (
-                <>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={path.startsWith("/admin")}>
-                      <Link to="/admin" className="flex items-center gap-2"><Shield className="h-4 w-4" /><span>Admin</span></Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton asChild isActive={path.startsWith("/teacher")}>
-                      <Link to="/teacher" className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /><span>Teacher panel</span></Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </>
-              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
       <SidebarFooter className="border-t p-3">
         <div className="mb-2 truncate text-xs text-muted-foreground">
           {user?.email}
