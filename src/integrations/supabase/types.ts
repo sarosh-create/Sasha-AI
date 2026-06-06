@@ -831,6 +831,27 @@ export type Database = {
         }
         Relationships: []
       }
+      staff_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       study_logs: {
         Row: {
           activity: string
@@ -1063,6 +1084,7 @@ export type Database = {
       }
       is_my_student: { Args: { _student: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      is_staff_or_teacher: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "teacher" | "user" | "co_admin"
