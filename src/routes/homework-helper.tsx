@@ -136,7 +136,9 @@ function HomeworkHelper() {
         </nav>
       </header>
 
+      <main>
       <section className="container mx-auto px-6 pt-8 pb-12 md:pt-14">
+
         <div className="mx-auto max-w-3xl text-center">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground">
             <Sparkles className="h-3.5 w-3.5" /> Free · No sign up required
