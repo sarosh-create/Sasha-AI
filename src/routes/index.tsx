@@ -41,6 +41,9 @@ function Landing() {
         </nav>
       </header>
 
+      <main>
+
+
       <section className="bg-aurora">
         <div className="container mx-auto px-6 py-20 md:py-28">
           <div className="mx-auto max-w-3xl text-center">
