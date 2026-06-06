@@ -47,7 +47,7 @@ function Landing() {
       <section className="bg-aurora">
         <div className="container mx-auto px-6 py-20 md:py-28">
           <div className="mx-auto max-w-3xl text-center">
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-3 py-1 text-xs text-muted-foreground backdrop-blur">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-foreground backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Built for students preparing for real exams
             </div>
