@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -43,6 +44,11 @@ import { Route as AuthenticatedCommunityIdRouteImport } from './routes/_authenti
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HomeworkHelperRoute = HomeworkHelperRouteImport.update({
+  id: '/homework-helper',
+  path: '/homework-helper',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -197,6 +203,7 @@ const AuthenticatedCommunityIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/homework-helper': typeof HomeworkHelperRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -228,6 +235,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/homework-helper': typeof HomeworkHelperRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -261,6 +269,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/homework-helper': typeof HomeworkHelperRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -294,6 +303,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/homework-helper'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
@@ -325,6 +335,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/homework-helper'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/homework-helper'
     | '/sitemap.xml'
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
@@ -390,6 +402,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  HomeworkHelperRoute: typeof HomeworkHelperRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -400,6 +413,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/homework-helper': {
+      id: '/homework-helper'
+      path: '/homework-helper'
+      fullPath: '/homework-helper'
+      preLoaderRoute: typeof HomeworkHelperRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -698,6 +718,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  HomeworkHelperRoute: HomeworkHelperRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
