@@ -27,8 +27,10 @@ function NewQuiz() {
   const [subjectId, setSubjectId] = useState<string>("");
   const [topic, setTopic] = useState("");
   const [count, setCount] = useState(5);
+  const [style, setStyle] = useState<"mix" | "mcq" | "short">("mix");
   const [busy, setBusy] = useState(false);
   const [examBoard, setExamBoard] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (!user) return;
