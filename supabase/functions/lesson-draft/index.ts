@@ -86,10 +86,11 @@ Rules:
       slides: parsed.slides ?? [], worked_example: parsed.worked_example ?? "", quiz: parsed.quiz ?? [],
       status: "draft",
     }).select().single();
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    if (error) { console.error("lesson-draft insert error", error); return new Response(JSON.stringify({ error: "Failed to save lesson" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } }); }
 
     return new Response(JSON.stringify({ lesson: saved }), { headers: { ...cors, "Content-Type": "application/json" } });
   } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error("lesson-draft error", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });
