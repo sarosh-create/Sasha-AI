@@ -14,7 +14,10 @@ export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
       { title: "Sign in — Sasha AI" },
-      { name: "description", content: "Sign in or create a free Sasha AI account." },
+      { name: "description", content: "Sign in or create a free Sasha AI account to unlock your personalised study plan, AI tutor and exam-style quizzes." },
+      { property: "og:title", content: "Sign in — Sasha AI" },
+      { property: "og:description", content: "Create a free Sasha AI account and start a personalised, exam-focused study plan in minutes." },
+      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/auth" },
     ],
   }),
   component: AuthPage,

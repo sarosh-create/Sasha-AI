@@ -8,7 +8,13 @@ import { toast } from "sonner";
 import { Calendar, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/classes")({
-  head: () => ({ meta: [{ title: "Live classes — Sasha AI" }, { name: "description", content: "Sign up for live classes with teachers on Sasha AI." }] }),
+  head: () => ({ meta: [
+    { title: "Live classes — Sasha AI" },
+    { name: "description", content: "Sign up for live classes with Sasha AI teachers — small-group sessions across maths, sciences and exam-board specific topics." },
+    { property: "og:title", content: "Live classes — Sasha AI" },
+    { property: "og:description", content: "Join small-group live classes with Sasha AI teachers, across maths, sciences and exam-board topics." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/classes" },
+  ] }),
   component: ClassesPage,
 });
 
@@ -54,7 +60,7 @@ function ClassesPage() {
           <Card key={c.id} className="p-4">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1">
-                <h3 className="font-display text-lg font-semibold">{c.title}</h3>
+                <h2 className="font-display text-lg font-semibold">{c.title}</h2>
                 <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                   <Calendar className="h-3 w-3" />
                   {new Date(c.scheduled_at).toLocaleString()} · {c.duration_minutes}min

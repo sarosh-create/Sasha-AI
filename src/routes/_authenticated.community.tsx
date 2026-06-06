@@ -5,7 +5,13 @@ import { Card } from "@/components/ui/card";
 import { MessageCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/community")({
-  head: () => ({ meta: [{ title: "Community — Sasha AI" }] }),
+  head: () => ({ meta: [
+    { title: "Community — Sasha AI" },
+    { name: "description", content: "Discuss topics, share notes and ask questions with other Sasha AI students across exam boards and subjects." },
+    { property: "og:title", content: "Community — Sasha AI" },
+    { property: "og:description", content: "Talk to other students, share notes and get help in the Sasha AI community channels." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/community" },
+  ] }),
   component: CommunityIndex,
 });
 

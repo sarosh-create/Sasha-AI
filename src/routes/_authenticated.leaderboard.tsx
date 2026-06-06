@@ -8,6 +8,13 @@ import { Crown, Flame, Beaker, Zap } from "lucide-react";
 import { awardBadge } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/leaderboard")({
+  head: () => ({ meta: [
+    { title: "Leaderboard — Sasha AI" },
+    { name: "description", content: "See where you rank on the Sasha AI leaderboard for XP, weekly XP, lab XP and study streaks." },
+    { property: "og:title", content: "Leaderboard — Sasha AI" },
+    { property: "og:description", content: "Compete with other students on XP, weekly XP, lab XP and study streaks." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/leaderboard" },
+  ] }),
   component: LeaderboardPage,
 });
 
