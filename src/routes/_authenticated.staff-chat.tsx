@@ -20,8 +20,7 @@ function StaffChatPage() {
   const { user } = useAuth();
   const { isAdmin } = useIsAdmin();
   const { isTeacher } = useRoles();
-  const isKnownAdmin = !!user?.email && ["msn4sg@gmail.com", "tsr4sg@gmail.com"].includes(user.email.toLowerCase());
-  const canChat = isAdmin || isKnownAdmin || isTeacher;
+  const canChat = isAdmin || isTeacher;
   const [msgs, setMsgs] = useState<Msg[]>([]);
   const [names, setNames] = useState<Record<string, string>>({});
   const [text, setText] = useState("");

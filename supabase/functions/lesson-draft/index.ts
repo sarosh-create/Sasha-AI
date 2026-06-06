@@ -11,12 +11,30 @@ const cors = {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
   try {
+    // Verify caller is authenticated and is staff/teacher before doing any work
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const anonKey = Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY")!;
+    const userClient = createClient(SUPABASE_URL, anonKey, { global: { headers: { Authorization: authHeader } } });
+    const { data: userData, error: userErr } = await userClient.auth.getUser();
+    if (userErr || !userData?.user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+    const { data: isStaff } = await userClient.rpc("is_staff_or_teacher", { _user_id: userData.user.id });
+    if (!isStaff) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), { status: 403, headers: { ...cors, "Content-Type": "application/json" } });
+    }
+
     const { subject, topic, grade_level, exam_board } = await req.json();
-    if (!subject || !topic) {
+    if (!subject || !topic || typeof subject !== "string" || typeof topic !== "string" || subject.length > 200 || topic.length > 300) {
       return new Response(JSON.stringify({ error: "subject and topic required" }), { status: 400, headers: { ...cors, "Content-Type": "application/json" } });
     }
     const KEY = Deno.env.get("LOVABLE_API_KEY")!;
-    const supa = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+    const supa = createClient(SUPABASE_URL, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
+
 
     // existing draft/published?
     const { data: existing } = await supa
@@ -55,7 +73,8 @@ Rules:
     });
     if (!r.ok) {
       const t = await r.text();
-      return new Response(JSON.stringify({ error: "AI gateway error", detail: t }), { status: r.status, headers: { ...cors, "Content-Type": "application/json" } });
+      console.error("lesson-draft AI gateway error", r.status, t);
+      return new Response(JSON.stringify({ error: "AI service temporarily unavailable" }), { status: 502, headers: { ...cors, "Content-Type": "application/json" } });
     }
     const j = await r.json();
     const content = j.choices?.[0]?.message?.content;
@@ -67,10 +86,11 @@ Rules:
       slides: parsed.slides ?? [], worked_example: parsed.worked_example ?? "", quiz: parsed.quiz ?? [],
       status: "draft",
     }).select().single();
-    if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    if (error) { console.error("lesson-draft insert error", error); return new Response(JSON.stringify({ error: "Failed to save lesson" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } }); }
 
     return new Response(JSON.stringify({ lesson: saved }), { headers: { ...cors, "Content-Type": "application/json" } });
   } catch (e) {
-    return new Response(JSON.stringify({ error: String(e) }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
+    console.error("lesson-draft error", e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), { status: 500, headers: { ...cors, "Content-Type": "application/json" } });
   }
 });
