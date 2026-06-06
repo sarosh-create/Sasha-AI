@@ -105,7 +105,10 @@ function Landing() {
         </div>
       </section>
 
+      </main>
+
       <footer className="container mx-auto flex items-center justify-between px-6 py-8 text-sm text-muted-foreground">
+
         <Logo size={22} />
         <span>© {new Date().getFullYear()} Sasha AI</span>
       </footer>
