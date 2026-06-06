@@ -204,6 +204,8 @@ function HomeworkHelper() {
           <Link to="/auth"><Button className="mt-4" size="lg">Get started — free</Button></Link>
         </div>
       </section>
+      </main>
     </div>
   );
 }
+
