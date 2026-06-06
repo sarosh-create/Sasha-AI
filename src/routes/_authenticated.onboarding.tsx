@@ -18,6 +18,11 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
 type Subject = { name: string; strength_score: number };
 
 const BOARDS = [
+  "Matric (FBISE)",
+  "Matric (Punjab Board)",
+  "Matric (Sindh Board)",
+  "Matric (KPK Board)",
+  "Matric (Balochistan Board)",
   "AQA",
   "Edexcel GCSE",
   "Pearson Edexcel International GCSE",
@@ -30,9 +35,13 @@ const BOARDS = [
   "A Levels AMTIC",
   "FSc / Intermediate",
   "IB",
+  "SAT",
+  "ACT",
+  "CBSE",
+  "ICSE",
   "Other",
 ];
-const LEVELS = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10", "O Level", "IGCSE", "AS Level", "A Level", "FSc / Intermediate"];
+const LEVELS = ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Matric / Class 10", "O Level", "IGCSE", "AS Level", "A Level", "FSc / Intermediate", "University"];
 
 function Onboarding() {
   const { user } = useAuth();
