@@ -8,7 +8,7 @@ const corsHeaders = {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { subject, topic, count = 5, examBoard } = await req.json();
+    const { subject, topic, count = 5, examBoard, style = "mix" } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
@@ -17,19 +17,27 @@ Deno.serve(async (req) => {
       });
     }
 
+    const styleInstruction =
+      style === "short"
+        ? "EVERY question must be type 'short' (typable open-ended answers). Do not produce any multiple-choice questions."
+        : style === "mcq"
+        ? "EVERY question must be type 'mcq' with 4 plausible choices. Do not produce any short-answer questions."
+        : "Always include 1 short-answer and at least 1 multiple-choice. Mix freely.";
+
     const body = {
       model: "google/gemini-3-flash-preview",
       messages: [
         {
           role: "system",
           content:
-            "You write rigorous, exam-style practice questions. Always include 1 short-answer and at least 1 multiple-choice. Calibrate difficulty to the exam board if given.",
+            `You write rigorous, exam-style practice questions. ${styleInstruction} Calibrate difficulty to the exam board if given.`,
         },
         {
           role: "user",
           content: `Subject: ${subject}\nTopic: ${topic}\nExam board: ${examBoard ?? "general"}\nProduce ${count} questions.`,
         },
       ],
+
       tools: [
         {
           type: "function",

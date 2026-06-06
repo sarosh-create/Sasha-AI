@@ -27,8 +27,10 @@ function NewQuiz() {
   const [subjectId, setSubjectId] = useState<string>("");
   const [topic, setTopic] = useState("");
   const [count, setCount] = useState(5);
+  const [style, setStyle] = useState<"mix" | "mcq" | "short">("mix");
   const [busy, setBusy] = useState(false);
   const [examBoard, setExamBoard] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (!user) return;
@@ -53,7 +55,7 @@ function NewQuiz() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ subject, topic, count, examBoard }),
+        body: JSON.stringify({ subject, topic, count, examBoard, style }),
       });
       if (resp.status === 429) throw new Error("Rate limit — try again shortly.");
       if (resp.status === 402) throw new Error("AI credits exhausted.");
@@ -109,9 +111,21 @@ function NewQuiz() {
             </SelectContent>
           </Select>
         </div>
+        <div>
+          <Label>Question style</Label>
+          <Select value={style} onValueChange={(v) => setStyle(v as "mix" | "mcq" | "short")}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="mix">Mixed (MCQ + typable)</SelectItem>
+              <SelectItem value="mcq">Multiple choice only</SelectItem>
+              <SelectItem value="short">Typable answers only</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button className="w-full" disabled={busy || !topic.trim()} onClick={generate} size="lg">
           {busy ? "Generating…" : "Generate quiz"}
         </Button>
+
       </div>
     </div>
   );
