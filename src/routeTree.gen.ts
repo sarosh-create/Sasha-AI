@@ -18,6 +18,7 @@ import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated.teach'
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
 import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
@@ -89,6 +90,11 @@ const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
 const AuthenticatedStaffChatRoute = AuthenticatedStaffChatRouteImport.update({
   id: '/staff-chat',
   path: '/staff-chat',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedSchemesRoute = AuthenticatedSchemesRouteImport.update({
@@ -262,6 +268,7 @@ export interface FileRoutesByFullPath {
   '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
+  '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
@@ -340,6 +348,7 @@ export interface FileRoutesById {
   '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
@@ -380,6 +389,7 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/revision'
     | '/schemes'
+    | '/settings'
     | '/staff-chat'
     | '/teach'
     | '/teacher'
@@ -418,6 +428,7 @@ export interface FileRouteTypes {
     | '/predictions'
     | '/revision'
     | '/schemes'
+    | '/settings'
     | '/staff-chat'
     | '/teach'
     | '/teacher'
@@ -457,6 +468,7 @@ export interface FileRouteTypes {
     | '/_authenticated/predictions'
     | '/_authenticated/revision'
     | '/_authenticated/schemes'
+    | '/_authenticated/settings'
     | '/_authenticated/staff-chat'
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
@@ -542,6 +554,13 @@ declare module '@tanstack/react-router' {
       path: '/staff-chat'
       fullPath: '/staff-chat'
       preLoaderRoute: typeof AuthenticatedStaffChatRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/schemes': {
@@ -792,6 +811,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
@@ -825,6 +845,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
