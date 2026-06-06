@@ -55,7 +55,7 @@ function NewQuiz() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
-        body: JSON.stringify({ subject, topic, count, examBoard }),
+        body: JSON.stringify({ subject, topic, count, examBoard, style }),
       });
       if (resp.status === 429) throw new Error("Rate limit — try again shortly.");
       if (resp.status === 402) throw new Error("AI credits exhausted.");
