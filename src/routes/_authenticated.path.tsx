@@ -4,7 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Check, Lock, MessageSquare, ScrollText, BookOpen, Star } from "lucide-react";
-import { Mascot } from "@/components/mascot";
+import { TalkingFalcon } from "@/components/talking-falcon";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Film } from "lucide-react";
+
+const VIDEO_STYLES = [
+  { id: "cartoon", label: "🎬 Cartoon" },
+  { id: "whiteboard", label: "📝 Whiteboard" },
+  { id: "talkinghead", label: "🎤 Talking head" },
+  { id: "meme", label: "🤣 Meme recap" },
+  { id: "lab", label: "🧪 Lab demo" },
+];
 import { addXp, awardBadge, bumpChallenge } from "@/lib/gamification";
 import { toast } from "sonner";
 
@@ -158,9 +168,22 @@ function PathPage() {
       )}
 
       {!noSubjects && (
-      <div className="mt-6 flex justify-center">
-        <Mascot mood="idle" />
-      </div>
+        <div className="mt-6 flex justify-center">
+          <TalkingFalcon
+            compact
+            lines={[
+              `Your path's got ${lessons.length} stops. I'll perch on every one with you.`,
+              `Tap a glowing node — I'll narrate what to learn, then quiz you.`,
+              `Pick a video style per lesson. Cartoon if you're tired, whiteboard if you're locked in.`,
+            ]}
+          />
+        </div>
+      )}
+
+      {!noSubjects && lessons.length > 0 && (
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
+          <Film className="h-3.5 w-3.5" /> Video style per lesson can be picked below — saved instantly.
+        </div>
       )}
 
 
@@ -170,6 +193,8 @@ function PathPage() {
           const color = sub?.color ?? "#a78bfa";
           const offset = i % 4 === 0 ? "ml-0" : i % 4 === 1 ? "ml-16" : i % 4 === 2 ? "ml-24" : "ml-8";
           const Icon = l.activity === "quiz" ? ScrollText : l.activity === "teach" ? BookOpen : MessageSquare;
+          const styleKey = `sasha:videoStyle:${l.id}`;
+          const currentStyle = (typeof window !== "undefined" && localStorage.getItem(styleKey)) || (typeof window !== "undefined" && localStorage.getItem("sasha:videoStyle")) || "cartoon";
           return (
             <li key={l.id} className={`flex items-center gap-4 ${offset}`}>
               <button
@@ -205,6 +230,15 @@ function PathPage() {
                   </ul>
                 )}
                 {l.practice_prompt && <p className="mt-2 text-xs font-medium text-foreground">Practice: {l.practice_prompt}</p>}
+                {l.status !== "locked" && (
+                  <div className="mt-2 flex items-center gap-2">
+                    <Film className="h-3.5 w-3.5 text-muted-foreground" />
+                    <Select defaultValue={currentStyle} onValueChange={(v) => localStorage.setItem(styleKey, v)}>
+                      <SelectTrigger className="h-7 w-44 text-xs"><SelectValue /></SelectTrigger>
+                      <SelectContent>{VIDEO_STYLES.map((v) => <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>)}</SelectContent>
+                    </Select>
+                  </div>
+                )}
                 {l.status === "available" && (
                   <div className="mt-2 flex gap-2">
                     <Button size="sm" onClick={() => start(l)}>Start</Button>

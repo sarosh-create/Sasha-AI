@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.quiz-grade]
 verify_jwt = false
+
+[functions.tts-falcon]
+verify_jwt = false
