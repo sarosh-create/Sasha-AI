@@ -111,9 +111,21 @@ function NewQuiz() {
             </SelectContent>
           </Select>
         </div>
+        <div>
+          <Label>Question style</Label>
+          <Select value={style} onValueChange={(v) => setStyle(v as "mix" | "mcq" | "short")}>
+            <SelectTrigger><SelectValue /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="mix">Mixed (MCQ + typable)</SelectItem>
+              <SelectItem value="mcq">Multiple choice only</SelectItem>
+              <SelectItem value="short">Typable answers only</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
         <Button className="w-full" disabled={busy || !topic.trim()} onClick={generate} size="lg">
           {busy ? "Generating…" : "Generate quiz"}
         </Button>
+
       </div>
     </div>
   );
