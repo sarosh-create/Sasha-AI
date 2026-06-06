@@ -15,9 +15,13 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "Sasha AI — Your personal AI study mentor" },
       { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and streak-based progress tracking. Free for students." },
-      { property: "og:title", content: "Sasha AI" },
-      { property: "og:description", content: "Your personal AI study mentor for focused exam prep." },
+      { property: "og:title", content: "Sasha AI — Your personal AI study mentor" },
+      { property: "og:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
+      { property: "og:url", content: "/" },
+      { name: "twitter:title", content: "Sasha AI — Your personal AI study mentor" },
+      { name: "twitter:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
     ],
+    links: [{ rel: "canonical", href: "/" }],
   }),
   component: Landing,
 });

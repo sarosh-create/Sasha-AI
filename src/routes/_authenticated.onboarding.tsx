@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { X, Plus } from "lucide-react";
+import { generatePathFor } from "@/routes/_authenticated.path";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
@@ -124,8 +125,12 @@ function Onboarding() {
       );
       if (sErr) throw sErr;
 
+      // Auto-generate study path now that subjects exist
+      await supabase.from("lesson_path").delete().eq("user_id", user.id);
+      await generatePathFor(user.id);
+
       toast.success("Study plan ready!");
-      nav({ to: "/dashboard" });
+      nav({ to: "/path" });
     } catch (e: any) {
       toast.error(e.message ?? "Failed to save");
     } finally {
