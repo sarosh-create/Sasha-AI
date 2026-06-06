@@ -316,6 +316,47 @@ export type Database = {
         }
         Relationships: []
       }
+      exam_predictions: {
+        Row: {
+          generated_at: string
+          id: string
+          priority: string
+          probability: number
+          reasoning: string | null
+          subject_id: string | null
+          topic: string
+          user_id: string
+        }
+        Insert: {
+          generated_at?: string
+          id?: string
+          priority?: string
+          probability?: number
+          reasoning?: string | null
+          subject_id?: string | null
+          topic: string
+          user_id: string
+        }
+        Update: {
+          generated_at?: string
+          id?: string
+          priority?: string
+          probability?: number
+          reasoning?: string | null
+          subject_id?: string | null
+          topic?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "exam_predictions_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       explainer_reels: {
         Row: {
           created_at: string
@@ -346,6 +387,78 @@ export type Database = {
           topic?: string
           user_id?: string
           video_url?: string | null
+        }
+        Relationships: []
+      }
+      generated_artifacts: {
+        Row: {
+          artifact_kind: string
+          created_at: string
+          id: string
+          payload: Json
+          source_kind: string
+          source_title: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          artifact_kind: string
+          created_at?: string
+          id?: string
+          payload: Json
+          source_kind?: string
+          source_title?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          artifact_kind?: string
+          created_at?: string
+          id?: string
+          payload?: Json
+          source_kind?: string
+          source_title?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      learning_dna: {
+        Row: {
+          attention_minutes: number
+          created_at: string
+          learning_style: string | null
+          retention_score: number
+          signals: Json
+          strengths: Json
+          summary: string | null
+          updated_at: string
+          user_id: string
+          weaknesses: Json
+        }
+        Insert: {
+          attention_minutes?: number
+          created_at?: string
+          learning_style?: string | null
+          retention_score?: number
+          signals?: Json
+          strengths?: Json
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+          weaknesses?: Json
+        }
+        Update: {
+          attention_minutes?: number
+          created_at?: string
+          learning_style?: string | null
+          retention_score?: number
+          signals?: Json
+          strengths?: Json
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
+          weaknesses?: Json
         }
         Relationships: []
       }
@@ -518,6 +631,56 @@ export type Database = {
             columns: ["teacher_id"]
             isOneToOne: false
             referencedRelation: "teachers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      mistake_journal: {
+        Row: {
+          correct_answer: string | null
+          created_at: string
+          id: string
+          marks_lost: number
+          question: string
+          student_answer: string | null
+          subject_id: string | null
+          tags: Json
+          topic: string
+          user_id: string
+          why_wrong: string | null
+        }
+        Insert: {
+          correct_answer?: string | null
+          created_at?: string
+          id?: string
+          marks_lost?: number
+          question: string
+          student_answer?: string | null
+          subject_id?: string | null
+          tags?: Json
+          topic: string
+          user_id: string
+          why_wrong?: string | null
+        }
+        Update: {
+          correct_answer?: string | null
+          created_at?: string
+          id?: string
+          marks_lost?: number
+          question?: string
+          student_answer?: string | null
+          subject_id?: string | null
+          tags?: Json
+          topic?: string
+          user_id?: string
+          why_wrong?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "mistake_journal_subject_id_fkey"
+            columns: ["subject_id"]
+            isOneToOne: false
+            referencedRelation: "subjects"
             referencedColumns: ["id"]
           },
         ]
@@ -727,6 +890,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      rival_state: {
+        Row: {
+          last_score: number
+          last_taunt: string | null
+          level: number
+          name: string
+          streak: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          last_score?: number
+          last_taunt?: string | null
+          level?: number
+          name?: string
+          streak?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          last_score?: number
+          last_taunt?: string | null
+          level?: number
+          name?: string
+          streak?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       room_messages: {
         Row: {
@@ -987,6 +1180,36 @@ export type Database = {
           reviewed_by?: string | null
           status?: string
           subjects?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      teacher_sessions: {
+        Row: {
+          created_at: string
+          id: string
+          messages: Json
+          persona: string
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          persona: string
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          messages?: Json
+          persona?: string
+          title?: string | null
           updated_at?: string
           user_id?: string
         }

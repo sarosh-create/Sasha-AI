@@ -18,7 +18,13 @@ import {
   CalendarDays,
   BookMarked,
   Shield,
+  Feather,
+  Gavel,
+  Crosshair,
+  Wand2,
+  Brain,
 } from "lucide-react";
+
 import {
   Sidebar,
   SidebarContent,

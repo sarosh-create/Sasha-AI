@@ -16,18 +16,24 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
+import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated.teach'
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
+import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
+import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
+import { Route as AuthenticatedFalconRouteImport } from './routes/_authenticated.falcon'
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
+import { Route as AuthenticatedExaminerRouteImport } from './routes/_authenticated.examiner'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedConverterRouteImport } from './routes/_authenticated.converter'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
@@ -75,6 +81,11 @@ const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
   path: '/teacher',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
+  id: '/teach',
+  path: '/teach',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedStaffChatRoute = AuthenticatedStaffChatRouteImport.update({
   id: '/staff-chat',
   path: '/staff-chat',
@@ -90,6 +101,12 @@ const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
   path: '/revision',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPredictionsRoute =
+  AuthenticatedPredictionsRouteImport.update({
+    id: '/predictions',
+    path: '/predictions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPathRoute = AuthenticatedPathRouteImport.update({
   id: '/path',
   path: '/path',
@@ -110,6 +127,11 @@ const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   path: '/notes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMentorsRoute = AuthenticatedMentorsRouteImport.update({
+  id: '/mentors',
+  path: '/mentors',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedLeaderboardRoute =
   AuthenticatedLeaderboardRouteImport.update({
     id: '/leaderboard',
@@ -121,9 +143,19 @@ const AuthenticatedLabRoute = AuthenticatedLabRouteImport.update({
   path: '/lab',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFalconRoute = AuthenticatedFalconRouteImport.update({
+  id: '/falcon',
+  path: '/falcon',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedExplainersRoute = AuthenticatedExplainersRouteImport.update({
   id: '/explainers',
   path: '/explainers',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedExaminerRoute = AuthenticatedExaminerRouteImport.update({
+  id: '/examiner',
+  path: '/examiner',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
@@ -134,6 +166,11 @@ const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedConverterRoute = AuthenticatedConverterRouteImport.update({
+  id: '/converter',
+  path: '/converter',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedCommunityRoute = AuthenticatedCommunityRouteImport.update({
@@ -209,18 +246,24 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
+  '/converter': typeof AuthenticatedConverterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
+  '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
@@ -241,18 +284,24 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
+  '/converter': typeof AuthenticatedConverterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
+  '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
@@ -275,18 +324,24 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
+  '/_authenticated/converter': typeof AuthenticatedConverterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/examiner': typeof AuthenticatedExaminerRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/_authenticated/falcon': typeof AuthenticatedFalconRoute
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
+  '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
   '/_authenticated/community/$id': typeof AuthenticatedCommunityIdRoute
@@ -309,18 +364,24 @@ export interface FileRouteTypes {
     | '/admin'
     | '/classes'
     | '/community'
+    | '/converter'
     | '/dashboard'
     | '/events'
+    | '/examiner'
     | '/explainers'
+    | '/falcon'
     | '/lab'
     | '/leaderboard'
+    | '/mentors'
     | '/notes'
     | '/onboarding'
     | '/papers'
     | '/path'
+    | '/predictions'
     | '/revision'
     | '/schemes'
     | '/staff-chat'
+    | '/teach'
     | '/teacher'
     | '/tutor'
     | '/community/$id'
@@ -341,18 +402,24 @@ export interface FileRouteTypes {
     | '/admin'
     | '/classes'
     | '/community'
+    | '/converter'
     | '/dashboard'
     | '/events'
+    | '/examiner'
     | '/explainers'
+    | '/falcon'
     | '/lab'
     | '/leaderboard'
+    | '/mentors'
     | '/notes'
     | '/onboarding'
     | '/papers'
     | '/path'
+    | '/predictions'
     | '/revision'
     | '/schemes'
     | '/staff-chat'
+    | '/teach'
     | '/teacher'
     | '/tutor'
     | '/community/$id'
@@ -374,18 +441,24 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/classes'
     | '/_authenticated/community'
+    | '/_authenticated/converter'
     | '/_authenticated/dashboard'
     | '/_authenticated/events'
+    | '/_authenticated/examiner'
     | '/_authenticated/explainers'
+    | '/_authenticated/falcon'
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
+    | '/_authenticated/mentors'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
     | '/_authenticated/papers'
     | '/_authenticated/path'
+    | '/_authenticated/predictions'
     | '/_authenticated/revision'
     | '/_authenticated/schemes'
     | '/_authenticated/staff-chat'
+    | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
     | '/_authenticated/community/$id'
@@ -457,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeacherRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/teach': {
+      id: '/_authenticated/teach'
+      path: '/teach'
+      fullPath: '/teach'
+      preLoaderRoute: typeof AuthenticatedTeachRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/staff-chat': {
       id: '/_authenticated/staff-chat'
       path: '/staff-chat'
@@ -476,6 +556,13 @@ declare module '@tanstack/react-router' {
       path: '/revision'
       fullPath: '/revision'
       preLoaderRoute: typeof AuthenticatedRevisionRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/predictions': {
+      id: '/_authenticated/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof AuthenticatedPredictionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/path': {
@@ -506,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedNotesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/mentors': {
+      id: '/_authenticated/mentors'
+      path: '/mentors'
+      fullPath: '/mentors'
+      preLoaderRoute: typeof AuthenticatedMentorsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/leaderboard': {
       id: '/_authenticated/leaderboard'
       path: '/leaderboard'
@@ -520,11 +614,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLabRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/falcon': {
+      id: '/_authenticated/falcon'
+      path: '/falcon'
+      fullPath: '/falcon'
+      preLoaderRoute: typeof AuthenticatedFalconRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/explainers': {
       id: '/_authenticated/explainers'
       path: '/explainers'
       fullPath: '/explainers'
       preLoaderRoute: typeof AuthenticatedExplainersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/examiner': {
+      id: '/_authenticated/examiner'
+      path: '/examiner'
+      fullPath: '/examiner'
+      preLoaderRoute: typeof AuthenticatedExaminerRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/events': {
@@ -539,6 +647,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/converter': {
+      id: '/_authenticated/converter'
+      path: '/converter'
+      fullPath: '/converter'
+      preLoaderRoute: typeof AuthenticatedConverterRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/community': {
@@ -661,18 +776,24 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
+  AuthenticatedConverterRoute: typeof AuthenticatedConverterRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedExaminerRoute: typeof AuthenticatedExaminerRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
+  AuthenticatedFalconRoute: typeof AuthenticatedFalconRoute
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
+  AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
+  AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
+  AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
   AuthenticatedLessonIdRoute: typeof AuthenticatedLessonIdRoute
@@ -688,18 +809,24 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
+  AuthenticatedConverterRoute: AuthenticatedConverterRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedExaminerRoute: AuthenticatedExaminerRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
+  AuthenticatedFalconRoute: AuthenticatedFalconRoute,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
+  AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
+  AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
+  AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
   AuthenticatedLessonIdRoute: AuthenticatedLessonIdRoute,

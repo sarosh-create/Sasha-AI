@@ -221,3 +221,49 @@ html[data-a11y="high-contrast"] {
 @utility animate-bob { animation: bob 2.4s ease-in-out infinite; }
 @utility animate-shake { animation: shake 0.4s ease-in-out; }
 @utility animate-emoji-rise { animation: emoji-rise 1.3s ease-out forwards; }
+
+/* ============= Falcon theme additions (additive only) ============= */
+:root {
+  --falcon-gold: oklch(0.78 0.13 80);
+  --falcon-gold-deep: oklch(0.62 0.15 65);
+  --falcon-navy: oklch(0.22 0.08 265);
+  --falcon-sky: oklch(0.55 0.16 245);
+  --falcon-glow: 0 18px 60px -22px oklch(0.62 0.15 65 / 0.55);
+  --falcon-ring: 0 0 0 2px oklch(0.78 0.13 80 / 0.35);
+  --gradient-falcon: linear-gradient(135deg, oklch(0.22 0.08 265) 0%, oklch(0.32 0.1 260) 55%, oklch(0.62 0.15 65) 100%);
+  --gradient-falcon-soft: linear-gradient(135deg, oklch(0.97 0.02 80) 0%, oklch(0.94 0.05 75) 60%, oklch(0.88 0.09 70) 100%);
+}
+@theme inline {
+  --color-falcon-gold: var(--falcon-gold);
+  --color-falcon-gold-deep: var(--falcon-gold-deep);
+  --color-falcon-navy: var(--falcon-navy);
+  --color-falcon-sky: var(--falcon-sky);
+}
+@utility bg-falcon { background-image: var(--gradient-falcon); }
+@utility bg-falcon-soft { background-image: var(--gradient-falcon-soft); }
+@utility text-falcon-gold { color: var(--falcon-gold-deep); }
+@utility ring-falcon { box-shadow: var(--falcon-ring); }
+@utility shadow-falcon { box-shadow: var(--falcon-glow); }
+
+@keyframes falcon-soar {
+  0%, 100% { transform: translateY(0) rotate(-1deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+}
+@keyframes wing-flap {
+  0%, 100% { transform: scaleX(1) scaleY(1); }
+  50% { transform: scaleX(1.04) scaleY(0.97); }
+}
+@keyframes shimmer-gold {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+@utility animate-soar { animation: falcon-soar 4s ease-in-out infinite; }
+@utility animate-wing { animation: wing-flap 2.6s ease-in-out infinite; }
+@utility text-shimmer-gold {
+  background: linear-gradient(90deg, var(--falcon-gold-deep) 0%, var(--falcon-gold) 25%, oklch(0.95 0.05 85) 50%, var(--falcon-gold) 75%, var(--falcon-gold-deep) 100%);
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: shimmer-gold 4s linear infinite;
+}
