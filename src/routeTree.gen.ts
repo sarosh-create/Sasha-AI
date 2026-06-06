@@ -25,7 +25,9 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
+import { Route as AuthenticatedFalconRouteImport } from './routes/_authenticated.falcon'
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
+import { Route as AuthenticatedExaminerRouteImport } from './routes/_authenticated.examiner'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
@@ -121,9 +123,19 @@ const AuthenticatedLabRoute = AuthenticatedLabRouteImport.update({
   path: '/lab',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedFalconRoute = AuthenticatedFalconRouteImport.update({
+  id: '/falcon',
+  path: '/falcon',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedExplainersRoute = AuthenticatedExplainersRouteImport.update({
   id: '/explainers',
   path: '/explainers',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedExaminerRoute = AuthenticatedExaminerRouteImport.update({
+  id: '/examiner',
+  path: '/examiner',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
@@ -211,7 +223,9 @@ export interface FileRoutesByFullPath {
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
@@ -243,7 +257,9 @@ export interface FileRoutesByTo {
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/events': typeof AuthenticatedEventsRoute
+  '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/notes': typeof AuthenticatedNotesRoute
@@ -277,7 +293,9 @@ export interface FileRoutesById {
   '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
+  '/_authenticated/examiner': typeof AuthenticatedExaminerRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
+  '/_authenticated/falcon': typeof AuthenticatedFalconRoute
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
@@ -311,7 +329,9 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/events'
+    | '/examiner'
     | '/explainers'
+    | '/falcon'
     | '/lab'
     | '/leaderboard'
     | '/notes'
@@ -343,7 +363,9 @@ export interface FileRouteTypes {
     | '/community'
     | '/dashboard'
     | '/events'
+    | '/examiner'
     | '/explainers'
+    | '/falcon'
     | '/lab'
     | '/leaderboard'
     | '/notes'
@@ -376,7 +398,9 @@ export interface FileRouteTypes {
     | '/_authenticated/community'
     | '/_authenticated/dashboard'
     | '/_authenticated/events'
+    | '/_authenticated/examiner'
     | '/_authenticated/explainers'
+    | '/_authenticated/falcon'
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
     | '/_authenticated/notes'
@@ -520,11 +544,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLabRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/falcon': {
+      id: '/_authenticated/falcon'
+      path: '/falcon'
+      fullPath: '/falcon'
+      preLoaderRoute: typeof AuthenticatedFalconRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/explainers': {
       id: '/_authenticated/explainers'
       path: '/explainers'
       fullPath: '/explainers'
       preLoaderRoute: typeof AuthenticatedExplainersRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/examiner': {
+      id: '/_authenticated/examiner'
+      path: '/examiner'
+      fullPath: '/examiner'
+      preLoaderRoute: typeof AuthenticatedExaminerRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/events': {
@@ -663,7 +701,9 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
+  AuthenticatedExaminerRoute: typeof AuthenticatedExaminerRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
+  AuthenticatedFalconRoute: typeof AuthenticatedFalconRoute
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
@@ -690,7 +730,9 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
+  AuthenticatedExaminerRoute: AuthenticatedExaminerRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
+  AuthenticatedFalconRoute: AuthenticatedFalconRoute,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
@@ -724,3 +766,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
