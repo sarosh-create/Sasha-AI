@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, MessageSquare, ScrollText, Sparkles, Target, Map, CheckCircle2 } from "lucide-react";
-import { Mascot } from "@/components/mascot";
+import { TalkingFalcon } from "@/components/talking-falcon";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -183,7 +183,16 @@ function Dashboard() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
-            <Mascot mood="idle" />
+            <TalkingFalcon
+              name={profile.display_name}
+              mood={daysToExam !== null && daysToExam < 14 ? "alert" : "idle"}
+              lines={[
+                `Hey ${profile.display_name ?? "champ"} — ${minutesToday} of ${profile.daily_minutes_goal} min done today. Let's wing the rest.`,
+                nextLesson ? `Next swoop: "${nextLesson.title}" — ${nextLesson.est_minutes} min. I'll guide every step.` : "Path's clear, captain. Let's spin up a fresh one.",
+                daysToExam !== null ? `${daysToExam} days till exam. I see the pattern — trust the falcon.` : `Set your exam date in Settings and I'll countdown for you.`,
+                `Streak: ${profile.streak_count} 🔥. Don't break my heart, partner.`,
+              ]}
+            />
           </div>
         </div>
       </div>

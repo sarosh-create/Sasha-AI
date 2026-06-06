@@ -4,7 +4,17 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Check, Lock, MessageSquare, ScrollText, BookOpen, Star } from "lucide-react";
-import { Mascot } from "@/components/mascot";
+import { TalkingFalcon } from "@/components/talking-falcon";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Film } from "lucide-react";
+
+const VIDEO_STYLES = [
+  { id: "cartoon", label: "🎬 Cartoon" },
+  { id: "whiteboard", label: "📝 Whiteboard" },
+  { id: "talkinghead", label: "🎤 Talking head" },
+  { id: "meme", label: "🤣 Meme recap" },
+  { id: "lab", label: "🧪 Lab demo" },
+];
 import { addXp, awardBadge, bumpChallenge } from "@/lib/gamification";
 import { toast } from "sonner";
 

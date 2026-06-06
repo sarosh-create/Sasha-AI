@@ -135,6 +135,14 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
+                <SidebarMenuButton asChild isActive={path.startsWith("/settings")}>
+                  <Link to="/settings" className="flex items-center gap-2">
+                    <Wand2 className="h-4 w-4" />
+                    <span>Settings · Board & Subjects</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <Link to="/onboarding" className="flex items-center gap-2">
                     <Sparkles className="h-4 w-4" />
