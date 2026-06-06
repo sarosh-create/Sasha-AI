@@ -19,10 +19,12 @@ import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
+import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
+import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
 import { Route as AuthenticatedFalconRouteImport } from './routes/_authenticated.falcon'
@@ -92,6 +94,12 @@ const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
   path: '/revision',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPredictionsRoute =
+  AuthenticatedPredictionsRouteImport.update({
+    id: '/predictions',
+    path: '/predictions',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPathRoute = AuthenticatedPathRouteImport.update({
   id: '/path',
   path: '/path',
@@ -110,6 +118,11 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedMentorsRoute = AuthenticatedMentorsRouteImport.update({
+  id: '/mentors',
+  path: '/mentors',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedLeaderboardRoute =
@@ -228,10 +241,12 @@ export interface FileRoutesByFullPath {
   '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
+  '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
@@ -262,10 +277,12 @@ export interface FileRoutesByTo {
   '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
+  '/predictions': typeof AuthenticatedPredictionsRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
@@ -298,10 +315,12 @@ export interface FileRoutesById {
   '/_authenticated/falcon': typeof AuthenticatedFalconRoute
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
+  '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
+  '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
@@ -334,10 +353,12 @@ export interface FileRouteTypes {
     | '/falcon'
     | '/lab'
     | '/leaderboard'
+    | '/mentors'
     | '/notes'
     | '/onboarding'
     | '/papers'
     | '/path'
+    | '/predictions'
     | '/revision'
     | '/schemes'
     | '/staff-chat'
@@ -368,10 +389,12 @@ export interface FileRouteTypes {
     | '/falcon'
     | '/lab'
     | '/leaderboard'
+    | '/mentors'
     | '/notes'
     | '/onboarding'
     | '/papers'
     | '/path'
+    | '/predictions'
     | '/revision'
     | '/schemes'
     | '/staff-chat'
@@ -403,10 +426,12 @@ export interface FileRouteTypes {
     | '/_authenticated/falcon'
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
+    | '/_authenticated/mentors'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
     | '/_authenticated/papers'
     | '/_authenticated/path'
+    | '/_authenticated/predictions'
     | '/_authenticated/revision'
     | '/_authenticated/schemes'
     | '/_authenticated/staff-chat'
@@ -502,6 +527,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRevisionRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/predictions': {
+      id: '/_authenticated/predictions'
+      path: '/predictions'
+      fullPath: '/predictions'
+      preLoaderRoute: typeof AuthenticatedPredictionsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/path': {
       id: '/_authenticated/path'
       path: '/path'
@@ -528,6 +560,13 @@ declare module '@tanstack/react-router' {
       path: '/notes'
       fullPath: '/notes'
       preLoaderRoute: typeof AuthenticatedNotesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/mentors': {
+      id: '/_authenticated/mentors'
+      path: '/mentors'
+      fullPath: '/mentors'
+      preLoaderRoute: typeof AuthenticatedMentorsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/leaderboard': {
@@ -706,10 +745,12 @@ interface AuthenticatedRouteChildren {
   AuthenticatedFalconRoute: typeof AuthenticatedFalconRoute
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
+  AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
+  AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
@@ -735,10 +776,12 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedFalconRoute: AuthenticatedFalconRoute,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
+  AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
+  AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
@@ -766,3 +809,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
