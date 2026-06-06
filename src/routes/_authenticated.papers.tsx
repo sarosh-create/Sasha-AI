@@ -7,7 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Download, FileText } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/papers")({
-  head: () => ({ meta: [{ title: "Past Papers — Sasha AI" }] }),
+  head: () => ({ meta: [
+    { title: "Past Papers — Sasha AI" },
+    { name: "description", content: "Search and download past exam papers and mark schemes across Matric, GCSE, IGCSE and A Level boards inside Sasha AI." },
+    { property: "og:title", content: "Past Papers — Sasha AI" },
+    { property: "og:description", content: "Past papers and mark schemes for Matric, GCSE, IGCSE and A Level, all in one place." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/papers" },
+  ] }),
   component: PapersPage,
 });
 

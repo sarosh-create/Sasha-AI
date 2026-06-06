@@ -10,6 +10,13 @@ import { fireEmojiBurst } from "@/components/emoji-burst";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/lab")({
+  head: () => ({ meta: [
+    { title: "Practical Lab — Sasha AI" },
+    { name: "description", content: "Practice practical-paper experiments in physics, chemistry and biology with Sasha AI's interactive lab game mode." },
+    { property: "og:title", content: "Practical Lab — Sasha AI" },
+    { property: "og:description", content: "Interactive practical-paper lab for physics, chemistry and biology — game-mode experiments inside Sasha AI." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/lab" },
+  ] }),
   component: LabPage,
 });
 
@@ -316,7 +323,7 @@ function LabPage() {
                     <span className="text-xs font-bold text-warning-foreground">+{e.xp} XP</span>
                   </div>
                   <div className="animate-bob text-6xl">{locked ? "🔒" : e.bench}</div>
-                  <h3 className="mt-3 font-display text-xl font-bold">{e.name}</h3>
+                  <h2 className="mt-3 font-display text-xl font-bold">{e.name}</h2>
                   <p className="mt-1 text-sm text-muted-foreground">{e.goal}</p>
                   {locked ? (
                     <div className="mt-4 flex items-center gap-2 rounded-xl bg-muted p-2 text-xs">

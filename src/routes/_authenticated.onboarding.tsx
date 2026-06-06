@@ -13,6 +13,13 @@ import { X, Plus } from "lucide-react";
 import { generatePathFor } from "@/routes/_authenticated.path";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
+  head: () => ({ meta: [
+    { title: "Set up your study plan — Sasha AI" },
+    { name: "description", content: "Pick your exam board, subjects and target date — Sasha AI builds your personalised study roadmap in seconds." },
+    { property: "og:title", content: "Set up your study plan — Sasha AI" },
+    { property: "og:description", content: "Tell Sasha AI your exam board and subjects to generate a personalised study roadmap." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/onboarding" },
+  ] }),
   component: Onboarding,
 });
 

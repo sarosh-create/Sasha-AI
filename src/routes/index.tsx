@@ -17,11 +17,11 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and streak-based progress tracking. Free for students." },
       { property: "og:title", content: "Sasha AI — Your personal AI study mentor" },
       { property: "og:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
-      { property: "og:url", content: "/" },
+      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/" },
       { name: "twitter:title", content: "Sasha AI — Your personal AI study mentor" },
       { name: "twitter:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/" }],
   }),
   component: Landing,
 });
@@ -84,7 +84,7 @@ function Landing() {
               <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-xl bg-secondary text-primary">
                 <f.icon className="h-5 w-5" />
               </div>
-              <h3 className="text-lg font-semibold">{f.title}</h3>
+              <h2 className="text-lg font-semibold">{f.title}</h2>
               <p className="mt-1.5 text-sm text-muted-foreground">{f.text}</p>
             </div>
           ))}

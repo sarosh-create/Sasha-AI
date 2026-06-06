@@ -5,7 +5,13 @@ import { Card } from "@/components/ui/card";
 import { Calendar, MapPin, ExternalLink } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/events")({
-  head: () => ({ meta: [{ title: "Events — Sasha AI" }, { name: "description", content: "Upcoming events on Sasha AI." }] }),
+  head: () => ({ meta: [
+    { title: "Events — Sasha AI" },
+    { name: "description", content: "Upcoming workshops, study sessions and exam events from Sasha AI tutors and the wider student community." },
+    { property: "og:title", content: "Events — Sasha AI" },
+    { property: "og:description", content: "Workshops, exam-prep sessions and study events you can join inside Sasha AI." },
+    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/events" },
+  ] }),
   component: EventsPage,
 });
 
@@ -24,7 +30,7 @@ function EventsPage() {
           <Card key={e.id} className="overflow-hidden">
             {e.image_url && <img src={e.image_url} alt={e.title} className="h-40 w-full object-cover" />}
             <div className="p-4">
-              <h3 className="font-display text-lg font-semibold">{e.title}</h3>
+              <h2 className="font-display text-lg font-semibold">{e.title}</h2>
               <p className="mt-1 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1"><Calendar className="h-3 w-3" />{new Date(e.starts_at).toLocaleString()}</span>
                 {e.location && <span className="flex items-center gap-1"><MapPin className="h-3 w-3" />{e.location}</span>}
