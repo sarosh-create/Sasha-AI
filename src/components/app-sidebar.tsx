@@ -106,10 +106,16 @@ export function AppSidebar() {
                     <Link to="/teacher" className="flex items-center gap-2"><GraduationCap className="h-4 w-4" /><span>Teacher panel</span></Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild isActive={path.startsWith("/staff-chat")}>
+                    <Link to="/staff-chat" className="flex items-center gap-2"><MessageSquare className="h-4 w-4" /><span>Staff chat</span></Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
         )}
+
         <SidebarGroup>
           <SidebarGroupLabel>Study</SidebarGroupLabel>
           <SidebarGroupContent>{renderItems(study)}</SidebarGroupContent>

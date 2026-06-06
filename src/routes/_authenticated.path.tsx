@@ -73,6 +73,9 @@ function PathPage() {
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [subjects, setSubjects] = useState<Record<string, Subject>>({});
 
+  const [noSubjects, setNoSubjects] = useState(false);
+  const [busy, setBusy] = useState(false);
+
   const load = async () => {
     if (!user) return;
     const [{ data: subs }, { data: ls }] = await Promise.all([
@@ -82,16 +85,30 @@ function PathPage() {
     const map: Record<string, Subject> = {};
     (subs ?? []).forEach((s: any) => (map[s.id] = s));
     setSubjects(map);
+    if (!subs || subs.length === 0) {
+      setNoSubjects(true);
+      setLessons([]);
+      return;
+    }
+    setNoSubjects(false);
     if (!ls || ls.length === 0) {
-      await generatePathFor(user.id);
-      const { data: ls2 } = await supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position");
-      setLessons((ls2 as Lesson[]) ?? []);
+      setBusy(true);
+      try {
+        await generatePathFor(user.id);
+        const { data: ls2, error } = await supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position");
+        if (error) throw error;
+        setLessons((ls2 as Lesson[]) ?? []);
+        if (!ls2 || ls2.length === 0) toast.error("Couldn't create your path — please try regenerating.");
+      } catch (e: any) {
+        toast.error(e.message ?? "Failed to build study path");
+      } finally { setBusy(false); }
     } else {
       setLessons(ls as Lesson[]);
     }
   };
 
   useEffect(() => { load(); }, [user]);
+
 
   const start = async (l: Lesson) => {
     if (l.status === "locked") return;
@@ -129,12 +146,23 @@ function PathPage() {
           <h1 className="font-display text-3xl font-semibold">Your study path</h1>
           <p className="text-sm text-muted-foreground">One lesson at a time. Unlock the next as you finish.</p>
         </div>
-        <Button variant="ghost" size="sm" onClick={reset}>Regenerate path</Button>
+        <Button variant="ghost" size="sm" onClick={reset} disabled={busy || noSubjects}>Regenerate path</Button>
       </div>
 
+      {noSubjects && (
+        <div className="mt-8 rounded-2xl border border-border bg-card p-6 text-center shadow-card">
+          <p className="font-display text-lg font-semibold">Set up your subjects first</p>
+          <p className="mt-1 text-sm text-muted-foreground">Sasha needs to know what you study before building a path.</p>
+          <Button className="mt-4" onClick={() => nav({ to: "/onboarding" })}>Go to study setup</Button>
+        </div>
+      )}
+
+      {!noSubjects && (
       <div className="mt-6 flex justify-center">
         <Mascot mood="idle" />
       </div>
+      )}
+
 
       <ol className="relative mt-10 space-y-6">
         {lessons.map((l, i) => {
