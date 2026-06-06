@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { X, Plus } from "lucide-react";
+import { generatePathFor } from "@/routes/_authenticated.path";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
