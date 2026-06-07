@@ -134,6 +134,91 @@ export async function addXp(userId: string, amount: number, opts: { lab?: boolea
   return newXp;
 }
 
+export const STREAK_FREEZE_COST = 4;
+
+function todayISO() { return new Date().toISOString().slice(0, 10); }
+function daysBetween(a: string, b: string) {
+  const da = new Date(a + "T00:00:00Z").getTime();
+  const db = new Date(b + "T00:00:00Z").getTime();
+  return Math.round((db - da) / 86400000);
+}
+
+/**
+ * Call on app load / activity. Maintains daily streak:
+ * - same day → no change
+ * - +1 day → streak_count += 1
+ * - gap > 1 day → consume 1 streak_freeze per missed day if enough, else reset to 1
+ */
+export async function touchStreak(userId: string) {
+  const { data: p } = await supabase
+    .from("profiles")
+    .select("streak_count, last_active_date, streak_freezes")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (!p) return;
+  const today = todayISO();
+  const last = p.last_active_date as string | null;
+  let streak = p.streak_count ?? 0;
+  let freezes = p.streak_freezes ?? 0;
+
+  if (!last) {
+    streak = Math.max(1, streak);
+  } else {
+    const gap = daysBetween(last, today);
+    if (gap === 0) return;
+    if (gap === 1) {
+      streak += 1;
+      toast.success(`🔥 Day ${streak} streak!`);
+    } else {
+      const missed = gap - 1;
+      if (freezes >= missed) {
+        freezes -= missed;
+        streak += 1;
+        toast(`❄️ Streak freeze used (${missed}). Streak safe at ${streak}.`);
+      } else {
+        toast.error(`💔 Streak reset — missed ${missed} day${missed > 1 ? "s" : ""}.`);
+        streak = 1;
+      }
+    }
+  }
+
+  await supabase
+    .from("profiles")
+    .update({ streak_count: streak, streak_freezes: freezes, last_active_date: today })
+    .eq("user_id", userId);
+
+  if (streak >= 7) await awardBadge(userId, "streak_7");
+  if (streak >= 30) await awardBadge(userId, "streak_30");
+}
+
+/** Spend STREAK_FREEZE_COST XP to buy 1 streak freeze (max 3 stored). */
+export async function buyStreakFreeze(userId: string) {
+  const { data: p } = await supabase
+    .from("profiles")
+    .select("xp, streak_freezes")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (!p) return false;
+  if ((p.streak_freezes ?? 0) >= 3) {
+    toast.error("Max 3 streak freezes held.");
+    return false;
+  }
+  if ((p.xp ?? 0) < STREAK_FREEZE_COST) {
+    toast.error(`Need ${STREAK_FREEZE_COST} XP to buy a streak freeze.`);
+    return false;
+  }
+  await supabase
+    .from("profiles")
+    .update({
+      xp: (p.xp ?? 0) - STREAK_FREEZE_COST,
+      streak_freezes: (p.streak_freezes ?? 0) + 1,
+    })
+    .eq("user_id", userId);
+  toast.success(`❄️ Streak freeze purchased (−${STREAK_FREEZE_COST} XP)`);
+  fireConfetti("stars");
+  return true;
+}
+
 export async function loseHeart(userId: string) {
   const { data: p } = await supabase
     .from("profiles")

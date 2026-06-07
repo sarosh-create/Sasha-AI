@@ -4,7 +4,7 @@ import { useAuth } from "@/lib/auth-context";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
 import { HeaderStats } from "@/components/header-stats";
-import { ensureDailyChallenges, refillHeartsIfDue } from "@/lib/gamification";
+import { ensureDailyChallenges, refillHeartsIfDue, touchStreak } from "@/lib/gamification";
 import { A11yProvider } from "@/lib/a11y";
 import { A11yToggle } from "@/components/a11y-toggle";
 import { EmojiBurstLayer } from "@/components/emoji-burst";
@@ -25,6 +25,7 @@ function AuthLayout() {
     if (!user) return;
     ensureDailyChallenges(user.id);
     refillHeartsIfDue(user.id);
+    touchStreak(user.id);
   }, [user]);
 
   if (loading || !user) {
