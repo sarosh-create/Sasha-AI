@@ -133,156 +133,200 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
           viewBox="0 0 240 200"
           width={compact ? 110 : 180}
           height={compact ? 96 : 160}
-          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}aa)` : "drop-shadow(0 4px 6px rgba(0,0,0,0.25))" }}
+          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}aa)` : "drop-shadow(0 3px 5px rgba(0,0,0,0.28))" }}
           aria-label="Falcon mascot"
         >
           <defs>
-            <linearGradient id="beakTop" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fff27a" />
-              <stop offset="55%" stopColor="#ffd11a" />
-              <stop offset="100%" stopColor="#d99500" />
+            {/* peregrine slate plumage */}
+            <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#4a5566" />
+              <stop offset="60%" stopColor="#2f3845" />
+              <stop offset="100%" stopColor="#1b2230" />
             </linearGradient>
-            <linearGradient id="beakBot" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#e8a000" />
-              <stop offset="100%" stopColor="#8a5500" />
+            <linearGradient id="backGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#5d6b7d" />
+              <stop offset="100%" stopColor="#33404f" />
             </linearGradient>
-            <linearGradient id="feathersDark" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#6b4423" />
-              <stop offset="100%" stopColor="#3b2410" />
+            <linearGradient id="throatGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#fbf6ea" />
+              <stop offset="100%" stopColor="#d9d2bf" />
             </linearGradient>
-            <linearGradient id="feathersMid" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#8a5a30" />
-              <stop offset="100%" stopColor="#5b3a1d" />
+            <linearGradient id="beakGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#4a4f58" />
+              <stop offset="70%" stopColor="#23272e" />
+              <stop offset="100%" stopColor="#0d1116" />
             </linearGradient>
+            <linearGradient id="cereGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#ffd23a" />
+              <stop offset="100%" stopColor="#caa000" />
+            </linearGradient>
+            <radialGradient id="eyeGrad" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor="#3a2410" />
+              <stop offset="70%" stopColor="#100806" />
+              <stop offset="100%" stopColor="#000" />
+            </radialGradient>
           </defs>
 
-          {/* halo */}
-          <circle cx="120" cy="100" r="92" fill={`${moodAccent}1f`} />
+          {/* soft halo */}
+          <circle cx="120" cy="100" r="92" fill={`${moodAccent}14`} />
 
-          {/* head group — side profile mascot, facing left */}
-          <g style={{ transformOrigin: "120px 100px", transform: `rotate(${Math.sin(tick / 18) * 2.5}deg)` }}>
-            {/* back feather spikes (dark, layered) */}
+          {/* head group — realistic peregrine, facing left */}
+          <g style={{ transformOrigin: "120px 100px", transform: `rotate(${Math.sin(tick / 22) * 1.6}deg)` }}>
+
+            {/* back of head + nape (slate, smooth) */}
             <path
-              d="M170 70 L210 50 L195 78 L225 70 L205 95 L230 100 L208 115 L228 130 L200 130 L218 158 L188 138 L195 168 L170 145 L165 175 L150 148 L140 178 L138 150 Z"
-              fill="url(#feathersDark)"
-              stroke="#1a0f06"
-              strokeWidth="3"
-              strokeLinejoin="round"
-            />
-            {/* mid feather layer */}
-            <path
-              d="M160 78 L195 68 L182 92 L210 92 L190 110 L212 120 L188 125 L205 148 L178 132 L185 158 L162 138 L155 162 L148 138 Z"
-              fill="url(#feathersMid)"
-              stroke="#1a0f06"
-              strokeWidth="2.5"
-              strokeLinejoin="round"
+              d="M118 60
+                 Q165 58 188 90
+                 Q200 118 188 148
+                 Q170 168 138 168
+                 Q150 150 156 128
+                 Q160 104 150 84
+                 Q138 68 118 64 Z"
+              fill="url(#backGrad)"
             />
 
-            {/* main head shape (brown crown) */}
-            <path
-              d="M75 100 Q72 70 102 60 Q140 52 168 78 Q178 92 172 118 Q165 140 145 148 Q120 154 100 144 Q78 132 75 100 Z"
-              fill="#6b4423"
-              stroke="#1a0f06"
-              strokeWidth="3.5"
-              strokeLinejoin="round"
-            />
-
-            {/* white face mask — wraps from forehead down across cheek */}
-            <path
-              d="M78 102 Q76 86 92 78 Q108 72 124 78 L150 92 Q145 118 130 132 Q110 142 92 138 Q78 130 78 102 Z"
-              fill="#f5ecd9"
-              stroke="#1a0f06"
-              strokeWidth="3"
-              strokeLinejoin="round"
-            />
-
-            {/* grey shadow accent on cheek */}
-            <path
-              d="M118 100 Q140 100 148 118 Q138 132 120 132 Q108 128 110 116 Z"
-              fill="#bfb6a3"
-              opacity="0.7"
-            />
-
-            {/* white forehead stripe */}
-            <path
-              d="M96 70 Q120 60 148 72 Q140 80 122 78 Q108 78 96 82 Z"
-              fill="#ffffff"
-              stroke="#1a0f06"
-              strokeWidth="2.5"
-              strokeLinejoin="round"
-            />
-
-            {/* angry eyebrow */}
-            <path
-              d="M92 86 Q108 80 128 90"
-              stroke="#1a0f06"
-              strokeWidth="5"
-              fill="none"
-              strokeLinecap="round"
-            />
-
-            {/* eye — sharp, fierce */}
-            <g>
-              <ellipse cx="112" cy="98" rx="9" ry={9 * blink} fill="#ffffff" stroke="#1a0f06" strokeWidth="2.2" />
-              <ellipse cx="114" cy="99" rx="5.5" ry={5.5 * blink} fill="#1a0f06" />
-              <circle cx="116" cy="97" r="1.6" fill="#ffffff" />
+            {/* subtle feather streaks on nape */}
+            <g stroke="#1b2230" strokeWidth="0.8" fill="none" opacity="0.55" strokeLinecap="round">
+              <path d="M150 80 Q162 92 168 108" />
+              <path d="M158 92 Q170 108 172 128" />
+              <path d="M160 112 Q172 128 168 148" />
+              <path d="M148 100 Q158 118 156 138" />
+              <path d="M170 100 Q180 116 178 138" />
+              <path d="M140 78 Q150 90 156 104" />
             </g>
 
-            {/* malar stripe (falcon tear mark) */}
+            {/* main head crown (dark hood) */}
             <path
-              d="M108 108 Q104 122 96 132"
-              stroke="#1a0f06"
-              strokeWidth="5"
-              fill="none"
-              strokeLinecap="round"
+              d="M70 108
+                 Q66 82 92 70
+                 Q120 58 148 70
+                 Q170 82 172 108
+                 Q172 122 162 130
+                 L150 132
+                 Q140 128 128 128
+                 Q108 128 92 132
+                 Q78 132 72 124 Z"
+              fill="url(#hoodGrad)"
             />
 
-            {/* upper beak — big bold hooked yellow beak */}
+            {/* hood subtle feather texture */}
+            <g stroke="#0d1320" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
+              <path d="M86 80 Q96 88 100 100" />
+              <path d="M104 74 Q112 84 116 98" />
+              <path d="M124 72 Q130 84 132 100" />
+              <path d="M142 76 Q146 88 146 102" />
+              <path d="M156 86 Q160 96 160 110" />
+            </g>
+
+            {/* white cheek / throat patch */}
             <path
-              d={`M82 102
-                  Q60 ${104 - beakGap * 0.2} 38 ${112 - beakGap * 0.3}
-                  Q30 ${116 - beakGap * 0.2} 36 ${122 - beakGap * 0.15}
-                  Q48 ${122 - beakGap * 0.1} 58 ${120 - beakGap * 0.05}
-                  Q72 ${118 - beakGap * 0.05} 88 ${114 - beakGap * 0.02}
-                  Z`}
-              fill="url(#beakTop)"
-              stroke="#1a0f06"
-              strokeWidth="3.2"
-              strokeLinejoin="round"
+              d="M70 110
+                 Q72 124 84 132
+                 Q98 138 112 136
+                 Q124 134 130 128
+                 L130 142
+                 Q118 152 100 150
+                 Q82 146 74 134 Z"
+              fill="url(#throatGrad)"
             />
-            {/* beak inner line / highlight */}
+
+            {/* thick dark malar stripe (peregrine sideburn) */}
             <path
-              d={`M48 ${118 - beakGap * 0.1} Q66 ${116 - beakGap * 0.05} 84 ${112 - beakGap * 0.02}`}
-              stroke="#a06800"
-              strokeWidth="1.6"
+              d="M104 116
+                 Q102 128 96 140
+                 Q92 148 88 152
+                 Q94 142 96 132
+                 Q98 122 100 116 Z"
+              fill="#1b2230"
+            />
+
+            {/* yellow eye ring */}
+            <ellipse cx="108" cy="104" rx="10" ry={9 * (0.3 + 0.7 * blink)} fill="#f0b820" />
+            {/* eye — dark fierce */}
+            <ellipse cx="108" cy="104" rx="7.5" ry={7 * blink} fill="url(#eyeGrad)" />
+            {/* pupil highlight */}
+            <circle cx="110" cy="102" r="1.8" fill="#ffffff" opacity={blink} />
+            <circle cx="106" cy="106" r="0.9" fill="#ffffff" opacity={0.6 * blink} />
+
+            {/* brow ridge for sharp glare */}
+            <path
+              d="M96 94 Q108 90 122 96"
+              stroke="#0d1320"
+              strokeWidth="2.2"
               fill="none"
               strokeLinecap="round"
               opacity="0.7"
             />
-            {/* nostril */}
-            <ellipse cx="74" cy={108 - beakGap * 0.05} rx="2.2" ry="1.6" fill="#1a0f06" />
 
-            {/* lower beak — appears when open */}
+            {/* yellow cere (base of beak) */}
+            <path
+              d="M78 102 Q70 102 64 108 Q62 114 66 118 Q74 116 84 114 Z"
+              fill="url(#cereGrad)"
+            />
+
+            {/* upper beak — sleek hooked dark grey */}
+            <path
+              d={`M82 108
+                  Q64 ${110 - beakGap * 0.15} 48 ${116 - beakGap * 0.25}
+                  Q40 ${118 - beakGap * 0.15} 44 ${124 - beakGap * 0.1}
+                  Q50 ${126 - beakGap * 0.08} 56 ${124 - beakGap * 0.05}
+                  Q70 ${120 - beakGap * 0.03} 84 ${116 - beakGap * 0.02} Z`}
+              fill="url(#beakGrad)"
+            />
+            {/* tomial tooth notch shadow */}
+            <path
+              d={`M58 ${122 - beakGap * 0.05} Q62 ${124 - beakGap * 0.03} 66 ${122 - beakGap * 0.03}`}
+              stroke="#000"
+              strokeWidth="0.6"
+              fill="none"
+              opacity="0.7"
+            />
+            {/* beak highlight */}
+            <path
+              d={`M52 ${116 - beakGap * 0.18} Q68 ${114 - beakGap * 0.1} 82 ${112 - beakGap * 0.04}`}
+              stroke="#8a93a3"
+              strokeWidth="0.8"
+              fill="none"
+              opacity="0.55"
+              strokeLinecap="round"
+            />
+            {/* nostril on cere */}
+            <ellipse cx="72" cy="110" rx="1.6" ry="1.6" fill="#3a2a00" />
+
+            {/* lower beak (mouth opens) */}
             {beakGap > 0.3 && (
               <path
                 d={`M82 ${114 + beakGap * 0.05}
-                    Q66 ${120 + beakGap * 0.4} 50 ${124 + beakGap * 0.7}
-                    Q44 ${126 + beakGap * 0.9} 52 ${130 + beakGap * 1.1}
-                    Q68 ${128 + beakGap * 0.9} 84 ${122 + beakGap * 0.5}
-                    Z`}
-                fill="url(#beakBot)"
-                stroke="#1a0f06"
-                strokeWidth="3"
-                strokeLinejoin="round"
+                    Q66 ${118 + beakGap * 0.4} 52 ${122 + beakGap * 0.7}
+                    Q46 ${124 + beakGap * 0.85} 54 ${128 + beakGap * 1.0}
+                    Q70 ${126 + beakGap * 0.8} 84 ${120 + beakGap * 0.45} Z`}
+                fill="url(#beakGrad)"
               />
             )}
-            {/* tongue */}
+            {/* mouth interior when wide */}
+            {beakGap > 1.2 && (
+              <path
+                d={`M58 ${122 + beakGap * 0.4} Q68 ${124 + beakGap * 0.6} 80 ${120 + beakGap * 0.3}
+                    Q70 ${126 + beakGap * 0.9} 60 ${126 + beakGap * 0.8} Z`}
+                fill="#3a1a1a"
+                opacity="0.85"
+              />
+            )}
             {beakGap > 3.5 && (
-              <ellipse cx={62} cy={124 + beakGap * 0.6} rx={beakGap * 0.6} ry={beakGap * 0.22} fill="#c44569" opacity="0.9" />
+              <ellipse cx={66} cy={124 + beakGap * 0.55} rx={beakGap * 0.55} ry={beakGap * 0.2} fill="#a83a4f" opacity="0.85" />
             )}
 
-            {/* small wing tuft suggestion bottom-left */}
-            <path d="M88 142 Q92 152 100 150 Q96 144 90 142 Z" fill="#3b2410" />
+            {/* shoulder hint — slate feathers below head */}
+            <path
+              d="M88 150 Q120 168 162 160 Q170 170 158 178 Q120 184 92 174 Q82 166 88 150 Z"
+              fill="url(#backGrad)"
+              opacity="0.9"
+            />
+            {/* shoulder barring */}
+            <g stroke="#1b2230" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
+              <path d="M100 162 Q120 170 150 166" />
+              <path d="M104 170 Q124 176 148 172" />
+            </g>
           </g>
         </svg>
         {speaking && (
