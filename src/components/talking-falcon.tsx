@@ -166,9 +166,42 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
             <ellipse cx="112" cy="78" rx="6" ry={6 * blink} fill="#1a1208" />
             <circle cx="89.5" cy="76" r="1.5" fill="#fff" />
             <circle cx="113.5" cy="76" r="1.5" fill="#fff" />
-            {/* beak — animated open/close */}
-            <path d={`M94 96 L106 96 L100 ${102 + beakGap} Z`} fill="#f4b400" />
-            <path d={`M96 ${100 + beakGap * 0.4} L104 ${100 + beakGap * 0.4} L100 ${108 + beakGap} Z`} fill="#c98a00" />
+            {/* beak — curved hooked falcon beak, animated open/close */}
+            <defs>
+              <linearGradient id="beakTop" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#ffd24a" />
+                <stop offset="60%" stopColor="#f0a020" />
+                <stop offset="100%" stopColor="#b86a00" />
+              </linearGradient>
+              <linearGradient id="beakBot" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#e89400" />
+                <stop offset="100%" stopColor="#7a4a00" />
+              </linearGradient>
+            </defs>
+            {/* upper mandible — curved with hook */}
+            <path
+              d={`M92 94 Q100 92 108 94 Q110 99 106 ${100 + beakGap * 0.15} Q103 ${104 + beakGap * 0.4} 100 ${106 + beakGap * 0.5} Q97 ${104 + beakGap * 0.4} 94 ${100 + beakGap * 0.15} Q90 99 92 94 Z`}
+              fill="url(#beakTop)"
+              stroke="#5a3500"
+              strokeWidth="0.6"
+            />
+            {/* nostril (cere) */}
+            <circle cx="96.5" cy="96.2" r="0.9" fill="#3b2410" />
+            {/* highlight on upper beak */}
+            <path d="M95 95 Q100 93.5 105 95" stroke="#fff4c2" strokeWidth="0.8" fill="none" opacity="0.7" />
+            {/* lower mandible — appears only when beak open */}
+            {beakGap > 0.5 && (
+              <path
+                d={`M96 ${102 + beakGap * 0.15} Q100 ${103 + beakGap * 0.2} 104 ${102 + beakGap * 0.15} Q102 ${106 + beakGap} 100 ${107 + beakGap * 1.05} Q98 ${106 + beakGap} 96 ${102 + beakGap * 0.15} Z`}
+                fill="url(#beakBot)"
+                stroke="#4a2b00"
+                strokeWidth="0.5"
+              />
+            )}
+            {/* tongue hint when wide open */}
+            {beakGap > 4 && (
+              <ellipse cx="100" cy={104 + beakGap * 0.4} rx="1.6" ry={beakGap * 0.15} fill="#c44569" opacity="0.85" />
+            )}
             {/* head crest */}
             <path d="M100 46 Q108 36 116 50 L100 56 Z" fill="#3b2410" />
           </g>
