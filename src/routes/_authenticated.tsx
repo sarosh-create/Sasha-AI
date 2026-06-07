@@ -25,6 +25,7 @@ function AuthLayout() {
     if (!user) return;
     ensureDailyChallenges(user.id);
     refillHeartsIfDue(user.id);
+    touchStreak(user.id);
   }, [user]);
 
   if (loading || !user) {
