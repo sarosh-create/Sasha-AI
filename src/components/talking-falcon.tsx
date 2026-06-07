@@ -117,7 +117,7 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
 
   // computed animation values
   const bob = Math.sin(tick / 8) * 3;
-  const wing = Math.sin(tick / 4) * (speaking ? 18 : 8);
+  
   const blink = tick % 60 < 3 ? 0.1 : 1;
   const beakGap = beakOpen * 9;
 
@@ -130,84 +130,160 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
     <div className={`flex ${compact ? "flex-row items-center gap-3" : "flex-col items-center gap-3"}`}>
       <div className="relative">
         <svg
-          viewBox="0 0 200 200"
-          width={compact ? 96 : 160}
+          viewBox="0 0 240 200"
+          width={compact ? 110 : 180}
           height={compact ? 96 : 160}
-          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}88)` : "none" }}
+          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}aa)` : "drop-shadow(0 4px 6px rgba(0,0,0,0.25))" }}
           aria-label="Falcon mascot"
         >
+          <defs>
+            <linearGradient id="beakTop" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#fff27a" />
+              <stop offset="55%" stopColor="#ffd11a" />
+              <stop offset="100%" stopColor="#d99500" />
+            </linearGradient>
+            <linearGradient id="beakBot" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#e8a000" />
+              <stop offset="100%" stopColor="#8a5500" />
+            </linearGradient>
+            <linearGradient id="feathersDark" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#6b4423" />
+              <stop offset="100%" stopColor="#3b2410" />
+            </linearGradient>
+            <linearGradient id="feathersMid" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#8a5a30" />
+              <stop offset="100%" stopColor="#5b3a1d" />
+            </linearGradient>
+          </defs>
+
           {/* halo */}
-          <circle cx="100" cy="100" r="84" fill={`${moodAccent}22`} />
-          {/* tail */}
-          <path d="M40 130 Q20 150 50 160 L70 140 Z" fill="#5b3a1d" />
-          {/* body */}
-          <ellipse cx="100" cy="120" rx="48" ry="42" fill="#8a5a30" />
-          <ellipse cx="100" cy="128" rx="34" ry="28" fill="#d6b48a" />
-          {/* left wing (flapping) */}
-          <g style={{ transformOrigin: "70px 110px", transform: `rotate(${-wing}deg)`, transition: "transform 80ms linear" }}>
-            <path d="M70 110 Q30 95 40 140 Q60 130 78 130 Z" fill="#6b4423" />
-            <path d="M70 110 Q42 100 48 132 Q62 124 76 124 Z" fill="#8a5a30" />
-          </g>
-          {/* right wing */}
-          <g style={{ transformOrigin: "130px 110px", transform: `rotate(${wing}deg)`, transition: "transform 80ms linear" }}>
-            <path d="M130 110 Q170 95 160 140 Q140 130 122 130 Z" fill="#6b4423" />
-            <path d="M130 110 Q158 100 152 132 Q138 124 124 124 Z" fill="#8a5a30" />
-          </g>
-          {/* head */}
-          <g style={{ transformOrigin: "100px 80px", transform: `rotate(${Math.sin(tick / 18) * 3}deg)` }}>
-            <ellipse cx="100" cy="78" rx="34" ry="32" fill="#6b4423" />
-            {/* white face mask */}
-            <path d="M75 80 Q100 110 125 80 Q120 60 100 58 Q80 60 75 80 Z" fill="#f5ecd9" />
-            {/* eye markings — falcon malar stripe */}
-            <path d="M86 88 Q90 102 95 110" stroke="#3b2410" strokeWidth="4" fill="none" strokeLinecap="round" />
-            <path d="M114 88 Q110 102 105 110" stroke="#3b2410" strokeWidth="4" fill="none" strokeLinecap="round" />
-            {/* eyes */}
-            <ellipse cx="88" cy="78" rx="6" ry={6 * blink} fill="#1a1208" />
-            <ellipse cx="112" cy="78" rx="6" ry={6 * blink} fill="#1a1208" />
-            <circle cx="89.5" cy="76" r="1.5" fill="#fff" />
-            <circle cx="113.5" cy="76" r="1.5" fill="#fff" />
-            {/* beak — curved hooked falcon beak, animated open/close */}
-            <defs>
-              <linearGradient id="beakTop" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#ffd24a" />
-                <stop offset="60%" stopColor="#f0a020" />
-                <stop offset="100%" stopColor="#b86a00" />
-              </linearGradient>
-              <linearGradient id="beakBot" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#e89400" />
-                <stop offset="100%" stopColor="#7a4a00" />
-              </linearGradient>
-            </defs>
-            {/* upper mandible — curved with hook */}
+          <circle cx="120" cy="100" r="92" fill={`${moodAccent}1f`} />
+
+          {/* head group — side profile mascot, facing left */}
+          <g style={{ transformOrigin: "120px 100px", transform: `rotate(${Math.sin(tick / 18) * 2.5}deg)` }}>
+            {/* back feather spikes (dark, layered) */}
             <path
-              d={`M92 94 Q100 92 108 94 Q110 99 106 ${100 + beakGap * 0.15} Q103 ${104 + beakGap * 0.4} 100 ${106 + beakGap * 0.5} Q97 ${104 + beakGap * 0.4} 94 ${100 + beakGap * 0.15} Q90 99 92 94 Z`}
-              fill="url(#beakTop)"
-              stroke="#5a3500"
-              strokeWidth="0.6"
+              d="M170 70 L210 50 L195 78 L225 70 L205 95 L230 100 L208 115 L228 130 L200 130 L218 158 L188 138 L195 168 L170 145 L165 175 L150 148 L140 178 L138 150 Z"
+              fill="url(#feathersDark)"
+              stroke="#1a0f06"
+              strokeWidth="3"
+              strokeLinejoin="round"
             />
-            {/* nostril (cere) */}
-            <circle cx="96.5" cy="96.2" r="0.9" fill="#3b2410" />
-            {/* highlight on upper beak */}
-            <path d="M95 95 Q100 93.5 105 95" stroke="#fff4c2" strokeWidth="0.8" fill="none" opacity="0.7" />
-            {/* lower mandible — appears only when beak open */}
-            {beakGap > 0.5 && (
+            {/* mid feather layer */}
+            <path
+              d="M160 78 L195 68 L182 92 L210 92 L190 110 L212 120 L188 125 L205 148 L178 132 L185 158 L162 138 L155 162 L148 138 Z"
+              fill="url(#feathersMid)"
+              stroke="#1a0f06"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+            />
+
+            {/* main head shape (brown crown) */}
+            <path
+              d="M75 100 Q72 70 102 60 Q140 52 168 78 Q178 92 172 118 Q165 140 145 148 Q120 154 100 144 Q78 132 75 100 Z"
+              fill="#6b4423"
+              stroke="#1a0f06"
+              strokeWidth="3.5"
+              strokeLinejoin="round"
+            />
+
+            {/* white face mask — wraps from forehead down across cheek */}
+            <path
+              d="M78 102 Q76 86 92 78 Q108 72 124 78 L150 92 Q145 118 130 132 Q110 142 92 138 Q78 130 78 102 Z"
+              fill="#f5ecd9"
+              stroke="#1a0f06"
+              strokeWidth="3"
+              strokeLinejoin="round"
+            />
+
+            {/* grey shadow accent on cheek */}
+            <path
+              d="M118 100 Q140 100 148 118 Q138 132 120 132 Q108 128 110 116 Z"
+              fill="#bfb6a3"
+              opacity="0.7"
+            />
+
+            {/* white forehead stripe */}
+            <path
+              d="M96 70 Q120 60 148 72 Q140 80 122 78 Q108 78 96 82 Z"
+              fill="#ffffff"
+              stroke="#1a0f06"
+              strokeWidth="2.5"
+              strokeLinejoin="round"
+            />
+
+            {/* angry eyebrow */}
+            <path
+              d="M92 86 Q108 80 128 90"
+              stroke="#1a0f06"
+              strokeWidth="5"
+              fill="none"
+              strokeLinecap="round"
+            />
+
+            {/* eye — sharp, fierce */}
+            <g>
+              <ellipse cx="112" cy="98" rx="9" ry={9 * blink} fill="#ffffff" stroke="#1a0f06" strokeWidth="2.2" />
+              <ellipse cx="114" cy="99" rx="5.5" ry={5.5 * blink} fill="#1a0f06" />
+              <circle cx="116" cy="97" r="1.6" fill="#ffffff" />
+            </g>
+
+            {/* malar stripe (falcon tear mark) */}
+            <path
+              d="M108 108 Q104 122 96 132"
+              stroke="#1a0f06"
+              strokeWidth="5"
+              fill="none"
+              strokeLinecap="round"
+            />
+
+            {/* upper beak — big bold hooked yellow beak */}
+            <path
+              d={`M82 102
+                  Q60 ${104 - beakGap * 0.2} 38 ${112 - beakGap * 0.3}
+                  Q30 ${116 - beakGap * 0.2} 36 ${122 - beakGap * 0.15}
+                  Q48 ${122 - beakGap * 0.1} 58 ${120 - beakGap * 0.05}
+                  Q72 ${118 - beakGap * 0.05} 88 ${114 - beakGap * 0.02}
+                  Z`}
+              fill="url(#beakTop)"
+              stroke="#1a0f06"
+              strokeWidth="3.2"
+              strokeLinejoin="round"
+            />
+            {/* beak inner line / highlight */}
+            <path
+              d={`M48 ${118 - beakGap * 0.1} Q66 ${116 - beakGap * 0.05} 84 ${112 - beakGap * 0.02}`}
+              stroke="#a06800"
+              strokeWidth="1.6"
+              fill="none"
+              strokeLinecap="round"
+              opacity="0.7"
+            />
+            {/* nostril */}
+            <ellipse cx="74" cy={108 - beakGap * 0.05} rx="2.2" ry="1.6" fill="#1a0f06" />
+
+            {/* lower beak — appears when open */}
+            {beakGap > 0.3 && (
               <path
-                d={`M96 ${102 + beakGap * 0.15} Q100 ${103 + beakGap * 0.2} 104 ${102 + beakGap * 0.15} Q102 ${106 + beakGap} 100 ${107 + beakGap * 1.05} Q98 ${106 + beakGap} 96 ${102 + beakGap * 0.15} Z`}
+                d={`M82 ${114 + beakGap * 0.05}
+                    Q66 ${120 + beakGap * 0.4} 50 ${124 + beakGap * 0.7}
+                    Q44 ${126 + beakGap * 0.9} 52 ${130 + beakGap * 1.1}
+                    Q68 ${128 + beakGap * 0.9} 84 ${122 + beakGap * 0.5}
+                    Z`}
                 fill="url(#beakBot)"
-                stroke="#4a2b00"
-                strokeWidth="0.5"
+                stroke="#1a0f06"
+                strokeWidth="3"
+                strokeLinejoin="round"
               />
             )}
-            {/* tongue hint when wide open */}
-            {beakGap > 4 && (
-              <ellipse cx="100" cy={104 + beakGap * 0.4} rx="1.6" ry={beakGap * 0.15} fill="#c44569" opacity="0.85" />
+            {/* tongue */}
+            {beakGap > 3.5 && (
+              <ellipse cx={62} cy={124 + beakGap * 0.6} rx={beakGap * 0.6} ry={beakGap * 0.22} fill="#c44569" opacity="0.9" />
             )}
-            {/* head crest */}
-            <path d="M100 46 Q108 36 116 50 L100 56 Z" fill="#3b2410" />
+
+            {/* small wing tuft suggestion bottom-left */}
+            <path d="M88 142 Q92 152 100 150 Q96 144 90 142 Z" fill="#3b2410" />
           </g>
-          {/* feet */}
-          <path d="M88 158 L84 168 M92 158 L96 168" stroke="#c98a00" strokeWidth="3" strokeLinecap="round" />
-          <path d="M108 158 L104 168 M112 158 L116 168" stroke="#c98a00" strokeWidth="3" strokeLinecap="round" />
         </svg>
         {speaking && (
           <span className="absolute -right-1 -top-1 inline-flex h-3 w-3">
