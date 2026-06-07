@@ -117,7 +117,7 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
 
   // computed animation values
   const bob = Math.sin(tick / 8) * 3;
-  const wing = Math.sin(tick / 4) * (speaking ? 18 : 8);
+  void speaking;
   const blink = tick % 60 < 3 ? 0.1 : 1;
   const beakGap = beakOpen * 9;
 
