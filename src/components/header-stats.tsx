@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
-import { Heart, Flame, Zap } from "lucide-react";
-import { levelInfo, refillHeartsIfDue } from "@/lib/gamification";
+import { Heart, Flame, Zap, Snowflake, Plus } from "lucide-react";
+import { levelInfo, refillHeartsIfDue, buyStreakFreeze, STREAK_FREEZE_COST } from "@/lib/gamification";
 import { Link } from "@tanstack/react-router";
 
-type S = { xp: number; level: number; hearts: number; streak_count: number };
+type S = { xp: number; level: number; hearts: number; streak_count: number; streak_freezes: number };
 
 export function HeaderStats() {
   const { user } = useAuth();
@@ -18,7 +18,7 @@ export function HeaderStats() {
       await refillHeartsIfDue(user.id);
       const { data } = await supabase
         .from("profiles")
-        .select("xp, level, hearts, streak_count")
+        .select("xp, level, hearts, streak_count, streak_freezes")
         .eq("user_id", user.id)
         .maybeSingle();
       if (mounted && data) setS(data as S);
@@ -31,7 +31,13 @@ export function HeaderStats() {
         { event: "UPDATE", schema: "public", table: "profiles", filter: `user_id=eq.${user.id}` },
         (payload) => {
           const n = payload.new as any;
-          setS({ xp: n.xp, level: n.level, hearts: n.hearts, streak_count: n.streak_count });
+          setS({
+            xp: n.xp,
+            level: n.level,
+            hearts: n.hearts,
+            streak_count: n.streak_count,
+            streak_freezes: n.streak_freezes ?? 0,
+          });
         },
       )
       .subscribe();
@@ -60,6 +66,16 @@ export function HeaderStats() {
         <Flame className="h-3.5 w-3.5 text-warning" />
         <span>{s.streak_count}</span>
       </div>
+      <button
+        type="button"
+        onClick={() => user && buyStreakFreeze(user.id)}
+        title={`Streak freezes (click to buy 1 for ${STREAK_FREEZE_COST} XP)`}
+        className="group flex items-center gap-1 rounded-full bg-sky-500/15 px-2.5 py-1 font-medium text-sky-600 transition hover:bg-sky-500/25 dark:text-sky-300"
+      >
+        <Snowflake className="h-3.5 w-3.5" />
+        <span>{s.streak_freezes}</span>
+        <Plus className="h-3 w-3 opacity-0 transition group-hover:opacity-100" />
+      </button>
     </div>
   );
 }
