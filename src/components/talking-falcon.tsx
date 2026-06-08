@@ -3,14 +3,42 @@ import { Volume2, VolumeX, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Mood = "idle" | "happy" | "thinking" | "alert";
+export type FalconTheme = "slate" | "desert" | "midnight" | "arctic" | "ember";
+
+export type FalconCustomization = {
+  theme?: FalconTheme;
+  eyeGlow?: number;       // 0..1
+  featherDetail?: number; // 0..1
+};
 
 type Props = {
   name?: string | null;
-  lines?: string[];           // rotating bestie messages
-  autoSpeak?: boolean;        // speak first line on mount
+  lines?: string[];
+  autoSpeak?: boolean;
   mood?: Mood;
   compact?: boolean;
+} & FalconCustomization;
+
+const THEMES: Record<FalconTheme, { hood1: string; hood2: string; hood3: string; back1: string; back2: string; cheek1: string; cheek2: string; eyeRing: string; }> = {
+  slate:    { hood1: "#4a5566", hood2: "#2f3845", hood3: "#1b2230", back1: "#5d6b7d", back2: "#33404f", cheek1: "#fbf6ea", cheek2: "#d9d2bf", eyeRing: "#f0b820" },
+  desert:   { hood1: "#a8835a", hood2: "#7d5a36", hood3: "#4b341b", back1: "#bf9468", back2: "#7d5a36", cheek1: "#fff4d6", cheek2: "#e6cfa0", eyeRing: "#ffb020" },
+  midnight: { hood1: "#3b3f6e", hood2: "#23264a", hood3: "#0f1226", back1: "#4a4f80", back2: "#23264a", cheek1: "#e8e6ff", cheek2: "#b8b6e0", eyeRing: "#7c9cff" },
+  arctic:   { hood1: "#cfd8e3", hood2: "#9aa6b4", hood3: "#5d6772", back1: "#dbe3ec", back2: "#9aa6b4", cheek1: "#ffffff", cheek2: "#e1e6ec", eyeRing: "#ffcf30" },
+  ember:    { hood1: "#6b2a1f", hood2: "#3e150e", hood3: "#1c0703", back1: "#8a3a26", back2: "#3e150e", cheek1: "#ffe6d0", cheek2: "#e0b48a", eyeRing: "#ff7a1a" },
 };
+
+export function readFalconCustomization(): FalconCustomization {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem("sasha:falcon");
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+export function saveFalconCustomization(c: FalconCustomization) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("sasha:falcon", JSON.stringify(c));
+  window.dispatchEvent(new Event("sasha:falcon-change"));
+}
 
 const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-falcon`;
 
