@@ -227,14 +227,16 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
             />
 
             {/* subtle feather streaks on nape */}
-            <g stroke="#1b2230" strokeWidth="0.8" fill="none" opacity="0.55" strokeLinecap="round">
-              <path d="M150 80 Q162 92 168 108" />
-              <path d="M158 92 Q170 108 172 128" />
-              <path d="M160 112 Q172 128 168 148" />
-              <path d="M148 100 Q158 118 156 138" />
-              <path d="M170 100 Q180 116 178 138" />
-              <path d="M140 78 Q150 90 156 104" />
-            </g>
+            {detail > 0.15 && (
+              <g stroke={T.hood3} strokeWidth="0.8" fill="none" opacity={0.25 + detail * 0.5} strokeLinecap="round">
+                <path d="M150 80 Q162 92 168 108" />
+                <path d="M158 92 Q170 108 172 128" />
+                <path d="M160 112 Q172 128 168 148" />
+                {detail > 0.5 && <path d="M148 100 Q158 118 156 138" />}
+                {detail > 0.5 && <path d="M170 100 Q180 116 178 138" />}
+                {detail > 0.75 && <path d="M140 78 Q150 90 156 104" />}
+              </g>
+            )}
 
             {/* main head crown (dark hood) */}
             <path
