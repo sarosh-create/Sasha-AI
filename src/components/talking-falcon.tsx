@@ -253,13 +253,15 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
             />
 
             {/* hood subtle feather texture */}
-            <g stroke="#0d1320" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
-              <path d="M86 80 Q96 88 100 100" />
-              <path d="M104 74 Q112 84 116 98" />
-              <path d="M124 72 Q130 84 132 100" />
-              <path d="M142 76 Q146 88 146 102" />
-              <path d="M156 86 Q160 96 160 110" />
-            </g>
+            {detail > 0.25 && (
+              <g stroke={T.hood3} strokeWidth="0.7" fill="none" opacity={0.2 + detail * 0.5} strokeLinecap="round">
+                <path d="M86 80 Q96 88 100 100" />
+                <path d="M104 74 Q112 84 116 98" />
+                <path d="M124 72 Q130 84 132 100" />
+                {detail > 0.55 && <path d="M142 76 Q146 88 146 102" />}
+                {detail > 0.75 && <path d="M156 86 Q160 96 160 110" />}
+              </g>
+            )}
 
             {/* white cheek / throat patch */}
             <path
@@ -280,11 +282,13 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
                  Q92 148 88 152
                  Q94 142 96 132
                  Q98 122 100 116 Z"
-              fill="#1b2230"
+              fill={T.hood3}
             />
 
+            {/* eye glow halo */}
+            {glow > 0.05 && <circle cx="108" cy="104" r={14 + glow * 10} fill="url(#eyeGlowGrad)" />}
             {/* yellow eye ring */}
-            <ellipse cx="108" cy="104" rx="10" ry={9 * (0.3 + 0.7 * blink)} fill="#f0b820" />
+            <ellipse cx="108" cy="104" rx="10" ry={9 * (0.3 + 0.7 * blink)} fill={T.eyeRing} />
             {/* eye — dark fierce */}
             <ellipse cx="108" cy="104" rx="7.5" ry={7 * blink} fill="url(#eyeGrad)" />
             {/* pupil highlight */}
