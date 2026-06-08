@@ -48,9 +48,17 @@ const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-falcon`;
  * - Beak opens & closes while audio is playing (driven by Web Audio analyser)
  * - Voice via ElevenLabs edge function (tts-falcon)
  */
-export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", compact = false }: Props) {
-  const defaults = [
-    `Yo ${name ?? "champ"} — your falcon's locked in. Let's hunt some questions today.`,
+export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", compact = false, theme, eyeGlow, featherDetail }: Props) {
+  const [custom, setCustom] = useState<FalconCustomization>(() => readFalconCustomization());
+  useEffect(() => {
+    const onChange = () => setCustom(readFalconCustomization());
+    window.addEventListener("sasha:falcon-change", onChange);
+    return () => window.removeEventListener("sasha:falcon-change", onChange);
+  }, []);
+  const activeTheme: FalconTheme = theme ?? (custom.theme ?? "slate");
+  const glow = eyeGlow ?? custom.eyeGlow ?? 0.5;
+  const detail = featherDetail ?? custom.featherDetail ?? 0.6;
+  const T = THEMES[activeTheme];
     `I scanned your weak spots overnight. Tap a lesson and I'll guide you wing-to-wing.`,
     `Streak alive, mind sharp. One focused block beats three lazy ones — let's go.`,
     `Your exam isn't a monster — it's a pattern. I see it. Trust me, you'll see it too.`,
