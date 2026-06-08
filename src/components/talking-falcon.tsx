@@ -3,14 +3,42 @@ import { Volume2, VolumeX, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type Mood = "idle" | "happy" | "thinking" | "alert";
+export type FalconTheme = "slate" | "desert" | "midnight" | "arctic" | "ember";
+
+export type FalconCustomization = {
+  theme?: FalconTheme;
+  eyeGlow?: number;       // 0..1
+  featherDetail?: number; // 0..1
+};
 
 type Props = {
   name?: string | null;
-  lines?: string[];           // rotating bestie messages
-  autoSpeak?: boolean;        // speak first line on mount
+  lines?: string[];
+  autoSpeak?: boolean;
   mood?: Mood;
   compact?: boolean;
+} & FalconCustomization;
+
+const THEMES: Record<FalconTheme, { hood1: string; hood2: string; hood3: string; back1: string; back2: string; cheek1: string; cheek2: string; eyeRing: string; }> = {
+  slate:    { hood1: "#4a5566", hood2: "#2f3845", hood3: "#1b2230", back1: "#5d6b7d", back2: "#33404f", cheek1: "#fbf6ea", cheek2: "#d9d2bf", eyeRing: "#f0b820" },
+  desert:   { hood1: "#a8835a", hood2: "#7d5a36", hood3: "#4b341b", back1: "#bf9468", back2: "#7d5a36", cheek1: "#fff4d6", cheek2: "#e6cfa0", eyeRing: "#ffb020" },
+  midnight: { hood1: "#3b3f6e", hood2: "#23264a", hood3: "#0f1226", back1: "#4a4f80", back2: "#23264a", cheek1: "#e8e6ff", cheek2: "#b8b6e0", eyeRing: "#7c9cff" },
+  arctic:   { hood1: "#cfd8e3", hood2: "#9aa6b4", hood3: "#5d6772", back1: "#dbe3ec", back2: "#9aa6b4", cheek1: "#ffffff", cheek2: "#e1e6ec", eyeRing: "#ffcf30" },
+  ember:    { hood1: "#6b2a1f", hood2: "#3e150e", hood3: "#1c0703", back1: "#8a3a26", back2: "#3e150e", cheek1: "#ffe6d0", cheek2: "#e0b48a", eyeRing: "#ff7a1a" },
 };
+
+export function readFalconCustomization(): FalconCustomization {
+  if (typeof window === "undefined") return {};
+  try {
+    const raw = localStorage.getItem("sasha:falcon");
+    return raw ? JSON.parse(raw) : {};
+  } catch { return {}; }
+}
+export function saveFalconCustomization(c: FalconCustomization) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("sasha:falcon", JSON.stringify(c));
+  window.dispatchEvent(new Event("sasha:falcon-change"));
+}
 
 const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-falcon`;
 
@@ -20,7 +48,17 @@ const TTS_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/tts-falcon`;
  * - Beak opens & closes while audio is playing (driven by Web Audio analyser)
  * - Voice via ElevenLabs edge function (tts-falcon)
  */
-export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", compact = false }: Props) {
+export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", compact = false, theme, eyeGlow, featherDetail }: Props) {
+  const [custom, setCustom] = useState<FalconCustomization>(() => readFalconCustomization());
+  useEffect(() => {
+    const onChange = () => setCustom(readFalconCustomization());
+    window.addEventListener("sasha:falcon-change", onChange);
+    return () => window.removeEventListener("sasha:falcon-change", onChange);
+  }, []);
+  const activeTheme: FalconTheme = theme ?? (custom.theme ?? "slate");
+  const glow = eyeGlow ?? custom.eyeGlow ?? 0.5;
+  const detail = featherDetail ?? custom.featherDetail ?? 0.6;
+  const T = THEMES[activeTheme];
   const defaults = [
     `Yo ${name ?? "champ"} — your falcon's locked in. Let's hunt some questions today.`,
     `I scanned your weak spots overnight. Tap a lesson and I'll guide you wing-to-wing.`,
@@ -133,23 +171,22 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
           viewBox="0 0 240 200"
           width={compact ? 110 : 180}
           height={compact ? 96 : 160}
-          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}aa)` : "drop-shadow(0 3px 5px rgba(0,0,0,0.28))" }}
+          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 ${12 + glow * 18}px ${T.eyeRing}cc)` : `drop-shadow(0 3px 5px rgba(0,0,0,0.28)) drop-shadow(0 0 ${glow * 10}px ${T.eyeRing}66)` }}
           aria-label="Falcon mascot"
         >
           <defs>
-            {/* peregrine slate plumage */}
             <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4a5566" />
-              <stop offset="60%" stopColor="#2f3845" />
-              <stop offset="100%" stopColor="#1b2230" />
+              <stop offset="0%" stopColor={T.hood1} />
+              <stop offset="60%" stopColor={T.hood2} />
+              <stop offset="100%" stopColor={T.hood3} />
             </linearGradient>
             <linearGradient id="backGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#5d6b7d" />
-              <stop offset="100%" stopColor="#33404f" />
+              <stop offset="0%" stopColor={T.back1} />
+              <stop offset="100%" stopColor={T.back2} />
             </linearGradient>
             <linearGradient id="throatGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fbf6ea" />
-              <stop offset="100%" stopColor="#d9d2bf" />
+              <stop offset="0%" stopColor={T.cheek1} />
+              <stop offset="100%" stopColor={T.cheek2} />
             </linearGradient>
             <linearGradient id="beakGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#4a4f58" />
@@ -164,6 +201,10 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
               <stop offset="0%" stopColor="#3a2410" />
               <stop offset="70%" stopColor="#100806" />
               <stop offset="100%" stopColor="#000" />
+            </radialGradient>
+            <radialGradient id="eyeGlowGrad" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor={T.eyeRing} stopOpacity={glow} />
+              <stop offset="100%" stopColor={T.eyeRing} stopOpacity="0" />
             </radialGradient>
           </defs>
 
@@ -186,14 +227,16 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
             />
 
             {/* subtle feather streaks on nape */}
-            <g stroke="#1b2230" strokeWidth="0.8" fill="none" opacity="0.55" strokeLinecap="round">
-              <path d="M150 80 Q162 92 168 108" />
-              <path d="M158 92 Q170 108 172 128" />
-              <path d="M160 112 Q172 128 168 148" />
-              <path d="M148 100 Q158 118 156 138" />
-              <path d="M170 100 Q180 116 178 138" />
-              <path d="M140 78 Q150 90 156 104" />
-            </g>
+            {detail > 0.15 && (
+              <g stroke={T.hood3} strokeWidth="0.8" fill="none" opacity={0.25 + detail * 0.5} strokeLinecap="round">
+                <path d="M150 80 Q162 92 168 108" />
+                <path d="M158 92 Q170 108 172 128" />
+                <path d="M160 112 Q172 128 168 148" />
+                {detail > 0.5 && <path d="M148 100 Q158 118 156 138" />}
+                {detail > 0.5 && <path d="M170 100 Q180 116 178 138" />}
+                {detail > 0.75 && <path d="M140 78 Q150 90 156 104" />}
+              </g>
+            )}
 
             {/* main head crown (dark hood) */}
             <path
@@ -210,13 +253,15 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
             />
 
             {/* hood subtle feather texture */}
-            <g stroke="#0d1320" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
-              <path d="M86 80 Q96 88 100 100" />
-              <path d="M104 74 Q112 84 116 98" />
-              <path d="M124 72 Q130 84 132 100" />
-              <path d="M142 76 Q146 88 146 102" />
-              <path d="M156 86 Q160 96 160 110" />
-            </g>
+            {detail > 0.25 && (
+              <g stroke={T.hood3} strokeWidth="0.7" fill="none" opacity={0.2 + detail * 0.5} strokeLinecap="round">
+                <path d="M86 80 Q96 88 100 100" />
+                <path d="M104 74 Q112 84 116 98" />
+                <path d="M124 72 Q130 84 132 100" />
+                {detail > 0.55 && <path d="M142 76 Q146 88 146 102" />}
+                {detail > 0.75 && <path d="M156 86 Q160 96 160 110" />}
+              </g>
+            )}
 
             {/* white cheek / throat patch */}
             <path
@@ -237,11 +282,13 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
                  Q92 148 88 152
                  Q94 142 96 132
                  Q98 122 100 116 Z"
-              fill="#1b2230"
+              fill={T.hood3}
             />
 
+            {/* eye glow halo */}
+            {glow > 0.05 && <circle cx="108" cy="104" r={14 + glow * 10} fill="url(#eyeGlowGrad)" />}
             {/* yellow eye ring */}
-            <ellipse cx="108" cy="104" rx="10" ry={9 * (0.3 + 0.7 * blink)} fill="#f0b820" />
+            <ellipse cx="108" cy="104" rx="10" ry={9 * (0.3 + 0.7 * blink)} fill={T.eyeRing} />
             {/* eye — dark fierce */}
             <ellipse cx="108" cy="104" rx="7.5" ry={7 * blink} fill="url(#eyeGrad)" />
             {/* pupil highlight */}
@@ -322,11 +369,12 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
               fill="url(#backGrad)"
               opacity="0.9"
             />
-            {/* shoulder barring */}
-            <g stroke="#1b2230" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
-              <path d="M100 162 Q120 170 150 166" />
-              <path d="M104 170 Q124 176 148 172" />
-            </g>
+            {detail > 0.4 && (
+              <g stroke={T.hood3} strokeWidth="0.7" fill="none" opacity={0.2 + detail * 0.5} strokeLinecap="round">
+                <path d="M100 162 Q120 170 150 166" />
+                {detail > 0.65 && <path d="M104 170 Q124 176 148 172" />}
+              </g>
+            )}
           </g>
         </svg>
         {speaking && (

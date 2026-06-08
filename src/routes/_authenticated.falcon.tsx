@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Feather, Sparkles, Target, Flame, Clock, BookOpen, ShieldCheck, Brain } from "lucide-react";
+import { Feather, Sparkles, Target, Flame, Clock, BookOpen, ShieldCheck, Brain, Palette } from "lucide-react";
 import falconLogo from "@/assets/falcon-logo.png";
+import { TalkingFalcon, readFalconCustomization, saveFalconCustomization, type FalconTheme } from "@/components/talking-falcon";
+import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/_authenticated/falcon")({
   component: GuardianFalcon,
@@ -110,6 +112,8 @@ function GuardianFalcon() {
         </div>
       </div>
 
+      <FalconCustomizer />
+
       {/* Plan */}
       {plan && (
         <div className="mt-6 grid gap-6 md:grid-cols-3">
@@ -208,6 +212,70 @@ function Tags({ label, items, tone }: { label: string; items: string[]; tone: "s
         {items?.length ? items.map((s, i) => (
           <Badge key={i} variant="outline" className={tone === "success" ? "border-success/40 text-success" : "border-warning/40 text-warning"}>{s}</Badge>
         )) : <span className="text-xs text-muted-foreground">None yet.</span>}
+      </div>
+    </div>
+  );
+}
+
+const THEME_OPTIONS: { id: FalconTheme; label: string; swatch: string }[] = [
+  { id: "slate", label: "Slate (Peregrine)", swatch: "#2f3845" },
+  { id: "desert", label: "Desert (Saker)", swatch: "#7d5a36" },
+  { id: "midnight", label: "Midnight", swatch: "#23264a" },
+  { id: "arctic", label: "Arctic (Gyrfalcon)", swatch: "#9aa6b4" },
+  { id: "ember", label: "Ember", swatch: "#6b2a1f" },
+];
+
+function FalconCustomizer() {
+  const [c, setC] = useState(() => readFalconCustomization());
+  const update = (patch: Partial<typeof c>) => {
+    const next = { ...c, ...patch };
+    setC(next);
+    saveFalconCustomization(next);
+  };
+  const theme = c.theme ?? "slate";
+  const glow = c.eyeGlow ?? 0.5;
+  const detail = c.featherDetail ?? 0.6;
+
+  return (
+    <div className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-card">
+      <div className="flex items-center gap-2">
+        <Palette className="h-5 w-5 text-falcon-gold-deep" />
+        <h2 className="font-display text-lg font-semibold">Customize your Falcon</h2>
+      </div>
+      <p className="mt-1 text-sm text-muted-foreground">Pick a plumage, dial in the eye glow, and adjust feather detail. Saved on this device.</p>
+
+      <div className="mt-5 grid gap-6 md:grid-cols-[200px_1fr]">
+        <div className="flex justify-center rounded-xl border border-border bg-background p-3">
+          <TalkingFalcon name="you" compact lines={["Looking sharp."]} />
+        </div>
+
+        <div className="space-y-5">
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Color theme</p>
+            <div className="flex flex-wrap gap-2">
+              {THEME_OPTIONS.map((t) => (
+                <button
+                  key={t.id}
+                  onClick={() => update({ theme: t.id })}
+                  className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition ${theme === t.id ? "border-falcon-gold bg-falcon-gold/15" : "border-border hover:bg-accent"}`}
+                >
+                  <span className="h-3 w-3 rounded-full" style={{ background: t.swatch }} />
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Eye glow · {Math.round(glow * 100)}%</p>
+            <Slider value={[glow * 100]} min={0} max={100} step={5} onValueChange={(v) => update({ eyeGlow: v[0] / 100 })} />
+          </div>
+
+          <div>
+            <p className="mb-2 text-xs uppercase tracking-wide text-muted-foreground">Feather detail · {Math.round(detail * 100)}%</p>
+            <Slider value={[detail * 100]} min={0} max={100} step={5} onValueChange={(v) => update({ featherDetail: v[0] / 100 })} />
+          </div>
+        </div>
       </div>
     </div>
   );
