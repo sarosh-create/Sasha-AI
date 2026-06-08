@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
-import { Feather, Sparkles, Target, Flame, Clock, BookOpen, ShieldCheck, Brain } from "lucide-react";
+import { Feather, Sparkles, Target, Flame, Clock, BookOpen, ShieldCheck, Brain, Palette } from "lucide-react";
 import falconLogo from "@/assets/falcon-logo.png";
+import { TalkingFalcon, readFalconCustomization, saveFalconCustomization, type FalconTheme } from "@/components/talking-falcon";
+import { Slider } from "@/components/ui/slider";
 
 export const Route = createFileRoute("/_authenticated/falcon")({
   component: GuardianFalcon,
