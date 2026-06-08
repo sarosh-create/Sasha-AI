@@ -59,6 +59,8 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
   const glow = eyeGlow ?? custom.eyeGlow ?? 0.5;
   const detail = featherDetail ?? custom.featherDetail ?? 0.6;
   const T = THEMES[activeTheme];
+  const defaults = [
+    `Yo ${name ?? "champ"} — your falcon's locked in. Let's hunt some questions today.`,
     `I scanned your weak spots overnight. Tap a lesson and I'll guide you wing-to-wing.`,
     `Streak alive, mind sharp. One focused block beats three lazy ones — let's go.`,
     `Your exam isn't a monster — it's a pattern. I see it. Trust me, you'll see it too.`,
