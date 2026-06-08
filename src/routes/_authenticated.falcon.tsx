@@ -112,6 +112,8 @@ function GuardianFalcon() {
         </div>
       </div>
 
+      <FalconCustomizer />
+
       {/* Plan */}
       {plan && (
         <div className="mt-6 grid gap-6 md:grid-cols-3">
