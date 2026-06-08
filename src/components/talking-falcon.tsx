@@ -171,23 +171,22 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
           viewBox="0 0 240 200"
           width={compact ? 110 : 180}
           height={compact ? 96 : 160}
-          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 18px ${moodAccent}aa)` : "drop-shadow(0 3px 5px rgba(0,0,0,0.28))" }}
+          style={{ transform: `translateY(${bob}px)`, transition: "transform 80ms linear", filter: speaking ? `drop-shadow(0 0 ${12 + glow * 18}px ${T.eyeRing}cc)` : `drop-shadow(0 3px 5px rgba(0,0,0,0.28)) drop-shadow(0 0 ${glow * 10}px ${T.eyeRing}66)` }}
           aria-label="Falcon mascot"
         >
           <defs>
-            {/* peregrine slate plumage */}
             <linearGradient id="hoodGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4a5566" />
-              <stop offset="60%" stopColor="#2f3845" />
-              <stop offset="100%" stopColor="#1b2230" />
+              <stop offset="0%" stopColor={T.hood1} />
+              <stop offset="60%" stopColor={T.hood2} />
+              <stop offset="100%" stopColor={T.hood3} />
             </linearGradient>
             <linearGradient id="backGrad" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#5d6b7d" />
-              <stop offset="100%" stopColor="#33404f" />
+              <stop offset="0%" stopColor={T.back1} />
+              <stop offset="100%" stopColor={T.back2} />
             </linearGradient>
             <linearGradient id="throatGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#fbf6ea" />
-              <stop offset="100%" stopColor="#d9d2bf" />
+              <stop offset="0%" stopColor={T.cheek1} />
+              <stop offset="100%" stopColor={T.cheek2} />
             </linearGradient>
             <linearGradient id="beakGrad" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="#4a4f58" />
@@ -202,6 +201,10 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
               <stop offset="0%" stopColor="#3a2410" />
               <stop offset="70%" stopColor="#100806" />
               <stop offset="100%" stopColor="#000" />
+            </radialGradient>
+            <radialGradient id="eyeGlowGrad" cx="0.5" cy="0.5" r="0.5">
+              <stop offset="0%" stopColor={T.eyeRing} stopOpacity={glow} />
+              <stop offset="100%" stopColor={T.eyeRing} stopOpacity="0" />
             </radialGradient>
           </defs>
 
