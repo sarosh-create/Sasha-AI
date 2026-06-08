@@ -369,11 +369,12 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
               fill="url(#backGrad)"
               opacity="0.9"
             />
-            {/* shoulder barring */}
-            <g stroke="#1b2230" strokeWidth="0.7" fill="none" opacity="0.5" strokeLinecap="round">
-              <path d="M100 162 Q120 170 150 166" />
-              <path d="M104 170 Q124 176 148 172" />
-            </g>
+            {detail > 0.4 && (
+              <g stroke={T.hood3} strokeWidth="0.7" fill="none" opacity={0.2 + detail * 0.5} strokeLinecap="round">
+                <path d="M100 162 Q120 170 150 166" />
+                {detail > 0.65 && <path d="M104 170 Q124 176 148 172" />}
+              </g>
+            )}
           </g>
         </svg>
         {speaking && (
