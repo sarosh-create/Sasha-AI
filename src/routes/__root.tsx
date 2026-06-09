@@ -79,6 +79,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "google-site-verification", content: "z9IYrQTb4DsqWJLGCzzu6q5U30bcc10QIEAtOnhoWwU" },
       { title: "Sasha AI — Your personal AI study mentor" },
       { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and progress tracking. Free for students." },
       { name: "author", content: "Sasha AI" },
