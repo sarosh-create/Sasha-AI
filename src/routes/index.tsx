@@ -13,13 +13,14 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sasha AI — Your personal AI study mentor" },
-      { name: "description", content: "Personalized AI study plans, a tutor that teaches and tests you, strict-marked quizzes, and streak-based progress tracking. Free for students." },
-      { property: "og:title", content: "Sasha AI — Your personal AI study mentor" },
-      { property: "og:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
+      { title: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
+      { name: "description", content: "Sasha AI is a free study mentor for students: adaptive study plans, an AI tutor that re-teaches your weak spots, strict-marked exam quizzes, and a magical homework helper." },
+      { property: "og:title", content: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
+      { property: "og:description", content: "Adaptive plans, AI tutor, exam-style quizzes, homework helper and a customisable talking study buddy — free for students." },
       { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/" },
-      { name: "twitter:title", content: "Sasha AI — Your personal AI study mentor" },
-      { name: "twitter:description", content: "Adaptive lessons, AI tutor, exam-style quizzes and progress tracking — free for students." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
+      { name: "twitter:description", content: "Adaptive plans, AI tutor, exam-style quizzes, homework helper and a customisable talking study buddy — free for students." },
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/" }],
   }),

@@ -13,14 +13,17 @@ import ReactMarkdown from "react-markdown";
 export const Route = createFileRoute("/homework-helper")({
   head: () => ({
     meta: [
-      { title: "Magical AI Homework Helper — every subject, every style | Sasha AI" },
+      { title: "AI Homework Helper — every subject, free | Sasha AI" },
       { name: "description", content: "Free magical AI homework helper for every subject. Hologram-style explanations, learning-style adaptation, brain-dump organiser, focus timer with breaks." },
       { name: "keywords", content: "ai homework helper, free homework help, hologram explainer, focus timer, brain dump organizer, all subjects" },
-      { property: "og:title", content: "Magical AI Homework Helper — every subject, every style" },
+      { property: "og:title", content: "AI Homework Helper — every subject, free" },
       { property: "og:description", content: "Hologram explanations, learning-style tutoring, brain-dump organizer, focus timer." },
-      { property: "og:url", content: "/homework-helper" },
+      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:title", content: "AI Homework Helper — every subject, free" },
+      { name: "twitter:description", content: "Hologram explanations, learning-style tutoring, brain-dump organizer, focus timer." },
     ],
-    links: [{ rel: "canonical", href: "/homework-helper" }],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper" }],
   }),
   component: HomeworkHelper,
 });
