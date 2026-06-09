@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -17,6 +18,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated.teach'
+import { Route as AuthenticatedStudyBuddyRouteImport } from './routes/_authenticated.study-buddy'
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
@@ -53,6 +55,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MathSolverRoute = MathSolverRouteImport.update({
+  id: '/math-solver',
+  path: '/math-solver',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HomeworkHelperRoute = HomeworkHelperRouteImport.update({
   id: '/homework-helper',
   path: '/homework-helper',
@@ -85,6 +92,11 @@ const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
 const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
   id: '/teach',
   path: '/teach',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedStudyBuddyRoute = AuthenticatedStudyBuddyRouteImport.update({
+  id: '/study-buddy',
+  path: '/study-buddy',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedStaffChatRoute = AuthenticatedStaffChatRouteImport.update({
@@ -247,6 +259,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
+  '/math-solver': typeof MathSolverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -270,6 +283,7 @@ export interface FileRoutesByFullPath {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -286,6 +300,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
+  '/math-solver': typeof MathSolverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
@@ -309,6 +324,7 @@ export interface FileRoutesByTo {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -327,6 +343,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
+  '/math-solver': typeof MathSolverRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -350,6 +367,7 @@ export interface FileRoutesById {
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/_authenticated/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
@@ -368,6 +386,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/homework-helper'
+    | '/math-solver'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
@@ -391,6 +410,7 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
+    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -407,6 +427,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/homework-helper'
+    | '/math-solver'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
@@ -430,6 +451,7 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
+    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -447,6 +469,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/homework-helper'
+    | '/math-solver'
     | '/sitemap.xml'
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
@@ -470,6 +493,7 @@ export interface FileRouteTypes {
     | '/_authenticated/schemes'
     | '/_authenticated/settings'
     | '/_authenticated/staff-chat'
+    | '/_authenticated/study-buddy'
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
@@ -488,6 +512,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   HomeworkHelperRoute: typeof HomeworkHelperRoute
+  MathSolverRoute: typeof MathSolverRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -498,6 +523,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/math-solver': {
+      id: '/math-solver'
+      path: '/math-solver'
+      fullPath: '/math-solver'
+      preLoaderRoute: typeof MathSolverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/homework-helper': {
@@ -547,6 +579,13 @@ declare module '@tanstack/react-router' {
       path: '/teach'
       fullPath: '/teach'
       preLoaderRoute: typeof AuthenticatedTeachRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/study-buddy': {
+      id: '/_authenticated/study-buddy'
+      path: '/study-buddy'
+      fullPath: '/study-buddy'
+      preLoaderRoute: typeof AuthenticatedStudyBuddyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/staff-chat': {
@@ -813,6 +852,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
+  AuthenticatedStudyBuddyRoute: typeof AuthenticatedStudyBuddyRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
@@ -847,6 +887,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
+  AuthenticatedStudyBuddyRoute: AuthenticatedStudyBuddyRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
@@ -867,18 +908,9 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   HomeworkHelperRoute: HomeworkHelperRoute,
+  MathSolverRoute: MathSolverRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
