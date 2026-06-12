@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RateRouteImport } from './routes/rate'
 import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -39,6 +40,7 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedConverterRouteImport } from './routes/_authenticated.converter'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
+import { Route as AuthenticatedAvatarBuilderRouteImport } from './routes/_authenticated.avatar-builder'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
@@ -53,6 +55,11 @@ import { Route as AuthenticatedCommunityIdRouteImport } from './routes/_authenti
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RateRoute = RateRouteImport.update({
+  id: '/rate',
+  path: '/rate',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MathSolverRoute = MathSolverRouteImport.update({
@@ -201,6 +208,12 @@ const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
   path: '/classes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedAvatarBuilderRoute =
+  AuthenticatedAvatarBuilderRouteImport.update({
+    id: '/avatar-builder',
+    path: '/avatar-builder',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -260,9 +273,11 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
@@ -301,9 +316,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
@@ -344,9 +361,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/_authenticated/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
   '/_authenticated/converter': typeof AuthenticatedConverterRoute
@@ -387,9 +406,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/rate'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
+    | '/avatar-builder'
     | '/classes'
     | '/community'
     | '/converter'
@@ -428,9 +449,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/rate'
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
+    | '/avatar-builder'
     | '/classes'
     | '/community'
     | '/converter'
@@ -470,9 +493,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/rate'
     | '/sitemap.xml'
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
+    | '/_authenticated/avatar-builder'
     | '/_authenticated/classes'
     | '/_authenticated/community'
     | '/_authenticated/converter'
@@ -513,6 +538,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HomeworkHelperRoute: typeof HomeworkHelperRoute
   MathSolverRoute: typeof MathSolverRoute
+  RateRoute: typeof RateRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
 }
 
@@ -523,6 +549,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rate': {
+      id: '/rate'
+      path: '/rate'
+      fullPath: '/rate'
+      preLoaderRoute: typeof RateRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/math-solver': {
@@ -728,6 +761,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClassesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/avatar-builder': {
+      id: '/_authenticated/avatar-builder'
+      path: '/avatar-builder'
+      fullPath: '/avatar-builder'
+      preLoaderRoute: typeof AuthenticatedAvatarBuilderRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
@@ -832,6 +872,7 @@ const AuthenticatedExplainersRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+  AuthenticatedAvatarBuilderRoute: typeof AuthenticatedAvatarBuilderRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
   AuthenticatedConverterRoute: typeof AuthenticatedConverterRoute
@@ -867,6 +908,7 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+  AuthenticatedAvatarBuilderRoute: AuthenticatedAvatarBuilderRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
   AuthenticatedConverterRoute: AuthenticatedConverterRoute,
@@ -909,6 +951,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   HomeworkHelperRoute: HomeworkHelperRoute,
   MathSolverRoute: MathSolverRoute,
+  RateRoute: RateRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
 }
 export const routeTree = rootRouteImport
