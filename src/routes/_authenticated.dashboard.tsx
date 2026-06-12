@@ -87,10 +87,8 @@ function Dashboard() {
     <div className="container mx-auto max-w-6xl px-6 py-8">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-sm text-muted-foreground">Welcome back</p>
-          <h1 className="font-display text-3xl font-semibold">
-            Study Dashboard — Hi {profile.display_name ?? "there"} 👋
-          </h1>
+          <h1 className="font-display text-3xl font-semibold">Study Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Welcome back, {profile.display_name ?? "friend"} 👋</p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           {daysToExam !== null && (
