@@ -23,6 +23,8 @@ import {
   Crosshair,
   Wand2,
   Brain,
+  Palette,
+  Star,
 } from "lucide-react";
 
 import {
@@ -46,6 +48,7 @@ const study = [
   { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
   { title: "Study Buddy", url: "/study-buddy", icon: Sparkles },
+  { title: "Avatar Builder", url: "/avatar-builder", icon: Palette },
   { title: "Homework Helper", url: "/homework-helper", icon: Wand2 },
   { title: "Math Solver", url: "/math-solver", icon: Brain },
   { title: "Live Classes", url: "/classes", icon: GraduationCap },
@@ -64,6 +67,7 @@ const social = [
   { title: "Study Rooms", url: "/rooms", icon: Users },
   { title: "Leaderboard", url: "/leaderboard", icon: Crown },
   { title: "Achievements", url: "/achievements", icon: Trophy },
+  { title: "Rate & Suggest", url: "/rate", icon: Star },
 ];
 
 export function AppSidebar() {

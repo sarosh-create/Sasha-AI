@@ -11,3 +11,9 @@ verify_jwt = false
 
 [functions.tts-falcon]
 verify_jwt = false
+
+[functions.notify-signup]
+verify_jwt = false
+
+[functions.generate-avatar]
+verify_jwt = false
