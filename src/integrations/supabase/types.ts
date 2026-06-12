@@ -390,6 +390,39 @@ export type Database = {
         }
         Relationships: []
       }
+      feedback: {
+        Row: {
+          category: string | null
+          created_at: string
+          display_name: string | null
+          email: string | null
+          id: string
+          message: string
+          rating: number | null
+          user_id: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          message: string
+          rating?: number | null
+          user_id?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          display_name?: string | null
+          email?: string | null
+          id?: string
+          message?: string
+          rating?: number | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       generated_artifacts: {
         Row: {
           artifact_kind: string
@@ -767,6 +800,7 @@ export type Database = {
         Row: {
           a11y_mode: string
           account_type: string
+          avatar_config: Json | null
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
@@ -792,6 +826,7 @@ export type Database = {
         Insert: {
           a11y_mode?: string
           account_type?: string
+          avatar_config?: Json | null
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
@@ -817,6 +852,7 @@ export type Database = {
         Update: {
           a11y_mode?: string
           account_type?: string
+          avatar_config?: Json | null
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
