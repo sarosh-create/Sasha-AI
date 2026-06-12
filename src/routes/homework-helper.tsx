@@ -93,10 +93,22 @@ function HomeworkHelper() {
             <TabsTrigger value="focus" className="gap-1"><Pause className="h-3.5 w-3.5" /> Time freeze</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="solve"><SolvePanel /></TabsContent>
-          <TabsContent value="dump"><BrainDumpPanel /></TabsContent>
-          <TabsContent value="hologram"><HologramPanel /></TabsContent>
-          <TabsContent value="focus"><FocusPanel /></TabsContent>
+          <TabsContent value="solve">
+            <h2 className="sr-only">Step-by-step homework solver</h2>
+            <SolvePanel />
+          </TabsContent>
+          <TabsContent value="dump">
+            <h2 className="sr-only">Brain dump organiser</h2>
+            <BrainDumpPanel />
+          </TabsContent>
+          <TabsContent value="hologram">
+            <h2 className="sr-only">Hologram-style topic walkthrough</h2>
+            <HologramPanel />
+          </TabsContent>
+          <TabsContent value="focus">
+            <h2 className="sr-only">Focus timer & time freeze</h2>
+            <FocusPanel />
+          </TabsContent>
         </Tabs>
       </main>
     </div>

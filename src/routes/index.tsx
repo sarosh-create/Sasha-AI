@@ -13,14 +13,15 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
-      { name: "description", content: "Sasha AI is a free study mentor for students: adaptive study plans, an AI tutor that re-teaches your weak spots, strict-marked exam quizzes, and a magical homework helper." },
-      { property: "og:title", content: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
-      { property: "og:description", content: "Adaptive plans, AI tutor, exam-style quizzes, homework helper and a customisable talking study buddy — free for students." },
+      { title: "Sasha AI — Free AI study mentor & exam coach" },
+      { name: "description", content: "Free AI study mentor: adaptive plans, AI tutor, strict exam-style quizzes, magical homework helper and a custom study buddy." },
+      { property: "og:title", content: "Sasha AI — Free AI study mentor & exam coach" },
+      { property: "og:description", content: "Adaptive plans, an AI tutor, strict-marked exam quizzes and a customisable study buddy. Free for students." },
       { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/" },
       { property: "og:type", content: "website" },
-      { name: "twitter:title", content: "Sasha AI — Free AI study mentor, tutor & quiz coach" },
-      { name: "twitter:description", content: "Adaptive plans, AI tutor, exam-style quizzes, homework helper and a customisable talking study buddy — free for students." },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Sasha AI — Free AI study mentor & exam coach" },
+      { name: "twitter:description", content: "Adaptive plans, AI tutor, strict-marked exam quizzes, magical homework helper, custom study buddy." },
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/" }],
   }),
