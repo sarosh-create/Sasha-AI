@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, MessageSquare, ScrollText, Sparkles, Target, Map, CheckCircle2 } from "lucide-react";
-import { TalkingFalcon } from "@/components/talking-falcon";
+import { DollAvatar, DEFAULT_DOLL, type DollConfig } from "@/components/doll-avatar";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
