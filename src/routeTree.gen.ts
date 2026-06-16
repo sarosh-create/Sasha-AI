@@ -34,7 +34,6 @@ import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.la
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
 import { Route as AuthenticatedExaminerRouteImport } from './routes/_authenticated.examiner'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
-import { Route as AuthenticatedDollBuilderRouteImport } from './routes/_authenticated.doll-builder'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedConverterRouteImport } from './routes/_authenticated.converter'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
@@ -176,12 +175,6 @@ const AuthenticatedEventsRoute = AuthenticatedEventsRouteImport.update({
   path: '/events',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedDollBuilderRoute =
-  AuthenticatedDollBuilderRouteImport.update({
-    id: '/doll-builder',
-    path: '/doll-builder',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -269,7 +262,6 @@ export interface FileRoutesByFullPath {
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/doll-builder': typeof AuthenticatedDollBuilderRoute
   '/events': typeof AuthenticatedEventsRoute
   '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -310,7 +302,6 @@ export interface FileRoutesByTo {
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
-  '/doll-builder': typeof AuthenticatedDollBuilderRoute
   '/events': typeof AuthenticatedEventsRoute
   '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -353,7 +344,6 @@ export interface FileRoutesById {
   '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
   '/_authenticated/converter': typeof AuthenticatedConverterRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
-  '/_authenticated/doll-builder': typeof AuthenticatedDollBuilderRoute
   '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/examiner': typeof AuthenticatedExaminerRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
@@ -396,7 +386,6 @@ export interface FileRouteTypes {
     | '/community'
     | '/converter'
     | '/dashboard'
-    | '/doll-builder'
     | '/events'
     | '/examiner'
     | '/explainers'
@@ -437,7 +426,6 @@ export interface FileRouteTypes {
     | '/community'
     | '/converter'
     | '/dashboard'
-    | '/doll-builder'
     | '/events'
     | '/examiner'
     | '/explainers'
@@ -479,7 +467,6 @@ export interface FileRouteTypes {
     | '/_authenticated/community'
     | '/_authenticated/converter'
     | '/_authenticated/dashboard'
-    | '/_authenticated/doll-builder'
     | '/_authenticated/events'
     | '/_authenticated/examiner'
     | '/_authenticated/explainers'
@@ -695,13 +682,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEventsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/doll-builder': {
-      id: '/_authenticated/doll-builder'
-      path: '/doll-builder'
-      fullPath: '/doll-builder'
-      preLoaderRoute: typeof AuthenticatedDollBuilderRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -838,7 +818,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
   AuthenticatedConverterRoute: typeof AuthenticatedConverterRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
-  AuthenticatedDollBuilderRoute: typeof AuthenticatedDollBuilderRoute
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExaminerRoute: typeof AuthenticatedExaminerRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
@@ -872,7 +851,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
   AuthenticatedConverterRoute: AuthenticatedConverterRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
-  AuthenticatedDollBuilderRoute: AuthenticatedDollBuilderRoute,
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExaminerRoute: AuthenticatedExaminerRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
@@ -915,3 +893,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

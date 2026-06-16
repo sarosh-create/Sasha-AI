@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, MessageSquare, ScrollText, Sparkles, Target, Map, CheckCircle2 } from "lucide-react";
-import { DollAvatar, DEFAULT_DOLL, type DollConfig } from "@/components/doll-avatar";
+import { TalkingFalcon } from "@/components/talking-falcon";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -181,14 +181,14 @@ function Dashboard() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-6 shadow-card">
-            <DollMascot
-              userId={user?.id}
+            <TalkingFalcon
               name={profile.display_name}
+              mood={daysToExam !== null && daysToExam < 14 ? "alert" : "idle"}
               lines={[
-                `Hey ${profile.display_name ?? "champ"} — ${minutesToday} of ${profile.daily_minutes_goal} min done today.`,
-                nextLesson ? `Next up: "${nextLesson.title}" — ${nextLesson.est_minutes} min.` : "Path's clear — let's spin up a fresh one.",
-                daysToExam !== null ? `${daysToExam} days till exam. We've got this.` : `Set your exam date in Settings and I'll countdown for you.`,
-                `Streak: ${profile.streak_count} 🔥. Don't break it on me.`,
+                `Hey ${profile.display_name ?? "champ"} — ${minutesToday} of ${profile.daily_minutes_goal} min done today. Let's wing the rest.`,
+                nextLesson ? `Next swoop: "${nextLesson.title}" — ${nextLesson.est_minutes} min. I'll guide every step.` : "Path's clear, captain. Let's spin up a fresh one.",
+                daysToExam !== null ? `${daysToExam} days till exam. I see the pattern — trust the falcon.` : `Set your exam date in Settings and I'll countdown for you.`,
+                `Streak: ${profile.streak_count} 🔥. Don't break my heart, partner.`,
               ]}
             />
           </div>
@@ -204,32 +204,6 @@ function StatCard({ label, value, children }: { label: string; value: string; ch
       <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-1 font-display text-2xl font-semibold">{value}</p>
       {children}
-    </div>
-  );
-}
-
-function DollMascot({ userId, name, lines }: { userId?: string; name: string | null; lines: string[] }) {
-  const [cfg, setCfg] = useState<DollConfig>(DEFAULT_DOLL);
-  const [idx, setIdx] = useState(0);
-  useEffect(() => {
-    if (!userId) return;
-    supabase.from("profiles").select("avatar_config").eq("user_id", userId).maybeSingle()
-      .then(({ data }) => {
-        if (data?.avatar_config && typeof data.avatar_config === "object") {
-          setCfg({ ...DEFAULT_DOLL, ...(data.avatar_config as Partial<DollConfig>) });
-        }
-      });
-  }, [userId]);
-  useEffect(() => {
-    const t = setInterval(() => setIdx((i) => (i + 1) % lines.length), 6000);
-    return () => clearInterval(t);
-  }, [lines.length]);
-  return (
-    <div className="flex flex-col items-center gap-3 text-center">
-      <DollAvatar config={cfg} size={180} />
-      <p className="font-display text-lg font-medium">{name ?? "Buddy"}</p>
-      <p className="min-h-[3rem] text-sm text-muted-foreground">{lines[idx]}</p>
-      <Link to="/doll-builder" className="text-xs font-semibold uppercase tracking-wide text-primary hover:underline">Customize doll →</Link>
     </div>
   );
 }
