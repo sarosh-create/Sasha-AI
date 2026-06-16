@@ -47,8 +47,6 @@ const study = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Study Path", url: "/path", icon: Map },
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
-  { title: "Study Buddy", url: "/study-buddy", icon: Sparkles },
-  { title: "Avatar Builder", url: "/avatar-builder", icon: Palette },
   { title: "Homework Helper", url: "/homework-helper", icon: Wand2 },
   { title: "Math Solver", url: "/math-solver", icon: Brain },
   { title: "Live Classes", url: "/classes", icon: GraduationCap },

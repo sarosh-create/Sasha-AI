@@ -19,7 +19,6 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated.teach'
-import { Route as AuthenticatedStudyBuddyRouteImport } from './routes/_authenticated.study-buddy'
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
@@ -32,7 +31,6 @@ import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.
 import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
-import { Route as AuthenticatedFalconRouteImport } from './routes/_authenticated.falcon'
 import { Route as AuthenticatedExplainersRouteImport } from './routes/_authenticated.explainers'
 import { Route as AuthenticatedExaminerRouteImport } from './routes/_authenticated.examiner'
 import { Route as AuthenticatedEventsRouteImport } from './routes/_authenticated.events'
@@ -40,7 +38,6 @@ import { Route as AuthenticatedDashboardRouteImport } from './routes/_authentica
 import { Route as AuthenticatedConverterRouteImport } from './routes/_authenticated.converter'
 import { Route as AuthenticatedCommunityRouteImport } from './routes/_authenticated.community'
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
-import { Route as AuthenticatedAvatarBuilderRouteImport } from './routes/_authenticated.avatar-builder'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
@@ -99,11 +96,6 @@ const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
 const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
   id: '/teach',
   path: '/teach',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedStudyBuddyRoute = AuthenticatedStudyBuddyRouteImport.update({
-  id: '/study-buddy',
-  path: '/study-buddy',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedStaffChatRoute = AuthenticatedStaffChatRouteImport.update({
@@ -168,11 +160,6 @@ const AuthenticatedLabRoute = AuthenticatedLabRouteImport.update({
   path: '/lab',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedFalconRoute = AuthenticatedFalconRouteImport.update({
-  id: '/falcon',
-  path: '/falcon',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
 const AuthenticatedExplainersRoute = AuthenticatedExplainersRouteImport.update({
   id: '/explainers',
   path: '/explainers',
@@ -208,12 +195,6 @@ const AuthenticatedClassesRoute = AuthenticatedClassesRouteImport.update({
   path: '/classes',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAvatarBuilderRoute =
-  AuthenticatedAvatarBuilderRouteImport.update({
-    id: '/avatar-builder',
-    path: '/avatar-builder',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -277,7 +258,6 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
@@ -285,7 +265,6 @@ export interface FileRoutesByFullPath {
   '/events': typeof AuthenticatedEventsRoute
   '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
-  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/mentors': typeof AuthenticatedMentorsRoute
@@ -298,7 +277,6 @@ export interface FileRoutesByFullPath {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
-  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -320,7 +298,6 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
-  '/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/classes': typeof AuthenticatedClassesRoute
   '/community': typeof AuthenticatedCommunityRouteWithChildren
   '/converter': typeof AuthenticatedConverterRoute
@@ -328,7 +305,6 @@ export interface FileRoutesByTo {
   '/events': typeof AuthenticatedEventsRoute
   '/examiner': typeof AuthenticatedExaminerRoute
   '/explainers': typeof AuthenticatedExplainersRouteWithChildren
-  '/falcon': typeof AuthenticatedFalconRoute
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/mentors': typeof AuthenticatedMentorsRoute
@@ -341,7 +317,6 @@ export interface FileRoutesByTo {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
-  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -365,7 +340,6 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
-  '/_authenticated/avatar-builder': typeof AuthenticatedAvatarBuilderRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
   '/_authenticated/community': typeof AuthenticatedCommunityRouteWithChildren
   '/_authenticated/converter': typeof AuthenticatedConverterRoute
@@ -373,7 +347,6 @@ export interface FileRoutesById {
   '/_authenticated/events': typeof AuthenticatedEventsRoute
   '/_authenticated/examiner': typeof AuthenticatedExaminerRoute
   '/_authenticated/explainers': typeof AuthenticatedExplainersRouteWithChildren
-  '/_authenticated/falcon': typeof AuthenticatedFalconRoute
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
@@ -386,7 +359,6 @@ export interface FileRoutesById {
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
-  '/_authenticated/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
@@ -410,7 +382,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
-    | '/avatar-builder'
     | '/classes'
     | '/community'
     | '/converter'
@@ -418,7 +389,6 @@ export interface FileRouteTypes {
     | '/events'
     | '/examiner'
     | '/explainers'
-    | '/falcon'
     | '/lab'
     | '/leaderboard'
     | '/mentors'
@@ -431,7 +401,6 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
-    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -453,7 +422,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/achievements'
     | '/admin'
-    | '/avatar-builder'
     | '/classes'
     | '/community'
     | '/converter'
@@ -461,7 +429,6 @@ export interface FileRouteTypes {
     | '/events'
     | '/examiner'
     | '/explainers'
-    | '/falcon'
     | '/lab'
     | '/leaderboard'
     | '/mentors'
@@ -474,7 +441,6 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
-    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -497,7 +463,6 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
-    | '/_authenticated/avatar-builder'
     | '/_authenticated/classes'
     | '/_authenticated/community'
     | '/_authenticated/converter'
@@ -505,7 +470,6 @@ export interface FileRouteTypes {
     | '/_authenticated/events'
     | '/_authenticated/examiner'
     | '/_authenticated/explainers'
-    | '/_authenticated/falcon'
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
     | '/_authenticated/mentors'
@@ -518,7 +482,6 @@ export interface FileRouteTypes {
     | '/_authenticated/schemes'
     | '/_authenticated/settings'
     | '/_authenticated/staff-chat'
-    | '/_authenticated/study-buddy'
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
@@ -614,13 +577,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedTeachRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/study-buddy': {
-      id: '/_authenticated/study-buddy'
-      path: '/study-buddy'
-      fullPath: '/study-buddy'
-      preLoaderRoute: typeof AuthenticatedStudyBuddyRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/staff-chat': {
       id: '/_authenticated/staff-chat'
       path: '/staff-chat'
@@ -705,13 +661,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLabRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/falcon': {
-      id: '/_authenticated/falcon'
-      path: '/falcon'
-      fullPath: '/falcon'
-      preLoaderRoute: typeof AuthenticatedFalconRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/explainers': {
       id: '/_authenticated/explainers'
       path: '/explainers'
@@ -759,13 +708,6 @@ declare module '@tanstack/react-router' {
       path: '/classes'
       fullPath: '/classes'
       preLoaderRoute: typeof AuthenticatedClassesRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/avatar-builder': {
-      id: '/_authenticated/avatar-builder'
-      path: '/avatar-builder'
-      fullPath: '/avatar-builder'
-      preLoaderRoute: typeof AuthenticatedAvatarBuilderRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/admin': {
@@ -872,7 +814,6 @@ const AuthenticatedExplainersRouteWithChildren =
 interface AuthenticatedRouteChildren {
   AuthenticatedAchievementsRoute: typeof AuthenticatedAchievementsRoute
   AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
-  AuthenticatedAvatarBuilderRoute: typeof AuthenticatedAvatarBuilderRoute
   AuthenticatedClassesRoute: typeof AuthenticatedClassesRoute
   AuthenticatedCommunityRoute: typeof AuthenticatedCommunityRouteWithChildren
   AuthenticatedConverterRoute: typeof AuthenticatedConverterRoute
@@ -880,7 +821,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedEventsRoute: typeof AuthenticatedEventsRoute
   AuthenticatedExaminerRoute: typeof AuthenticatedExaminerRoute
   AuthenticatedExplainersRoute: typeof AuthenticatedExplainersRouteWithChildren
-  AuthenticatedFalconRoute: typeof AuthenticatedFalconRoute
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
   AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
@@ -893,7 +833,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
-  AuthenticatedStudyBuddyRoute: typeof AuthenticatedStudyBuddyRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
@@ -908,7 +847,6 @@ interface AuthenticatedRouteChildren {
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAchievementsRoute: AuthenticatedAchievementsRoute,
   AuthenticatedAdminRoute: AuthenticatedAdminRoute,
-  AuthenticatedAvatarBuilderRoute: AuthenticatedAvatarBuilderRoute,
   AuthenticatedClassesRoute: AuthenticatedClassesRoute,
   AuthenticatedCommunityRoute: AuthenticatedCommunityRouteWithChildren,
   AuthenticatedConverterRoute: AuthenticatedConverterRoute,
@@ -916,7 +854,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedEventsRoute: AuthenticatedEventsRoute,
   AuthenticatedExaminerRoute: AuthenticatedExaminerRoute,
   AuthenticatedExplainersRoute: AuthenticatedExplainersRouteWithChildren,
-  AuthenticatedFalconRoute: AuthenticatedFalconRoute,
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
   AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
@@ -929,7 +866,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
-  AuthenticatedStudyBuddyRoute: AuthenticatedStudyBuddyRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
