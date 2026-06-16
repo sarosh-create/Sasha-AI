@@ -42,8 +42,9 @@ function RatePage() {
     setSubmitting(true);
     const { error } = await supabase.from("feedback").insert({
       user_id: user?.id ?? null,
-      email: email.trim() || null,
-      display_name: name.trim() || null,
+      // Contact info is only stored for signed-in users (RLS rejects email/name from anonymous submissions to prevent impersonation).
+      email: user ? (email.trim() || null) : null,
+      display_name: user ? (name.trim() || null) : null,
       rating,
       category,
       message: message.trim().slice(0, 4000),
