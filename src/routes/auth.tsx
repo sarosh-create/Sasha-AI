@@ -10,7 +10,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 
+/** Only allow same-origin relative paths as a post-login redirect target. */
+function safeNext(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({ next: safeNext(s.next) ?? undefined }),
   head: () => ({
     meta: [
       { title: "Sign in — Sasha AI" },
