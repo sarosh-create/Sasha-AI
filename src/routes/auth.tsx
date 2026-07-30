@@ -65,7 +65,7 @@ function AuthPage() {
           setBusy(false);
           return;
         }
-        const redirectUrl = `${window.location.origin}/dashboard`;
+        const redirectUrl = `${window.location.origin}${returnTo ?? "/dashboard"}`;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
