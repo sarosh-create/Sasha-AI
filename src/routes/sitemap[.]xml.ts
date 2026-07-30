@@ -44,18 +44,16 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/rooms", changefreq: "weekly", priority: "0.6" },
           { path: "/schemes", changefreq: "weekly", priority: "0.6" },
           { path: "/settings", changefreq: "monthly", priority: "0.5" },
+          { path: "/study-buddy", changefreq: "weekly", priority: "0.7" },
           { path: "/staff-chat", changefreq: "weekly", priority: "0.5" },
           { path: "/teach", changefreq: "weekly", priority: "0.7" },
           { path: "/teacher", changefreq: "weekly", priority: "0.7" },
           { path: "/tutor", changefreq: "weekly", priority: "0.8" },
         ];
-        const lastmod = new Date().toISOString().slice(0, 10);
-
         const urls = entries.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
-            `    <lastmod>${lastmod}</lastmod>`,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,

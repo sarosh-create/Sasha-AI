@@ -49,6 +49,7 @@ const study = [
   { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
   { title: "Homework Helper", url: "/homework-helper", icon: Wand2 },
   { title: "Math Solver", url: "/math-solver", icon: Brain },
+  { title: "Study Buddy", url: "/study-buddy", icon: Palette },
   { title: "Live Classes", url: "/classes", icon: GraduationCap },
   { title: "Events", url: "/events", icon: CalendarDays },
   { title: "Schemes", url: "/schemes", icon: BookMarked },
