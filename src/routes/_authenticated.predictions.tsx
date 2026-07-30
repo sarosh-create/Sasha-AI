@@ -14,6 +14,10 @@ export const Route = createFileRoute("/_authenticated/predictions")({
   head: () => ({ meta: [
     { title: "Exam Predictions — Most likely topics | Sasha AI" },
     { name: "description", content: "AI-ranked 'most likely to appear' topics for your next exam, based on past papers, examiner trends, and your weak areas." },
+      { property: "og:title", content: "Exam Predictions — Most likely topics | Sasha AI" },
+      { property: "og:description", content: "AI-ranked 'most likely to appear' topics for your next exam, based on past papers, examiner trends, and your weak areas." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
   ] }),
 });
 

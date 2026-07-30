@@ -16,6 +16,10 @@ export const Route = createFileRoute("/_authenticated/converter")({
   head: () => ({ meta: [
     { title: "Universal Content Converter — Notes, flashcards, mindmaps | Sasha AI" },
     { name: "description", content: "Paste any text and instantly turn it into notes, flashcards, mindmaps, MCQs, summaries, or a formula sheet." },
+      { property: "og:title", content: "Universal Content Converter — Notes, flashcards, mindmaps | Sasha AI" },
+      { property: "og:description", content: "Paste any text and instantly turn it into notes, flashcards, mindmaps, MCQs, summaries, or a formula sheet." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
   ] }),
 });
 

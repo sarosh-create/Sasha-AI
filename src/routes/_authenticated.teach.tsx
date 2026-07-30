@@ -14,6 +14,10 @@ export const Route = createFileRoute("/_authenticated/teach")({
   head: () => ({ meta: [
     { title: "Teach-to-Learn — Teach the AI to master it | Sasha AI" },
     { name: "description", content: "Teach the AI a topic. It plays a curious student, asks harder and harder questions, and confirms when you've mastered it." },
+      { property: "og:title", content: "Teach-to-Learn — Teach the AI to master it | Sasha AI" },
+      { property: "og:description", content: "Teach the AI a topic. It plays a curious student, asks harder and harder questions, and confirms when you've mastered it." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
   ] }),
 });
 
