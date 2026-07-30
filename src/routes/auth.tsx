@@ -105,14 +105,14 @@ function AuthPage() {
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
             body: JSON.stringify({ email, name, source: accountType }),
           }).catch(() => {});
-          nav({ to: "/onboarding" });
+          goNext("/onboarding");
         } else {
           toast.success("Check your email to confirm your account.");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        nav({ to: "/dashboard" });
+        goNext("/dashboard");
       }
     } catch (err: any) {
       toast.error(err.message ?? "Something went wrong");
@@ -124,7 +124,7 @@ function AuthPage() {
   const google = async () => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/dashboard",
+      redirect_uri: window.location.origin + (returnTo ?? "/dashboard"),
     });
     if (result.error) {
       toast.error(result.error.message ?? "Google sign-in failed");
@@ -132,7 +132,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    nav({ to: "/dashboard" });
+    goNext("/dashboard");
   };
 
   return (
