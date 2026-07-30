@@ -34,6 +34,12 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
+  const { next } = Route.useSearch();
+  const returnTo = safeNext(next);
+  const goNext = (fallback: "/dashboard" | "/onboarding") => {
+    if (returnTo) nav({ href: returnTo });
+    else nav({ to: fallback });
+  };
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -45,8 +51,9 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) nav({ to: "/dashboard" });
-  }, [user, loading, nav]);
+    if (!loading && user) goNext("/dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
