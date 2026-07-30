@@ -7,6 +7,16 @@ import { Button } from "@/components/ui/button";
 import { MessageSquare, ScrollText } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/revision")({
+  head: () => ({
+    meta: [
+      { title: "Revision Planner — Sasha AI" },
+      { name: "description", content: "Spaced-repetition revision sessions that target your weakest topics first." },
+      { property: "og:title", content: "Revision Planner — Sasha AI" },
+      { property: "og:description", content: "Spaced-repetition revision sessions that target your weakest topics first." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Revision,
 });
 

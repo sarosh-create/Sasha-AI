@@ -9,6 +9,16 @@ import { Users, Video, Plus } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/rooms/")({
+  head: () => ({
+    meta: [
+      { title: "Study Rooms — Sasha AI" },
+      { name: "description", content: "Join focused live study rooms and revise alongside other students." },
+      { property: "og:title", content: "Study Rooms — Sasha AI" },
+      { property: "og:description", content: "Join focused live study rooms and revise alongside other students." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: RoomsIndex,
 });
 

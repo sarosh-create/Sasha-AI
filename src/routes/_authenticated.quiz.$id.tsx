@@ -11,6 +11,16 @@ import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import { addXp, awardBadge, bumpChallenge, fireConfetti, loseHeart } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/quiz/$id")({
+  head: () => ({
+    meta: [
+      { title: "Take Quiz — Sasha AI" },
+      { name: "description", content: "Answer your AI-generated quiz and get instant marking with examiner feedback." },
+      { property: "og:title", content: "Take Quiz — Sasha AI" },
+      { property: "og:description", content: "Answer your AI-generated quiz and get instant marking with examiner feedback." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: QuizPage,
 });
 

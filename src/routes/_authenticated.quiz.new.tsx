@@ -9,6 +9,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/quiz/new")({
+  head: () => ({
+    meta: [
+      { title: "Create a Quiz — Sasha AI" },
+      { name: "description", content: "Generate a custom AI quiz on any topic with multiple-choice or typed answers." },
+      { property: "og:title", content: "Create a Quiz — Sasha AI" },
+      { property: "og:description", content: "Generate a custom AI quiz on any topic with multiple-choice or typed answers." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: NewQuiz,
   validateSearch: (s: Record<string, unknown>) => ({
     subject: typeof s.subject === "string" ? s.subject : undefined,

@@ -13,6 +13,16 @@ import { TAG_COLORS, TAG_LABELS, awardBadge, bumpChallenge } from "@/lib/gamific
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/notes")({
+  head: () => ({
+    meta: [
+      { title: "Smart Notes — Sasha AI" },
+      { name: "description", content: "Capture, colour-code and revisit AI-assisted study notes for every subject." },
+      { property: "og:title", content: "Smart Notes — Sasha AI" },
+      { property: "og:description", content: "Capture, colour-code and revisit AI-assisted study notes for every subject." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: NotesPage,
 });
 

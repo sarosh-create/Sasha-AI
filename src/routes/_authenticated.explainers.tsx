@@ -10,6 +10,16 @@ import { bumpChallenge, checkReelBadges, fireConfetti } from "@/lib/gamification
 import { fireEmojiBurst } from "@/components/emoji-burst";
 
 export const Route = createFileRoute("/_authenticated/explainers")({
+  head: () => ({
+    meta: [
+      { title: "Funny Explainers — Sasha AI" },
+      { name: "description", content: "Turn any topic into a voiced cartoon explainer reel that actually makes revision stick." },
+      { property: "og:title", content: "Funny Explainers — Sasha AI" },
+      { property: "og:description", content: "Turn any topic into a voiced cartoon explainer reel that actually makes revision stick." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: ExplainersPage,
 });
 
