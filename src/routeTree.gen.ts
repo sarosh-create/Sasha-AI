@@ -20,6 +20,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedTutorRouteImport } from './routes/_authenticated.tutor'
 import { Route as AuthenticatedTeacherRouteImport } from './routes/_authenticated.teacher'
 import { Route as AuthenticatedTeachRouteImport } from './routes/_authenticated.teach'
+import { Route as AuthenticatedStudyBuddyRouteImport } from './routes/_authenticated.study-buddy'
 import { Route as AuthenticatedStaffChatRouteImport } from './routes/_authenticated.staff-chat'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
@@ -106,6 +107,11 @@ const AuthenticatedTeacherRoute = AuthenticatedTeacherRouteImport.update({
 const AuthenticatedTeachRoute = AuthenticatedTeachRouteImport.update({
   id: '/teach',
   path: '/teach',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedStudyBuddyRoute = AuthenticatedStudyBuddyRouteImport.update({
+  id: '/study-buddy',
+  path: '/study-buddy',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedStaffChatRoute = AuthenticatedStaffChatRouteImport.update({
@@ -313,6 +319,7 @@ export interface FileRoutesByFullPath {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -358,6 +365,7 @@ export interface FileRoutesByTo {
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
@@ -405,6 +413,7 @@ export interface FileRoutesById {
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/staff-chat': typeof AuthenticatedStaffChatRoute
+  '/_authenticated/study-buddy': typeof AuthenticatedStudyBuddyRoute
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
@@ -452,6 +461,7 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
+    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -497,6 +507,7 @@ export interface FileRouteTypes {
     | '/schemes'
     | '/settings'
     | '/staff-chat'
+    | '/study-buddy'
     | '/teach'
     | '/teacher'
     | '/tutor'
@@ -543,6 +554,7 @@ export interface FileRouteTypes {
     | '/_authenticated/schemes'
     | '/_authenticated/settings'
     | '/_authenticated/staff-chat'
+    | '/_authenticated/study-buddy'
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
@@ -650,6 +662,13 @@ declare module '@tanstack/react-router' {
       path: '/teach'
       fullPath: '/teach'
       preLoaderRoute: typeof AuthenticatedTeachRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/study-buddy': {
+      id: '/_authenticated/study-buddy'
+      path: '/study-buddy'
+      fullPath: '/study-buddy'
+      preLoaderRoute: typeof AuthenticatedStudyBuddyRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/staff-chat': {
@@ -936,6 +955,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedStaffChatRoute: typeof AuthenticatedStaffChatRoute
+  AuthenticatedStudyBuddyRoute: typeof AuthenticatedStudyBuddyRoute
   AuthenticatedTeachRoute: typeof AuthenticatedTeachRoute
   AuthenticatedTeacherRoute: typeof AuthenticatedTeacherRoute
   AuthenticatedTutorRoute: typeof AuthenticatedTutorRoute
@@ -969,6 +989,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedStaffChatRoute: AuthenticatedStaffChatRoute,
+  AuthenticatedStudyBuddyRoute: AuthenticatedStudyBuddyRoute,
   AuthenticatedTeachRoute: AuthenticatedTeachRoute,
   AuthenticatedTeacherRoute: AuthenticatedTeacherRoute,
   AuthenticatedTutorRoute: AuthenticatedTutorRoute,
