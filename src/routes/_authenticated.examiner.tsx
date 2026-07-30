@@ -17,6 +17,10 @@ export const Route = createFileRoute("/_authenticated/examiner")({
     meta: [
       { title: "Examiner Twin — Strict AI marking | Sasha AI" },
       { name: "description", content: "Paste any exam-style answer and the Examiner Twin marks it exactly like a real examiner — with mark breakdown, missing keywords, and a personalised mistake journal." },
+      { property: "og:title", content: "Examiner Twin — Strict AI marking | Sasha AI" },
+      { property: "og:description", content: "Paste any exam-style answer and the Examiner Twin marks it exactly like a real examiner — with mark breakdown, missing keywords, and a personalised mistake journal." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
 });

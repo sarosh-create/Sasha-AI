@@ -8,7 +8,17 @@ import { Button } from "@/components/ui/button";
 import { Loader2, User } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/teacher")({
-  head: () => ({ meta: [{ title: "Teacher dashboard — Sasha AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Teacher Dashboard — Sasha AI" },
+      { name: "description", content: "Monitor student progress, quiz results and study paths from one teacher dashboard." },
+      { property: "og:title", content: "Teacher Dashboard — Sasha AI" },
+      { property: "og:description", content: "Monitor student progress, quiz results and study paths from one teacher dashboard." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
   component: TeacherDashboard,
 });
 

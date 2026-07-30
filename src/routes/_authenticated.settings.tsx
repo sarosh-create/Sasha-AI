@@ -13,7 +13,16 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — Sasha AI" }, { name: "description", content: "Change your exam board, subjects, daily goal, and preferences." }] }),
+  head: () => ({
+    meta: [
+      { title: "Settings — Sasha AI" },
+      { name: "description", content: "Change your exam board, subjects, daily goal, and preferences." },
+      { property: "og:title", content: "Settings — Sasha AI" },
+      { property: "og:description", content: "Change your exam board, subjects, daily goal, and preferences." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
 });
 
 const BOARDS = ["Cambridge IGCSE", "Cambridge O Level", "Cambridge A Level", "Edexcel IGCSE", "Edexcel A Level", "AQA GCSE", "AQA A Level", "OCR GCSE", "OCR A Level", "IB DP", "IB MYP", "SAT", "AP", "JEE", "NEET", "Other"];

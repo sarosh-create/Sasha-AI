@@ -12,6 +12,10 @@ export const Route = createFileRoute("/_authenticated/mentors")({
   head: () => ({ meta: [
     { title: "AI Teacher Ecosystem — 8 personalities | Sasha AI" },
     { name: "description", content: "Switch instantly between 8 AI teaching personalities — friendly mentor, strict examiner, coach, specialist, strategist and more." },
+      { property: "og:title", content: "AI Teacher Ecosystem — 8 personalities | Sasha AI" },
+      { property: "og:description", content: "Switch instantly between 8 AI teaching personalities — friendly mentor, strict examiner, coach, specialist, strategist and more." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
   ] }),
 });
 

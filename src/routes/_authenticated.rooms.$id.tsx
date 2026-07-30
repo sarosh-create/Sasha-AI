@@ -9,6 +9,16 @@ import { awardBadge } from "@/lib/gamification";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/rooms/$id")({
+  head: () => ({
+    meta: [
+      { title: "Study Room — Sasha AI" },
+      { name: "description", content: "Focus, chat and revise together inside a live study room." },
+      { property: "og:title", content: "Study Room — Sasha AI" },
+      { property: "og:description", content: "Focus, chat and revise together inside a live study room." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: RoomPage,
 });
 

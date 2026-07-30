@@ -21,7 +21,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/rate", changefreq: "monthly", priority: "0.6" },
           { path: "/dashboard", changefreq: "weekly", priority: "0.8" },
           { path: "/achievements", changefreq: "weekly", priority: "0.6" },
-          { path: "/admin", changefreq: "monthly", priority: "0.3" },
           { path: "/classes", changefreq: "weekly", priority: "0.6" },
           { path: "/community", changefreq: "daily", priority: "0.7" },
           { path: "/converter", changefreq: "monthly", priority: "0.5" },
@@ -44,18 +43,15 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/rooms", changefreq: "weekly", priority: "0.6" },
           { path: "/schemes", changefreq: "weekly", priority: "0.6" },
           { path: "/settings", changefreq: "monthly", priority: "0.5" },
-          { path: "/staff-chat", changefreq: "weekly", priority: "0.5" },
+          { path: "/study-buddy", changefreq: "weekly", priority: "0.7" },
           { path: "/teach", changefreq: "weekly", priority: "0.7" },
           { path: "/teacher", changefreq: "weekly", priority: "0.7" },
           { path: "/tutor", changefreq: "weekly", priority: "0.8" },
         ];
-        const lastmod = new Date().toISOString().slice(0, 10);
-
         const urls = entries.map((e) =>
           [
             `  <url>`,
             `    <loc>${BASE_URL}${e.path}</loc>`,
-            `    <lastmod>${lastmod}</lastmod>`,
             e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
             e.priority ? `    <priority>${e.priority}</priority>` : null,
             `  </url>`,

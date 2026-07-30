@@ -7,6 +7,16 @@ import { Library, Film, Play, Pause, Trash2, Star } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/explainers/library")({
+  head: () => ({
+    meta: [
+      { title: "Reel Library — Sasha AI" },
+      { name: "description", content: "Browse your saved cartoon explainer reels with voiceover for every topic you have studied." },
+      { property: "og:title", content: "Reel Library — Sasha AI" },
+      { property: "og:description", content: "Browse your saved cartoon explainer reels with voiceover for every topic you have studied." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: ReelLibraryPage,
 });
 

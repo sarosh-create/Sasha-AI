@@ -10,7 +10,16 @@ import { addXp, awardBadge } from "@/lib/gamification";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/lesson/$id")({
-  head: () => ({ meta: [{ title: "Lesson — Sasha AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Lesson — Sasha AI" },
+      { name: "description", content: "Work through an AI-built lesson with slides, examples and an end-of-lesson quiz." },
+      { property: "og:title", content: "Lesson — Sasha AI" },
+      { property: "og:description", content: "Work through an AI-built lesson with slides, examples and an end-of-lesson quiz." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: LessonPage,
 });
 

@@ -7,6 +7,16 @@ import { Badge } from "@/components/ui/badge";
 import { ScrollText, Plus, CheckCircle2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/quiz/")({
+  head: () => ({
+    meta: [
+      { title: "Quizzes — Sasha AI" },
+      { name: "description", content: "Practise with AI-generated quizzes, typed answers and instant examiner-style marking." },
+      { property: "og:title", content: "Quizzes — Sasha AI" },
+      { property: "og:description", content: "Practise with AI-generated quizzes, typed answers and instant examiner-style marking." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: QuizList,
 });
 

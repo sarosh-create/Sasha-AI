@@ -19,6 +19,16 @@ import { addXp, awardBadge, bumpChallenge } from "@/lib/gamification";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/path")({
+  head: () => ({
+    meta: [
+      { title: "Your Study Path — Sasha AI" },
+      { name: "description", content: "A personalised lesson-by-lesson study path built around your subjects, board and exam date." },
+      { property: "og:title", content: "Your Study Path — Sasha AI" },
+      { property: "og:description", content: "A personalised lesson-by-lesson study path built around your subjects, board and exam date." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: PathPage,
 });
 

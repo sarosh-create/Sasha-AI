@@ -5,6 +5,16 @@ import { useAuth } from "@/lib/auth-context";
 import { BADGES, levelInfo } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/achievements")({
+  head: () => ({
+    meta: [
+      { title: "Achievements & Badges — Sasha AI" },
+      { name: "description", content: "Track every badge, milestone and XP reward you have unlocked on your study journey." },
+      { property: "og:title", content: "Achievements & Badges — Sasha AI" },
+      { property: "og:description", content: "Track every badge, milestone and XP reward you have unlocked on your study journey." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: AchievementsPage,
 });
 
