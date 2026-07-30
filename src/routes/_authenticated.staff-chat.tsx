@@ -10,7 +10,17 @@ import { Shield, Send, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/staff-chat")({
-  head: () => ({ meta: [{ title: "Staff Chat — Sasha AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Staff Chat — Sasha AI" },
+      { name: "description", content: "Private chat space for teachers and staff to coordinate lessons and students." },
+      { property: "og:title", content: "Staff Chat — Sasha AI" },
+      { property: "og:description", content: "Private chat space for teachers and staff to coordinate lessons and students." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
   component: StaffChatPage,
 });
 

@@ -10,7 +10,16 @@ import { ChevronLeft, Send, ThumbsUp, Trash2, Shield, GraduationCap } from "luci
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/community/$id")({
-  head: () => ({ meta: [{ title: "Channel — Sasha AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Channel — Sasha AI" },
+      { name: "description", content: "Discuss topics, share resources and get help inside a Sasha AI community channel." },
+      { property: "og:title", content: "Channel — Sasha AI" },
+      { property: "og:description", content: "Discuss topics, share resources and get help inside a Sasha AI community channel." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: ChannelPage,
 });
 

@@ -13,7 +13,17 @@ import { toast } from "sonner";
 import { CheckCircle2, Mail, MessageCircle, Trash2, Plus, XCircle } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — Sasha AI" }] }),
+  head: () => ({
+    meta: [
+      { title: "Admin — Sasha AI" },
+      { name: "description", content: "Admin controls for managing students, roles, content and platform settings." },
+      { property: "og:title", content: "Admin — Sasha AI" },
+      { property: "og:description", content: "Admin controls for managing students, roles, content and platform settings." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "noindex" },
+    ],
+  }),
   component: AdminPage,
 });
 
