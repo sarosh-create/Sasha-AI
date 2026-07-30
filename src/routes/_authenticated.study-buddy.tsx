@@ -336,7 +336,7 @@ function StudyBuddyPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="flex flex-1 flex-col gap-3">
-            <ScrollArea className="h-[360px] pr-3" viewportRef={scrollRef as never}>
+            <ScrollArea className="h-[360px] pr-3">
               <div ref={scrollRef} className="space-y-3">
                 {messages.length === 0 && (
                   <p className="text-muted-foreground text-sm">
