@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RateRouteImport } from './routes/rate'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -40,6 +41,8 @@ import { Route as AuthenticatedCommunityRouteImport } from './routes/_authentica
 import { Route as AuthenticatedClassesRouteImport } from './routes/_authenticated.classes'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated.admin'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
+import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedQuizIndexRouteImport } from './routes/_authenticated.quiz.index'
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
@@ -48,6 +51,8 @@ import { Route as AuthenticatedQuizIdRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedLessonIdRouteImport } from './routes/_authenticated.lesson.$id'
 import { Route as AuthenticatedExplainersLibraryRouteImport } from './routes/_authenticated.explainers.library'
 import { Route as AuthenticatedCommunityIdRouteImport } from './routes/_authenticated.community.$id'
+import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -57,6 +62,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const RateRoute = RateRouteImport.update({
   id: '/rate',
   path: '/rate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MathSolverRoute = MathSolverRouteImport.update({
@@ -206,6 +216,18 @@ const AuthenticatedAchievementsRoute =
     path: '/achievements',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const Char91DotmcpChar93ListToolsRoute =
+  Char91DotmcpChar93ListToolsRouteImport.update({
+    id: '/.mcp/list-tools',
+    path: '/.mcp/list-tools',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AuthenticatedRoomsIndexRoute = AuthenticatedRoomsIndexRouteImport.update({
   id: '/rooms/',
   path: '/rooms/',
@@ -248,14 +270,28 @@ const AuthenticatedCommunityIdRoute =
     path: '/$id',
     getParentRoute: () => AuthenticatedCommunityRoute,
   } as any)
+const Char91DotmcpChar93InvokeToolToolRoute =
+  Char91DotmcpChar93InvokeToolToolRouteImport.update({
+    id: '/.mcp/invoke-tool/$tool',
+    path: '/.mcp/invoke-tool/$tool',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
@@ -280,6 +316,8 @@ export interface FileRoutesByFullPath {
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/lesson/$id': typeof AuthenticatedLessonIdRoute
@@ -294,8 +332,11 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/classes': typeof AuthenticatedClassesRoute
@@ -320,6 +361,8 @@ export interface FileRoutesByTo {
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/lesson/$id': typeof AuthenticatedLessonIdRoute
@@ -336,8 +379,11 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
+  '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/classes': typeof AuthenticatedClassesRoute
@@ -362,6 +408,8 @@ export interface FileRoutesById {
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
+  '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/community/$id': typeof AuthenticatedCommunityIdRoute
   '/_authenticated/explainers/library': typeof AuthenticatedExplainersLibraryRoute
   '/_authenticated/lesson/$id': typeof AuthenticatedLessonIdRoute
@@ -378,8 +426,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/achievements'
     | '/admin'
     | '/classes'
@@ -404,6 +455,8 @@ export interface FileRouteTypes {
     | '/teach'
     | '/teacher'
     | '/tutor'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/community/$id'
     | '/explainers/library'
     | '/lesson/$id'
@@ -418,8 +471,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/achievements'
     | '/admin'
     | '/classes'
@@ -444,6 +500,8 @@ export interface FileRouteTypes {
     | '/teach'
     | '/teacher'
     | '/tutor'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/community/$id'
     | '/explainers/library'
     | '/lesson/$id'
@@ -459,8 +517,11 @@ export interface FileRouteTypes {
     | '/auth'
     | '/homework-helper'
     | '/math-solver'
+    | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/.mcp/list-tools'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/achievements'
     | '/_authenticated/admin'
     | '/_authenticated/classes'
@@ -485,6 +546,8 @@ export interface FileRouteTypes {
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
+    | '/.lovable/oauth/consent'
+    | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/community/$id'
     | '/_authenticated/explainers/library'
     | '/_authenticated/lesson/$id'
@@ -501,8 +564,13 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   HomeworkHelperRoute: typeof HomeworkHelperRoute
   MathSolverRoute: typeof MathSolverRoute
+  McpRoute: typeof McpRoute
   RateRoute: typeof RateRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
+  Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -519,6 +587,13 @@ declare module '@tanstack/react-router' {
       path: '/rate'
       fullPath: '/rate'
       preLoaderRoute: typeof RateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/math-solver': {
@@ -724,6 +799,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAchievementsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.mcp/list-tools': {
+      id: '/.mcp/list-tools'
+      path: '/.mcp/list-tools'
+      fullPath: '/.mcp/list-tools'
+      preLoaderRoute: typeof Char91DotmcpChar93ListToolsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/rooms/': {
       id: '/_authenticated/rooms/'
       path: '/rooms'
@@ -779,6 +868,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/community/$id'
       preLoaderRoute: typeof AuthenticatedCommunityIdRouteImport
       parentRoute: typeof AuthenticatedCommunityRoute
+    }
+    '/.mcp/invoke-tool/$tool': {
+      id: '/.mcp/invoke-tool/$tool'
+      path: '/.mcp/invoke-tool/$tool'
+      fullPath: '/.mcp/invoke-tool/$tool'
+      preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -887,8 +990,14 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   HomeworkHelperRoute: HomeworkHelperRoute,
   MathSolverRoute: MathSolverRoute,
+  McpRoute: McpRoute,
   RateRoute: RateRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
+  Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

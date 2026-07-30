@@ -1,0 +1,151 @@
+{
+  "version": 1,
+  "sdk_version": "0.25.0",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://exegxoartdndszjooplj.supabase.co/auth/v1",
+    "accepted_audiences": [
+      "authenticated"
+    ]
+  },
+  "mcp": {
+    "server": {
+      "name": "sasha-ai",
+      "version": "0.1.0",
+      "title": "Sasha AI"
+    },
+    "tools": [
+      {
+        "name": "list_subjects",
+        "title": "List subjects",
+        "description": "List the signed-in student's subjects with priority and strength score.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "list_study_path",
+        "title": "List study path",
+        "description": "List the student's guided study path lessons in order, with status and estimated minutes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "status": {
+              "description": "Filter lessons by completion status. Defaults to all.",
+              "type": "string",
+              "enum": [
+                "all",
+                "todo",
+                "done"
+              ]
+            }
+          }
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_progress",
+        "title": "Get progress",
+        "description": "Summarise the student's recent progress: latest quizzes, study minutes and mistake journal topics.",
+        "annotations": {
+          "readOnlyHint": true,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "log_study_session",
+        "title": "Log study session",
+        "description": "Record a study session (activity plus minutes studied) for the signed-in student.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "activity": {
+              "type": "string",
+              "description": "What the student studied, e.g. 'Revised photosynthesis'."
+            },
+            "minutes": {
+              "type": "integer",
+              "minimum": -9007199254740991,
+              "maximum": 9007199254740991,
+              "description": "Minutes spent studying."
+            },
+            "subject_id": {
+              "description": "Optional subject id from list_subjects.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "activity",
+            "minutes"
+          ]
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "create_note",
+        "title": "Create note",
+        "description": "Save a study note to the signed-in student's notebook.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Short note title."
+            },
+            "body": {
+              "type": "string",
+              "description": "Note content in plain text or markdown."
+            },
+            "tag": {
+              "description": "Optional tag, e.g. the topic name.",
+              "type": "string"
+            },
+            "subject_id": {
+              "description": "Optional subject id from list_subjects.",
+              "type": "string"
+            }
+          },
+          "required": [
+            "title",
+            "body"
+          ]
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

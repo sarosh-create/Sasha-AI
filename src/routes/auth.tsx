@@ -10,7 +10,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 
+/** Only allow same-origin relative paths as a post-login redirect target. */
+function safeNext(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
+}
+
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>) => ({ next: safeNext(s.next) ?? undefined }),
   head: () => ({
     meta: [
       { title: "Sign in — Sasha AI" },
@@ -26,6 +34,12 @@ export const Route = createFileRoute("/auth")({
 function AuthPage() {
   const { user, loading } = useAuth();
   const nav = useNavigate();
+  const { next } = Route.useSearch();
+  const returnTo = safeNext(next);
+  const goNext = (fallback: "/dashboard" | "/onboarding") => {
+    if (returnTo) nav({ href: returnTo });
+    else nav({ to: fallback });
+  };
   const [mode, setMode] = useState<"signin" | "signup">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -37,8 +51,9 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && user) nav({ to: "/dashboard" });
-  }, [user, loading, nav]);
+    if (!loading && user) goNext("/dashboard");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user, loading]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -50,7 +65,7 @@ function AuthPage() {
           setBusy(false);
           return;
         }
-        const redirectUrl = `${window.location.origin}/dashboard`;
+        const redirectUrl = `${window.location.origin}${returnTo ?? "/dashboard"}`;
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -90,14 +105,14 @@ function AuthPage() {
             headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
             body: JSON.stringify({ email, name, source: accountType }),
           }).catch(() => {});
-          nav({ to: "/onboarding" });
+          goNext("/onboarding");
         } else {
           toast.success("Check your email to confirm your account.");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        nav({ to: "/dashboard" });
+        goNext("/dashboard");
       }
     } catch (err: any) {
       toast.error(err.message ?? "Something went wrong");
@@ -109,7 +124,7 @@ function AuthPage() {
   const google = async () => {
     setBusy(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin + "/dashboard",
+      redirect_uri: window.location.origin + (returnTo ?? "/dashboard"),
     });
     if (result.error) {
       toast.error(result.error.message ?? "Google sign-in failed");
@@ -117,7 +132,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    nav({ to: "/dashboard" });
+    goNext("/dashboard");
   };
 
   return (
