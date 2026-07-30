@@ -52,6 +52,7 @@ import { Route as AuthenticatedLessonIdRouteImport } from './routes/_authenticat
 import { Route as AuthenticatedExplainersLibraryRouteImport } from './routes/_authenticated.explainers.library'
 import { Route as AuthenticatedCommunityIdRouteImport } from './routes/_authenticated.community.$id'
 import { Route as Char91DotmcpChar93InvokeToolToolRouteImport } from './routes/[.mcp]/invoke-tool/$tool'
+import { Route as DotlovableOauthConsentRouteImport } from './routes/[.]lovable.oauth.consent'
 
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
@@ -275,6 +276,11 @@ const Char91DotmcpChar93InvokeToolToolRoute =
     path: '/.mcp/invoke-tool/$tool',
     getParentRoute: () => rootRouteImport,
   } as any)
+const DotlovableOauthConsentRoute = DotlovableOauthConsentRouteImport.update({
+  id: '/.lovable/oauth/consent',
+  path: '/.lovable/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -310,6 +316,7 @@ export interface FileRoutesByFullPath {
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
@@ -354,6 +361,7 @@ export interface FileRoutesByTo {
   '/teach': typeof AuthenticatedTeachRoute
   '/teacher': typeof AuthenticatedTeacherRoute
   '/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/community/$id': typeof AuthenticatedCommunityIdRoute
   '/explainers/library': typeof AuthenticatedExplainersLibraryRoute
@@ -400,6 +408,7 @@ export interface FileRoutesById {
   '/_authenticated/teach': typeof AuthenticatedTeachRoute
   '/_authenticated/teacher': typeof AuthenticatedTeacherRoute
   '/_authenticated/tutor': typeof AuthenticatedTutorRoute
+  '/.lovable/oauth/consent': typeof DotlovableOauthConsentRoute
   '/.mcp/invoke-tool/$tool': typeof Char91DotmcpChar93InvokeToolToolRoute
   '/_authenticated/community/$id': typeof AuthenticatedCommunityIdRoute
   '/_authenticated/explainers/library': typeof AuthenticatedExplainersLibraryRoute
@@ -446,6 +455,7 @@ export interface FileRouteTypes {
     | '/teach'
     | '/teacher'
     | '/tutor'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/community/$id'
     | '/explainers/library'
@@ -490,6 +500,7 @@ export interface FileRouteTypes {
     | '/teach'
     | '/teacher'
     | '/tutor'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/community/$id'
     | '/explainers/library'
@@ -535,6 +546,7 @@ export interface FileRouteTypes {
     | '/_authenticated/teach'
     | '/_authenticated/teacher'
     | '/_authenticated/tutor'
+    | '/.lovable/oauth/consent'
     | '/.mcp/invoke-tool/$tool'
     | '/_authenticated/community/$id'
     | '/_authenticated/explainers/library'
@@ -557,6 +569,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
 }
 
@@ -863,6 +876,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Char91DotmcpChar93InvokeToolToolRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.lovable/oauth/consent': {
+      id: '/.lovable/oauth/consent'
+      path: '/.lovable/oauth/consent'
+      fullPath: '/.lovable/oauth/consent'
+      preLoaderRoute: typeof DotlovableOauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -976,6 +996,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
 }
 export const routeTree = rootRouteImport
