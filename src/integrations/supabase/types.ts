@@ -1334,6 +1334,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      channel_message_rating_counts: {
+        Args: { _message_ids: string[] }
+        Returns: {
+          count: number
+          message_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1344,6 +1351,23 @@ export type Database = {
       is_my_student: { Args: { _student: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_staff_or_teacher: { Args: { _user_id: string }; Returns: boolean }
+      list_live_classes: {
+        Args: never
+        Returns: {
+          capacity: number
+          description: string
+          duration_minutes: number
+          id: string
+          meeting_url: string
+          scheduled_at: string
+          subject: string
+          teacher_id: string
+          teacher_name: string
+          teacher_subject: string
+          title: string
+          video_url: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "teacher" | "user" | "co_admin"
