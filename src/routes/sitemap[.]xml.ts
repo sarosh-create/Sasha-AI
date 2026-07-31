@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = "https://study-mentor-by-sarosh-ai.lovable.app";
 
@@ -48,6 +49,29 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/teacher", changefreq: "weekly", priority: "0.7" },
           { path: "/tutor", changefreq: "weekly", priority: "0.8" },
         ];
+        // Dynamic routes: community channels and public study rooms are
+        // shareable, so one entry per real row. /lesson/$id is intentionally
+        // excluded: lesson rows belong to a single student and are never public.
+        try {
+          const sb = createClient(
+            process.env.SUPABASE_URL!,
+            process.env.SUPABASE_PUBLISHABLE_KEY!,
+            { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
+          );
+          const [{ data: channels }, { data: rooms }] = await Promise.all([
+            sb.from("chat_channels").select("id").limit(1000),
+            sb.from("study_rooms").select("id").eq("is_public", true).limit(1000),
+          ]);
+          (channels ?? []).forEach((c: { id: string }) =>
+            entries.push({ path: `/community/${c.id}`, changefreq: "daily", priority: "0.5" }),
+          );
+          (rooms ?? []).forEach((r: { id: string }) =>
+            entries.push({ path: `/rooms/${r.id}`, changefreq: "daily", priority: "0.4" }),
+          );
+        } catch {
+          // Sitemap must still render if the database is unreachable.
+        }
+
         const urls = entries.map((e) =>
           [
             `  <url>`,
