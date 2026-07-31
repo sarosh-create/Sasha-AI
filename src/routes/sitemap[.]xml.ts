@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { createClient } from "@supabase/supabase-js";
 
 const BASE_URL = "https://study-mentor-by-sarosh-ai.lovable.app";
 
@@ -53,11 +52,9 @@ export const Route = createFileRoute("/sitemap.xml")({
         // shareable, so one entry per real row. /lesson/$id is intentionally
         // excluded: lesson rows belong to a single student and are never public.
         try {
-          const sb = createClient(
-            process.env.SUPABASE_URL!,
-            process.env.SUPABASE_PUBLISHABLE_KEY!,
-            { auth: { storage: undefined, persistSession: false, autoRefreshToken: false } },
-          );
+          // Server-only, id-only projection: rows are RLS-protected for app
+          // reads, but their URLs are shareable and need to be crawlable.
+          const { supabaseAdmin: sb } = await import("@/integrations/supabase/client.server");
           const [{ data: channels }, { data: rooms }] = await Promise.all([
             sb.from("chat_channels").select("id").limit(1000),
             sb.from("study_rooms").select("id").eq("is_public", true).limit(1000),
