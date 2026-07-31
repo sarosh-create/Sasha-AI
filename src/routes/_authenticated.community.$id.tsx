@@ -54,15 +54,18 @@ function ChannelPage() {
 
   const loadRatings = async (ids: string[]) => {
     if (!ids.length) return;
-    const { data } = await supabase.from("channel_message_ratings").select("message_id, user_id").in("message_id", ids);
+    const [{ data: countRows }, { data: mineRows }] = await Promise.all([
+      supabase.rpc("channel_message_rating_counts", { _message_ids: ids }),
+      user
+        ? supabase.from("channel_message_ratings").select("message_id").in("message_id", ids).eq("user_id", user.id)
+        : Promise.resolve({ data: [] as any[] }),
+    ]);
     const counts: Record<string, number> = {};
-    const mine = new Set<string>();
-    (data ?? []).forEach((r: any) => {
-      counts[r.message_id] = (counts[r.message_id] ?? 0) + 1;
-      if (r.user_id === user?.id) mine.add(r.message_id);
-    });
-    setRatings(counts); setMyRatings(mine);
+    (countRows ?? []).forEach((r: any) => { counts[r.message_id] = Number(r.count); });
+    setRatings(counts);
+    setMyRatings(new Set((mineRows ?? []).map((r: any) => r.message_id)));
   };
+
 
   useEffect(() => { (async () => {
     const { data: c } = await supabase.from("chat_channels").select("*").eq("id", id).maybeSingle();
