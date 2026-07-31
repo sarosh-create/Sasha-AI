@@ -24,11 +24,9 @@ function ClassesPage() {
   const [signups, setSignups] = useState<Set<string>>(new Set());
 
   const load = async () => {
-    const { data } = await supabase
-      .from("live_classes")
-      .select("*, teachers(name, subject)")
-      .order("scheduled_at", { ascending: true });
-    setClasses(data ?? []);
+    const { data } = await supabase.rpc("list_live_classes");
+    setClasses((data ?? []).map((c: any) => ({ ...c, teachers: { name: c.teacher_name, subject: c.teacher_subject } })));
+
     if (user) {
       const { data: su } = await supabase.from("class_signups").select("class_id").eq("user_id", user.id);
       setSignups(new Set((su ?? []).map((r: any) => r.class_id)));
