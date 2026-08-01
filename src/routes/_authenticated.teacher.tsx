@@ -18,6 +18,7 @@ export const Route = createFileRoute("/_authenticated/teacher")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/teacher" }],
   }),
   component: TeacherDashboard,
 });

@@ -20,6 +20,7 @@ export const Route = createFileRoute("/_authenticated/staff-chat")({
       { name: "twitter:card", content: "summary_large_image" },
       { name: "robots", content: "noindex" },
     ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/staff-chat" }],
   }),
   component: StaffChatPage,
 });
