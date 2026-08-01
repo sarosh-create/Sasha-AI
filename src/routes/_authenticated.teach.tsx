@@ -18,7 +18,8 @@ export const Route = createFileRoute("/_authenticated/teach")({
       { property: "og:description", content: "Teach the AI a topic. It plays a curious student, asks harder and harder questions, and confirms when you've mastered it." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/teach" }] }),
 });
 
 const FN = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/teach-back`;

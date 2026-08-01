@@ -10,7 +10,8 @@ export const Route = createFileRoute("/_authenticated/schemes")({
     { property: "og:title", content: "Schemes — Sasha AI" },
     { property: "og:description", content: "Curriculum outlines and schemes of work mapped to lessons inside Sasha AI." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/schemes" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/schemes" }] }),
   component: SchemesPage,
 });
 

@@ -45,7 +45,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/settings", changefreq: "monthly", priority: "0.5" },
           { path: "/study-buddy", changefreq: "weekly", priority: "0.7" },
           { path: "/teach", changefreq: "weekly", priority: "0.7" },
-          { path: "/teacher", changefreq: "weekly", priority: "0.7" },
+          
           { path: "/tutor", changefreq: "weekly", priority: "0.8" },
         ];
         // Dynamic routes: community channels and public study rooms are

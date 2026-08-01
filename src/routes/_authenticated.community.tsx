@@ -11,7 +11,8 @@ export const Route = createFileRoute("/_authenticated/community")({
     { property: "og:title", content: "Community — Sasha AI" },
     { property: "og:description", content: "Talk to other students, share notes and get help in the Sasha AI community channels." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/community" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/community" }] }),
   component: CommunityIndex,
 });
 

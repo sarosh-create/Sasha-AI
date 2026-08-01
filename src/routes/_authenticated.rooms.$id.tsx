@@ -9,18 +9,42 @@ import { awardBadge } from "@/lib/gamification";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/rooms/$id")({
-  head: () => ({
-    meta: [
-      { title: "Study Room — Sasha AI" },
-      { name: "description", content: "Focus, chat and revise together inside a live study room." },
-      { property: "og:title", content: "Study Room — Sasha AI" },
-      { property: "og:description", content: "Focus, chat and revise together inside a live study room." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      const { data } = await supabase
+        .from("study_rooms")
+        .select("name, topic")
+        .eq("id", params.id)
+        .maybeSingle();
+      return { name: (data as any)?.name ?? null, topic: (data as any)?.topic ?? null };
+    } catch {
+      return { name: null, topic: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const name = loaderData?.name?.trim();
+    const title = name ? `${name} — Sasha AI study room` : "Study room — Sasha AI";
+    const description = name
+      ? `Join the ${name} study room${loaderData?.topic ? ` (${loaderData.topic})` : ""} to focus, chat and revise with other students.`
+      : "Focus, chat and revise together inside a live study room.";
+    return {
+      meta: [
+        { title: title.slice(0, 60) },
+        { name: "description", content: description },
+        { property: "og:title", content: title.slice(0, 60) },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `https://study-mentor-by-sarosh-ai.lovable.app/rooms/${params.id}` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        { rel: "canonical", href: `https://study-mentor-by-sarosh-ai.lovable.app/rooms/${params.id}` },
+      ],
+    };
+  },
   component: RoomPage,
 });
+
 
 type Msg = { id: string; user_id: string; display_name: string | null; content: string; created_at: string };
 type Participant = { user_id: string; display_name: string | null };

@@ -12,17 +12,20 @@ import { addXp, awardBadge, bumpChallenge, fireConfetti, loseHeart } from "@/lib
 
 export const Route = createFileRoute("/_authenticated/quiz/$id")({
   head: () => ({
+    // A quiz attempt belongs to one student — private, never indexed.
     meta: [
-      { title: "Take Quiz — Sasha AI" },
+      { title: "Your quiz — Sasha AI" },
       { name: "description", content: "Answer your AI-generated quiz and get instant marking with examiner feedback." },
-      { property: "og:title", content: "Take Quiz — Sasha AI" },
-      { property: "og:description", content: "Answer your AI-generated quiz and get instant marking with examiner feedback." },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Your quiz — Sasha AI" },
+      { property: "og:description", content: "A private AI-generated quiz with instant examiner-style marking." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: QuizPage,
 });
+
 
 type Question = {
   type: "mcq" | "short";

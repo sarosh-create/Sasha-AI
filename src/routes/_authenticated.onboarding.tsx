@@ -19,7 +19,8 @@ export const Route = createFileRoute("/_authenticated/onboarding")({
     { property: "og:title", content: "Set up your study plan — Sasha AI" },
     { property: "og:description", content: "Tell Sasha AI your exam board and subjects to generate a personalised study roadmap." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/onboarding" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/onboarding" }] }),
   component: Onboarding,
 });
 

@@ -17,6 +17,7 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
       { property: "og:title", content: "Study Dashboard — Sasha AI" },
       { property: "og:description", content: "Your daily study roadmap, streaks, mastery progress, and next lesson." },
     ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/dashboard" }],
   }),
 });
 

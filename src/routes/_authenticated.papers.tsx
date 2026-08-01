@@ -13,7 +13,8 @@ export const Route = createFileRoute("/_authenticated/papers")({
     { property: "og:title", content: "Past Papers — Sasha AI" },
     { property: "og:description", content: "Past papers and mark schemes for Matric, GCSE, IGCSE and A Level, all in one place." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/papers" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/papers" }] }),
   component: PapersPage,
 });
 

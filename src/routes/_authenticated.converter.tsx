@@ -20,7 +20,8 @@ export const Route = createFileRoute("/_authenticated/converter")({
       { property: "og:description", content: "Paste any text and instantly turn it into notes, flashcards, mindmaps, MCQs, summaries, or a formula sheet." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/converter" }] }),
 });
 
 const KINDS = [

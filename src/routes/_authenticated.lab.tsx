@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/lab")({
     { property: "og:title", content: "Practical Lab — Sasha AI" },
     { property: "og:description", content: "Interactive practical-paper lab for physics, chemistry and biology — game-mode experiments inside Sasha AI." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/lab" },
-  ] }),
+  ], links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/lab" }] }),
   component: LabPage,
 });
 
@@ -49,6 +49,7 @@ const EXPERIMENTS: Experiment[] = [
       { id: "swing", emoji: "🔁", label: "Swing < 10°", hint: "Small angle so T = 2π√(L/g) is valid." },
       { id: "time", emoji: "⏱️", label: "Time 20 swings", hint: "More swings → less reaction-time error." },
     ],
+    
     distractors: [
       { id: "heat", emoji: "🔥", label: "Heat the bob", hint: "Why would you?" },
       { id: "stir", emoji: "🥄", label: "Stir vigorously", hint: "Wrong lab entirely." },

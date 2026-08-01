@@ -27,6 +27,7 @@ export const Route = createFileRoute("/auth")({
       { property: "og:description", content: "Create a free Sasha AI account and start a personalised, exam-focused study plan in minutes." },
       { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/auth" },
     ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/auth" }],
   }),
   component: AuthPage,
 });
