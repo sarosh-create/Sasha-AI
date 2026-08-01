@@ -10,18 +10,47 @@ import { ChevronLeft, Send, ThumbsUp, Trash2, Shield, GraduationCap } from "luci
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/community/$id")({
-  head: () => ({
-    meta: [
-      { title: "Channel — Sasha AI" },
-      { name: "description", content: "Discuss topics, share resources and get help inside a Sasha AI community channel." },
-      { property: "og:title", content: "Channel — Sasha AI" },
-      { property: "og:description", content: "Discuss topics, share resources and get help inside a Sasha AI community channel." },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async ({ params }) => {
+    try {
+      const { data } = await supabase
+        .from("chat_channels")
+        .select("name, description")
+        .eq("id", params.id)
+        .maybeSingle();
+      return { name: data?.name ?? null, description: data?.description ?? null };
+    } catch {
+      return { name: null, description: null };
+    }
+  },
+  head: ({ params, loaderData }) => {
+    const name = loaderData?.name?.trim();
+    const title = name ? `${name} — Sasha AI community` : "Community channel — Sasha AI";
+    const description =
+      loaderData?.description?.trim() ||
+      (name
+        ? `Join the ${name} channel to discuss topics, share resources and get help from other students.`
+        : "Discuss topics, share resources and get help inside a Sasha AI community channel.");
+    return {
+      meta: [
+        { title: title.slice(0, 60) },
+        { name: "description", content: description },
+        { property: "og:title", content: title.slice(0, 60) },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: `https://study-mentor-by-sarosh-ai.lovable.app/community/${params.id}` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        {
+          rel: "canonical",
+          href: `https://study-mentor-by-sarosh-ai.lovable.app/community/${params.id}`,
+        },
+      ],
+    };
+  },
   component: ChannelPage,
 });
+
 
 type Msg = { id: string; user_id: string; body: string; created_at: string; pinned: boolean };
 
