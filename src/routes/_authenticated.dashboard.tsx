@@ -7,6 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, MessageSquare, ScrollText, Sparkles, Target, Map, CheckCircle2 } from "lucide-react";
 import { TalkingFalcon } from "@/components/talking-falcon";
+import { PageLoading } from "@/components/ui/states";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -77,8 +79,9 @@ function Dashboard() {
   }, [user, nav]);
 
   if (!profile) {
-    return <div className="p-10 text-sm text-muted-foreground">Loading…</div>;
+    return <PageLoading label="Loading your dashboard" />;
   }
+
 
   const daysToExam = profile.exam_date
     ? Math.max(0, Math.ceil((new Date(profile.exam_date).getTime() - Date.now()) / 86400000))
@@ -103,7 +106,35 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="mt-6 grid gap-4 md:grid-cols-3">
+      {/* One clear front door: what to do right now. */}
+      <section className="mt-6 rounded-2xl border border-primary/30 bg-secondary/50 p-5 shadow-card">
+        <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Do this right now</p>
+        <div className="mt-2 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:justify-between">
+          <p className="min-w-0 font-display text-lg font-semibold sm:text-xl">
+            {nextLesson
+              ? `${nextLesson.title} · ${nextLesson.est_minutes} min`
+              : minutesToday < profile.daily_minutes_goal
+                ? "Take one strictly-marked quiz on your weakest topic"
+                : "You've hit today's goal — bank it with a quick quiz"}
+          </p>
+          <div className="flex shrink-0 flex-wrap gap-2">
+            <Link to={nextLesson ? "/path" : "/quiz/new"} search={{} as never}>
+              <Button size="sm">Start</Button>
+            </Link>
+            <Link to="/progress">
+              <Button size="sm" variant="outline">See my proof</Button>
+            </Link>
+          </div>
+        </div>
+        {daysToExam !== null && daysToExam <= 60 && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            Your exam is in {daysToExam} days — {Math.max(1, Math.round((daysToExam * profile.daily_minutes_goal) / 60))} focused hours left at your current goal.
+          </p>
+        )}
+      </section>
+
+      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+
         <StatCard label="Today's goal" value={`${minutesToday} / ${profile.daily_minutes_goal} min`}>
           <Progress value={Math.min(100, (minutesToday / profile.daily_minutes_goal) * 100)} className="mt-3" />
         </StatCard>

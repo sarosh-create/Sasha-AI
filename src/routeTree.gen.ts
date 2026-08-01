@@ -36,6 +36,7 @@ import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authentic
 import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
+import { Route as AuthenticatedProgressRouteImport } from './routes/_authenticated.progress'
 import { Route as AuthenticatedRevisionRouteImport } from './routes/_authenticated.revision'
 import { Route as AuthenticatedSchemesRouteImport } from './routes/_authenticated.schemes'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated.settings'
@@ -194,6 +195,11 @@ const AuthenticatedPredictionsRoute =
     path: '/predictions',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedProgressRoute = AuthenticatedProgressRouteImport.update({
+  id: '/progress',
+  path: '/progress',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const AuthenticatedRevisionRoute = AuthenticatedRevisionRouteImport.update({
   id: '/revision',
   path: '/revision',
@@ -315,6 +321,7 @@ export interface FileRoutesByFullPath {
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
+  '/progress': typeof AuthenticatedProgressRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -361,6 +368,7 @@ export interface FileRoutesByTo {
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
+  '/progress': typeof AuthenticatedProgressRoute
   '/revision': typeof AuthenticatedRevisionRoute
   '/schemes': typeof AuthenticatedSchemesRoute
   '/settings': typeof AuthenticatedSettingsRoute
@@ -409,6 +417,7 @@ export interface FileRoutesById {
   '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
+  '/_authenticated/progress': typeof AuthenticatedProgressRoute
   '/_authenticated/revision': typeof AuthenticatedRevisionRoute
   '/_authenticated/schemes': typeof AuthenticatedSchemesRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
@@ -457,6 +466,7 @@ export interface FileRouteTypes {
     | '/papers'
     | '/path'
     | '/predictions'
+    | '/progress'
     | '/revision'
     | '/schemes'
     | '/settings'
@@ -503,6 +513,7 @@ export interface FileRouteTypes {
     | '/papers'
     | '/path'
     | '/predictions'
+    | '/progress'
     | '/revision'
     | '/schemes'
     | '/settings'
@@ -550,6 +561,7 @@ export interface FileRouteTypes {
     | '/_authenticated/papers'
     | '/_authenticated/path'
     | '/_authenticated/predictions'
+    | '/_authenticated/progress'
     | '/_authenticated/revision'
     | '/_authenticated/schemes'
     | '/_authenticated/settings'
@@ -776,6 +788,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPredictionsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/progress': {
+      id: '/_authenticated/progress'
+      path: '/progress'
+      fullPath: '/progress'
+      preLoaderRoute: typeof AuthenticatedProgressRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/revision': {
       id: '/_authenticated/revision'
       path: '/revision'
@@ -951,6 +970,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
   AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
+  AuthenticatedProgressRoute: typeof AuthenticatedProgressRoute
   AuthenticatedRevisionRoute: typeof AuthenticatedRevisionRoute
   AuthenticatedSchemesRoute: typeof AuthenticatedSchemesRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
@@ -985,6 +1005,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
   AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
+  AuthenticatedProgressRoute: AuthenticatedProgressRoute,
   AuthenticatedRevisionRoute: AuthenticatedRevisionRoute,
   AuthenticatedSchemesRoute: AuthenticatedSchemesRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
