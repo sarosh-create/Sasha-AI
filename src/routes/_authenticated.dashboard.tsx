@@ -7,6 +7,8 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Flame, MessageSquare, ScrollText, Sparkles, Target, Map, CheckCircle2 } from "lucide-react";
 import { TalkingFalcon } from "@/components/talking-falcon";
+import { PageLoading } from "@/components/ui/states";
+
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
   component: Dashboard,
@@ -77,8 +79,9 @@ function Dashboard() {
   }, [user, nav]);
 
   if (!profile) {
-    return <div className="p-10 text-sm text-muted-foreground">Loading…</div>;
+    return <PageLoading label="Loading your dashboard" />;
   }
+
 
   const daysToExam = profile.exam_date
     ? Math.max(0, Math.ceil((new Date(profile.exam_date).getTime() - Date.now()) / 86400000))
