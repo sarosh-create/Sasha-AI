@@ -47,8 +47,7 @@ function EventsPage() {
       </div>
     </div>
   );
-}],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/events" }],mport { createFileRoute } from "@tanstack/react-router";
+}import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";

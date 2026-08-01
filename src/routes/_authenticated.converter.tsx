@@ -147,8 +147,7 @@ function ArtifactView({ kind, payload }: { kind: string; payload: any }) {
     ))}</div></div>
   );
   return <pre className="text-xs">{JSON.stringify(payload, null, 2)}</pre>;
-}],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/converter" }],mport { createFileRoute } from "@tanstack/react-router";
+}import { createFileRoute } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";

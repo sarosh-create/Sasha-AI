@@ -107,8 +107,7 @@ function Mentors() {
       </div>
     </div>
   );
-}],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/mentors" }],mport { createFileRoute } from "@tanstack/react-router";
+}import { createFileRoute } from "@tanstack/react-router";
 import { useState, useRef, useEffect } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";

@@ -87,8 +87,7 @@ function Teach() {
       </div>
     </div>
   );
-}],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/teach" }],mport { createFileRoute } from "@tanstack/react-router";
+}import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
