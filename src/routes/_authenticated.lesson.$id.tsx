@@ -11,17 +11,21 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/lesson/$id")({
   head: () => ({
+    // Lessons are generated per student from their own lesson_path row, so
+    // there is no shareable public URL here: keep it out of the index.
     meta: [
-      { title: "Lesson — Sasha AI" },
+      { title: "Your lesson — Sasha AI" },
       { name: "description", content: "Work through an AI-built lesson with slides, examples and an end-of-lesson quiz." },
-      { property: "og:title", content: "Lesson — Sasha AI" },
-      { property: "og:description", content: "Work through an AI-built lesson with slides, examples and an end-of-lesson quiz." },
+      { name: "robots", content: "noindex, nofollow" },
+      { property: "og:title", content: "Your lesson — Sasha AI" },
+      { property: "og:description", content: "A private, AI-built lesson tailored to this student's study path." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: LessonPage,
 });
+
 
 type Slide = { title: string; body: string; emoji?: string };
 type Quiz = { question: string; options: string[]; answer_index: number; explanation?: string };
