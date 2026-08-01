@@ -1,14 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { GradingDemo } from "@/components/grading-demo";
 import {
   BrainCircuit,
   CalendarCheck,
   Flame,
+  LineChart as LineChartIcon,
   MessageSquare,
   ScrollText,
+  ShieldCheck,
   Target,
 } from "lucide-react";
+
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -45,22 +49,21 @@ function Landing() {
 
       <main>
 
-
       <section className="bg-aurora">
-        <div className="container mx-auto px-6 py-20 md:py-28">
-          <div className="mx-auto max-w-3xl text-center">
+        <div className="container mx-auto grid items-center gap-10 px-6 py-16 md:py-24 lg:grid-cols-2">
+          <div className="max-w-xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-foreground backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Built for students preparing for real exams
             </div>
-            <h1 className="font-display text-5xl font-semibold leading-[1.05] tracking-tight md:text-6xl">
-              The calm, focused way to <span className="text-gradient">actually learn</span>.
+            <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
+              Proof you're getting <span className="text-gradient">better</span> — not just busier.
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base text-muted-foreground md:text-lg">
-              Sasha AI builds a study roadmap around your weak spots, teaches like a real
-              mentor, and grades you strictly so you walk into the exam ready.
+            <p className="mt-5 text-base text-muted-foreground md:text-lg">
+              Sasha AI marks your answers against the real mark scheme, re-teaches what you lost
+              marks on, and plots a mastery curve per topic you can show a parent.
             </p>
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            <div className="mt-8 flex flex-wrap items-center gap-3">
               <Link to="/auth">
                 <Button size="lg" className="shadow-glow">Start studying — it's free</Button>
               </Link>
@@ -69,8 +72,35 @@ function Landing() {
               </a>
             </div>
           </div>
+          <div className="lg:pl-4">
+            <GradingDemo />
+            <p className="mt-3 text-center text-xs text-muted-foreground">
+              Live demo of the tutor marking a 3-mark biology answer.
+            </p>
+          </div>
         </div>
       </section>
+
+      <section className="border-y border-border bg-card/40">
+        <div className="container mx-auto grid gap-6 px-6 py-14 md:grid-cols-3">
+          {[
+            { icon: LineChartIcon, title: "A mastery curve per topic", text: "Every marked quiz becomes a datapoint. Two attempts and you can see the line move." },
+            { icon: ShieldCheck, title: "Strict marking, not applause", text: "Marks are awarded the way an examiner would award them — including the ones you didn't get." },
+            { icon: Target, title: "Weak spots drive the plan", text: "Lost marks feed straight back into tomorrow's roadmap, so the gap actually closes." },
+          ].map((f) => (
+            <div key={f.title} className="flex gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-secondary text-primary">
+                <f.icon className="h-5 w-5" />
+              </div>
+              <div className="min-w-0">
+                <h2 className="font-display text-lg font-semibold">{f.title}</h2>
+                <p className="mt-1 text-sm text-muted-foreground">{f.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
 
       <section id="how" className="container mx-auto px-6 py-20">
         <div className="grid gap-5 md:grid-cols-3">
