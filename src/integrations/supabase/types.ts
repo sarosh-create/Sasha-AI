@@ -666,13 +666,6 @@ export type Database = {
             referencedRelation: "teachers"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "live_classes_teacher_id_fkey"
-            columns: ["teacher_id"]
-            isOneToOne: false
-            referencedRelation: "teachers_public"
-            referencedColumns: ["id"]
-          },
         ]
       }
       mistake_journal: {
@@ -1338,33 +1331,7 @@ export type Database = {
       }
     }
     Views: {
-      teachers_public: {
-        Row: {
-          avatar_url: string | null
-          bio: string | null
-          created_at: string | null
-          id: string | null
-          name: string | null
-          subject: string | null
-        }
-        Insert: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          id?: string | null
-          name?: string | null
-          subject?: string | null
-        }
-        Update: {
-          avatar_url?: string | null
-          bio?: string | null
-          created_at?: string | null
-          id?: string | null
-          name?: string | null
-          subject?: string | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       channel_message_rating_counts: {
