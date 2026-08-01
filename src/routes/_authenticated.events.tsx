@@ -11,7 +11,8 @@ export const Route = createFileRoute("/_authenticated/events")({
     { property: "og:title", content: "Events — Sasha AI" },
     { property: "og:description", content: "Workshops, exam-prep sessions and study events you can join inside Sasha AI." },
     { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/events" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/events" }] }),
   component: EventsPage,
 });
 

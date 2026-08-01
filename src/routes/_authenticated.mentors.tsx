@@ -16,7 +16,8 @@ export const Route = createFileRoute("/_authenticated/mentors")({
       { property: "og:description", content: "Switch instantly between 8 AI teaching personalities — friendly mentor, strict examiner, coach, specialist, strategist and more." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-  ] }),
+  ],
+    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/mentors" }] }),
 });
 
 const PERSONAS = [
