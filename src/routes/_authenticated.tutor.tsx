@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tutorSystemPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
-import { Send, Sparkles, Plus, StickyNote } from "lucide-react";
+import { Send, Sparkles, Plus, StickyNote, History } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 import { bumpChallenge } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/tutor")({
