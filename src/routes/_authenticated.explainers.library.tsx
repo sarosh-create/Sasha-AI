@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Library, Film, Play, Pause, Trash2, Star } from "lucide-react";
+import { CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/explainers/library")({
@@ -28,14 +29,20 @@ function ReelLibraryPage() {
   const { user } = useAuth();
   const [reels, setReels] = useState<Reel[]>([]);
   const [active, setActive] = useState<Reel | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
     if (!user) return;
-    const { data } = await supabase
+    setLoading(true);
+    setError(null);
+    const { data, error: err } = await supabase
       .from("explainer_reels" as any)
       .select("id, topic, scenes, created_at")
       .order("created_at", { ascending: false }) as any;
+    if (err) setError(err.message);
     setReels((data ?? []) as Reel[]);
+    setLoading(false);
   };
   useEffect(() => { load(); }, [user]);
 
@@ -59,12 +66,17 @@ function ReelLibraryPage() {
           <p className="mt-1 text-sm text-muted-foreground">Replay any topic with timestamped key concepts.</p>
         </header>
 
-        {reels.length === 0 ? (
-          <div className="rounded-2xl border bg-card p-10 text-center shadow-pop">
-            <Film className="mx-auto h-10 w-10 text-muted-foreground" />
-            <p className="mt-3 text-sm text-muted-foreground">No saved reels yet.</p>
-            <Button asChild className="mt-4"><Link to="/explainers">Make your first reel</Link></Button>
-          </div>
+        {loading ? (
+          <CardSkeletons count={3} />
+        ) : error ? (
+          <ErrorState description={error} onRetry={load} />
+        ) : reels.length === 0 ? (
+          <EmptyState
+            icon={<Film className="h-6 w-6" />}
+            title="No saved reels yet"
+            description="Turn a topic into a cartoon explainer reel to see it here."
+            action={<Button asChild><Link to="/explainers">Make your first reel</Link></Button>}
+          />
         ) : (
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {reels.map((r) => {

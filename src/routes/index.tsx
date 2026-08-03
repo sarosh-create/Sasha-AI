@@ -50,8 +50,8 @@ function Landing() {
       <main>
 
       <section className="bg-aurora">
-        <div className="container mx-auto grid items-center gap-10 px-6 py-16 md:py-24 lg:grid-cols-2">
-          <div className="max-w-xl">
+        <div className="container mx-auto grid items-center gap-10 px-5 py-16 sm:px-6 md:py-24 lg:grid-cols-2">
+          <div className="min-w-0 max-w-xl">
             <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs text-foreground backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-accent" />
               Built for students preparing for real exams
@@ -72,7 +72,7 @@ function Landing() {
               </a>
             </div>
           </div>
-          <div className="lg:pl-4">
+          <div className="min-w-0 lg:pl-4">
             <GradingDemo />
             <p className="mt-3 text-center text-xs text-muted-foreground">
               Live demo of the tutor marking a 3-mark biology answer.

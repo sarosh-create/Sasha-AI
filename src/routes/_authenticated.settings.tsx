@@ -43,6 +43,9 @@ function SettingsPage() {
   const [examDate, setExamDate] = useState("");
   const [dailyGoal, setDailyGoal] = useState(45);
   const [optIn, setOptIn] = useState(true);
+  const [dailyEmail, setDailyEmail] = useState(true);
+  const [weeklyEmail, setWeeklyEmail] = useState(true);
+
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [newSubject, setNewSubject] = useState("");
   const [videoStyle, setVideoStyle] = useState<string>(() => (typeof window !== "undefined" ? localStorage.getItem("sasha:videoStyle") ?? "cartoon" : "cartoon"));
@@ -52,7 +55,7 @@ function SettingsPage() {
     if (!user) return;
     (async () => {
       const [{ data: p }, { data: subs }] = await Promise.all([
-        supabase.from("profiles").select("exam_board, exam_date, daily_minutes_goal, leaderboard_opt_in").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("exam_board, exam_date, daily_minutes_goal, leaderboard_opt_in, email_daily_reminders, email_weekly_digest").eq("user_id", user.id).maybeSingle(),
         supabase.from("subjects").select("id, name, strength_score, color").eq("user_id", user.id).order("name"),
       ]);
       if (p) {
@@ -60,6 +63,8 @@ function SettingsPage() {
         setExamDate(p.exam_date ?? "");
         setDailyGoal(p.daily_minutes_goal ?? 45);
         setOptIn(p.leaderboard_opt_in ?? true);
+        setDailyEmail(p.email_daily_reminders ?? true);
+        setWeeklyEmail(p.email_weekly_digest ?? true);
       }
       setSubjects(subs ?? []);
     })();
@@ -70,7 +75,7 @@ function SettingsPage() {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ exam_board: board || null, exam_date: examDate || null, daily_minutes_goal: dailyGoal, leaderboard_opt_in: optIn })
+      .update({ exam_board: board || null, exam_date: examDate || null, daily_minutes_goal: dailyGoal, leaderboard_opt_in: optIn, email_daily_reminders: dailyEmail, email_weekly_digest: weeklyEmail })
       .eq("user_id", user.id);
     localStorage.setItem("sasha:videoStyle", videoStyle);
     setSaving(false);
@@ -162,6 +167,28 @@ function SettingsPage() {
           </div>
         </div>
       </section>
+
+      <section className="mt-6 rounded-2xl border border-border bg-card p-6 shadow-card">
+        <h2 className="font-display text-lg font-semibold">Email reminders</h2>
+        <p className="text-xs text-muted-foreground">We only email you about your own studying — never marketing.</p>
+        <div className="mt-4 space-y-3">
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">Daily study nudge</p>
+              <p className="text-xs text-muted-foreground">What to study next, plus your exam countdown.</p>
+            </div>
+            <Switch checked={dailyEmail} onCheckedChange={setDailyEmail} aria-label="Daily study nudge" />
+          </div>
+          <div className="flex items-center justify-between gap-4 rounded-xl border border-border bg-background p-3">
+            <div className="min-w-0">
+              <p className="text-sm font-medium">Weekly progress summary</p>
+              <p className="text-xs text-muted-foreground">Mastery gains, quiz scores and next week's focus areas.</p>
+            </div>
+            <Switch checked={weeklyEmail} onCheckedChange={setWeeklyEmail} aria-label="Weekly progress summary" />
+          </div>
+        </div>
+      </section>
+
 
       <div className="mt-6 flex items-center justify-between">
         <Link to="/onboarding"><Button variant="outline"><BookOpen className="h-4 w-4" /> Full setup wizard</Button></Link>

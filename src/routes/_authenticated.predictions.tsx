@@ -8,6 +8,7 @@ import { Progress } from "@/components/ui/progress";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Crosshair, Sparkles } from "lucide-react";
+import { CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/predictions")({
   component: Predictions,
@@ -30,6 +31,8 @@ function Predictions() {
   const [subjectId, setSubjectId] = useState("");
   const [rows, setRows] = useState<any[]>([]);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -39,10 +42,17 @@ function Predictions() {
     });
   }, [user]);
 
-  useEffect(() => {
+  const loadPredictions = () => {
     if (!user || !subjectId) return;
-    supabase.from("exam_predictions").select("*").eq("user_id", user.id).eq("subject_id", subjectId).order("probability", { ascending: false }).then(({ data }) => setRows(data ?? []));
-  }, [user, subjectId]);
+    setLoading(true);
+    setError(null);
+    supabase.from("exam_predictions").select("*").eq("user_id", user.id).eq("subject_id", subjectId).order("probability", { ascending: false }).then(({ data, error: err }) => {
+      if (err) setError(err.message);
+      setRows(data ?? []);
+      setLoading(false);
+    });
+  };
+  useEffect(() => { loadPredictions(); }, [user, subjectId]);
 
   const predict = async () => {
     if (!subjectId) return;
@@ -75,8 +85,18 @@ function Predictions() {
       </div>
 
       <div className="mt-6 space-y-3">
-        {rows.length === 0 && <p className="text-sm text-muted-foreground">No predictions yet for this subject.</p>}
-        {rows.map((r) => {
+        {loading ? (
+          <CardSkeletons count={3} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={loadPredictions} />
+        ) : rows.length === 0 ? (
+          <EmptyState
+            icon={<Crosshair className="h-6 w-6" />}
+            title="No predictions yet"
+            description="Run a prediction to see the topics most likely to appear in your exam."
+            action={<Button onClick={predict} disabled={busy || !subjectId}><Sparkles className="h-4 w-4" /> Run prediction</Button>}
+          />
+        ) : rows.map((r) => {
           const color = r.priority === "critical" ? "destructive" : r.priority === "high" ? "warning" : "secondary";
           return (
             <div key={r.id} className="rounded-2xl border border-border bg-card p-5 shadow-card animate-fade-in">

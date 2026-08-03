@@ -8,7 +8,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tutorSystemPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
-import { Send, Sparkles, Plus, StickyNote } from "lucide-react";
+import { Send, Sparkles, Plus, StickyNote, History } from "lucide-react";
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+
 import { bumpChallenge } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/tutor")({
@@ -22,9 +24,8 @@ export const Route = createFileRoute("/_authenticated/tutor")({
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/tutor" }],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    subject: typeof s.subject === "string" ? s.subject : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { subject?: string } =>
+    typeof s.subject === "string" ? { subject: s.subject } : {},
 });
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -208,7 +209,7 @@ function TutorPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-3rem)]">
+    <div className="flex h-[calc(100dvh-7rem)] md:h-[calc(100dvh-3rem)]">
       <aside className="hidden w-64 border-r border-border bg-sidebar/40 p-3 md:flex md:flex-col">
         <Button onClick={newSession} variant="outline" size="sm" className="mb-3"><Plus className="h-4 w-4" /> New chat</Button>
         <ScrollArea className="flex-1">
@@ -229,8 +230,38 @@ function TutorPage() {
         </ScrollArea>
       </aside>
 
-      <div className="flex flex-1 flex-col">
-        <div ref={scrollRef} className="flex-1 overflow-y-auto px-4 py-6">
+      <div className="flex min-w-0 flex-1 flex-col">
+        {/* Phones can't see the session rail — give them a sheet + new chat. */}
+        <div className="flex items-center justify-between gap-2 border-b border-border px-3 py-2 md:hidden">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="sm"><History className="h-4 w-4" /> Chats</Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-3">
+              <SheetHeader><SheetTitle>Your chats</SheetTitle></SheetHeader>
+              <ul className="mt-3 space-y-1">
+                {sessions.map((s) => (
+                  <li key={s.id}>
+                    <SheetClose asChild>
+                      <button
+                        onClick={() => openSession(s.id)}
+                        className={`w-full truncate rounded-md px-2 py-2 text-left text-sm hover:bg-sidebar-accent ${
+                          sessionId === s.id ? "bg-sidebar-accent font-medium" : "text-muted-foreground"
+                        }`}
+                      >
+                        {s.title}
+                      </button>
+                    </SheetClose>
+                  </li>
+                ))}
+                {sessions.length === 0 && <li className="px-2 py-2 text-sm text-muted-foreground">No chats yet.</li>}
+              </ul>
+            </SheetContent>
+          </Sheet>
+          <Button onClick={newSession} variant="ghost" size="sm"><Plus className="h-4 w-4" /> New</Button>
+        </div>
+        <div ref={scrollRef} className="flex-1 overflow-y-auto px-3 py-5 sm:px-4 sm:py-6">
+
           <div className="mx-auto max-w-3xl space-y-5">
             <h1 className="sr-only">AI Study Tutor</h1>
             {messages.length === 0 && (

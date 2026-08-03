@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { BADGES, levelInfo } from "@/lib/gamification";
+import { PageLoading, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/achievements")({
   head: () => ({
@@ -23,20 +24,38 @@ function AchievementsPage() {
   const { user } = useAuth();
   const [earned, setEarned] = useState<Set<string>>(new Set());
   const [xp, setXp] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const load = async () => {
     if (!user) return;
-    (async () => {
-      const [{ data: a }, { data: p }] = await Promise.all([
+    setLoading(true);
+    setError(null);
+    try {
+      const [{ data: a, error: e1 }, { data: p, error: e2 }] = await Promise.all([
         supabase.from("achievements").select("code").eq("user_id", user.id),
         supabase.from("profiles").select("xp").eq("user_id", user.id).maybeSingle(),
       ]);
+      if (e1) throw e1;
+      if (e2) throw e2;
       setEarned(new Set((a ?? []).map((x: any) => x.code)));
       setXp(p?.xp ?? 0);
-    })();
-  }, [user]);
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load achievements");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => { load(); }, [user]);
 
   const li = levelInfo(xp);
+
+  if (loading) return <PageLoading label="Loading achievements…" />;
+  if (error) return (
+    <div className="container mx-auto max-w-5xl px-6 py-8">
+      <ErrorState description={error} onRetry={load} />
+    </div>
+  );
 
   return (
     <div className="container mx-auto max-w-5xl px-6 py-8">

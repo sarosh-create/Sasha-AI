@@ -10,7 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
-import { CheckCircle2, Mail, MessageCircle, Trash2, Plus, XCircle } from "lucide-react";
+import { CheckCircle2, Mail, MessageCircle, Trash2, Plus, XCircle, Inbox, GraduationCap, Users, ShieldCheck, FileText, Hash, Video as VideoIcon, CalendarDays, BookOpen } from "lucide-react";
+import { PageLoading, CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -33,7 +34,7 @@ type Row = Record<string, any>;
 function AdminPage() {
   const { user } = useAuth();
   const { isAdmin, loading } = useIsAdmin();
-  if (loading) return <div className="p-6 text-muted-foreground">Loading…</div>;
+  if (loading) return <PageLoading label="Loading admin panel…" />;
   if (!isAdmin) return <Navigate to="/dashboard" />;
   return (
     <div className="mx-auto max-w-5xl p-6">
@@ -70,15 +71,17 @@ function AdminPage() {
 function useTable(table: string, order = "created_at") {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const reload = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from(table as any).select("*").order(order, { ascending: false });
-    if (error) toast.error(error.message);
+    setError(null);
+    const { data, error: err } = await supabase.from(table as any).select("*").order(order, { ascending: false });
+    if (err) { toast.error(err.message); setError(err.message); }
     setRows(data ?? []);
     setLoading(false);
   };
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [table]);
-  return { rows, loading, reload };
+  return { rows, loading, error, reload };
 }
 
 async function del(table: string, id: string, reload: () => void) {
@@ -89,7 +92,7 @@ async function del(table: string, id: string, reload: () => void) {
 }
 
 function TeacherApplicationsAdmin() {
-  const { rows, reload } = useTable("teacher_applications");
+  const { rows, loading, error, reload } = useTable("teacher_applications");
   const { user } = useAuth();
 
   const approve = async (application: Row) => {
@@ -121,8 +124,13 @@ function TeacherApplicationsAdmin() {
 
   return (
     <div className="mt-4 space-y-3">
-      {rows.length === 0 && <Card className="p-4 text-sm text-muted-foreground">No teacher applications yet.</Card>}
-      {rows.map((application) => (
+      {loading ? (
+        <CardSkeletons count={3} className="sm:grid-cols-1 lg:grid-cols-1" />
+      ) : error ? (
+        <ErrorState description={error} onRetry={reload} />
+      ) : rows.length === 0 ? (
+        <EmptyState icon={<Inbox className="h-6 w-6" />} title="No teacher applications yet" />
+      ) : rows.map((application) => (
         <Card key={application.id} className="space-y-3 p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -146,7 +154,7 @@ function TeacherApplicationsAdmin() {
 }
 
 function TeachersAdmin() {
-  const { rows, reload } = useTable("teachers");
+  const { rows, loading, error, reload } = useTable("teachers");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -172,7 +180,13 @@ function TeachersAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Add teacher</Button>
       </Card>
       <div className="space-y-2">
-        {rows.map((t) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<GraduationCap className="h-6 w-6" />} title="No teachers yet" description="Add a teacher above to get started." />
+        ) : rows.map((t) => (
           <Card key={t.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{t.name} {t.subject && <span className="text-muted-foreground">· {t.subject}</span>}</p>
@@ -187,7 +201,7 @@ function TeachersAdmin() {
 }
 
 function LiveClassesAdmin() {
-  const { rows, reload } = useTable("live_classes", "scheduled_at");
+  const { rows, loading, error, reload } = useTable("live_classes", "scheduled_at");
   const { rows: teachers } = useTable("teachers");
   const [form, setForm] = useState({ title: "", description: "", subject: "", scheduled_at: "", duration_minutes: 60, meeting_url: "", video_url: "", teacher_id: "" });
   const { user } = useAuth();
@@ -225,7 +239,13 @@ function LiveClassesAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Add class</Button>
       </Card>
       <div className="space-y-2">
-        {rows.map((c) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<CalendarDays className="h-6 w-6" />} title="No live classes scheduled" description="Schedule a class above." />
+        ) : rows.map((c) => (
           <Card key={c.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{c.title}</p>
@@ -240,7 +260,7 @@ function LiveClassesAdmin() {
 }
 
 function EventsAdmin() {
-  const { rows, reload } = useTable("events", "starts_at");
+  const { rows, loading, error, reload } = useTable("events", "starts_at");
   const { user } = useAuth();
   const [form, setForm] = useState({ title: "", description: "", starts_at: "", ends_at: "", location: "", url: "", image_url: "" });
   const add = async () => {
@@ -275,7 +295,13 @@ function EventsAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Add event</Button>
       </Card>
       <div className="space-y-2">
-        {rows.map((e) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<CalendarDays className="h-6 w-6" />} title="No events yet" description="Add an event above." />
+        ) : rows.map((e) => (
           <Card key={e.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{e.title}</p>
@@ -290,7 +316,7 @@ function EventsAdmin() {
 }
 
 function SchemesAdmin() {
-  const { rows, reload } = useTable("schemes");
+  const { rows, loading, error, reload } = useTable("schemes");
   const { user } = useAuth();
   const [form, setForm] = useState({ title: "", description: "", subject: "", image_url: "" });
   const add = async () => {
@@ -312,7 +338,13 @@ function SchemesAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Add scheme</Button>
       </Card>
       <div className="space-y-2">
-        {rows.map((s) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<BookOpen className="h-6 w-6" />} title="No schemes yet" description="Add a scheme above." />
+        ) : rows.map((s) => (
           <Card key={s.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{s.title}</p>
@@ -327,7 +359,7 @@ function SchemesAdmin() {
 }
 
 function VideosAdmin() {
-  const { rows, reload } = useTable("explainer_reels");
+  const { rows, loading, error, reload } = useTable("explainer_reels");
   const { user } = useAuth();
   const [form, setForm] = useState({ title: "", topic: "", video_url: "", thumbnail_url: "" });
   const add = async () => {
@@ -349,7 +381,13 @@ function VideosAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Add video</Button>
       </Card>
       <div className="space-y-2">
-        {rows.map((v) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<VideoIcon className="h-6 w-6" />} title="No explainer videos yet" description="Add a video above." />
+        ) : rows.map((v) => (
           <Card key={v.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{v.title}</p>
@@ -364,7 +402,7 @@ function VideosAdmin() {
 }
 
 function AssignStudentsAdmin() {
-  const { rows: links, reload } = useTable("teacher_students");
+  const { rows: links, loading: linksLoading, error: linksError, reload } = useTable("teacher_students");
   const [teachers, setTeachers] = useState<Row[]>([]);
   const [students, setStudents] = useState<Row[]>([]);
   const [teacherId, setTeacherId] = useState("");
@@ -404,7 +442,13 @@ function AssignStudentsAdmin() {
         <Button onClick={link}><Plus className="h-4 w-4" /> Link</Button>
       </Card>
       <div className="space-y-1">
-        {links.map((l) => (
+        {linksLoading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : linksError ? (
+          <ErrorState description={linksError} onRetry={reload} />
+        ) : links.length === 0 ? (
+          <EmptyState icon={<Users className="h-6 w-6" />} title="No students linked yet" description="Link a student to a teacher above." />
+        ) : links.map((l) => (
           <Card key={l.id} className="flex items-center justify-between p-3 text-sm">
             <span>{teachers.find((t) => t.user_id === l.teacher_user_id)?.display_name ?? l.teacher_user_id} → {students.find((s) => s.user_id === l.student_user_id)?.display_name ?? l.student_user_id}</span>
             <Button size="icon" variant="ghost" onClick={() => del("teacher_students", l.id, reload)}><Trash2 className="h-4 w-4" /></Button>
@@ -454,7 +498,9 @@ function CoAdminsAdmin() {
         </div>
       </Card>
       <div className="space-y-1">
-        {rows.map((r) => (
+        {rows.length === 0 ? (
+          <EmptyState icon={<ShieldCheck className="h-6 w-6" />} title="No co-admins yet" description="Grant co-admin access above." />
+        ) : rows.map((r) => (
           <Card key={r.user_id} className="flex items-center justify-between p-3 text-sm">
             <span>{r.display_name}</span>
             <Button size="sm" variant="ghost" onClick={() => revoke(r.user_id)}>Revoke</Button>
@@ -466,7 +512,7 @@ function CoAdminsAdmin() {
 }
 
 function PastPapersAdmin() {
-  const { rows, reload } = useTable("past_papers");
+  const { rows, loading, error, reload } = useTable("past_papers");
   const { user } = useAuth();
   const [form, setForm] = useState({ title: "", exam_board: "", level: "", subject: "", year: new Date().getFullYear(), paper_type: "" });
   const [file, setFile] = useState<File | null>(null);
@@ -505,7 +551,13 @@ function PastPapersAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Upload</Button>
       </Card>
       <div className="space-y-1">
-        {rows.map((p) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<FileText className="h-6 w-6" />} title="No past papers yet" description="Upload one above." />
+        ) : rows.map((p) => (
           <Card key={p.id} className="flex items-center justify-between p-3 text-sm">
             <span>{p.title} <span className="text-muted-foreground">· {[p.exam_board, p.level, p.subject, p.year].filter(Boolean).join(" · ")}</span></span>
             <Button size="icon" variant="ghost" onClick={() => del("past_papers", p.id, reload)}><Trash2 className="h-4 w-4" /></Button>
@@ -517,7 +569,7 @@ function PastPapersAdmin() {
 }
 
 function ChannelsAdmin() {
-  const { rows, reload } = useTable("chat_channels");
+  const { rows, loading, error, reload } = useTable("chat_channels");
   const { user } = useAuth();
   const [form, setForm] = useState({ name: "", description: "", subject: "", exam_board: "" });
   const add = async () => {
@@ -539,7 +591,13 @@ function ChannelsAdmin() {
         <Button onClick={add}><Plus className="h-4 w-4" /> Create</Button>
       </Card>
       <div className="space-y-1">
-        {rows.map((c) => (
+        {loading ? (
+          <CardSkeletons count={2} className="sm:grid-cols-1 lg:grid-cols-1" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={reload} />
+        ) : rows.length === 0 ? (
+          <EmptyState icon={<Hash className="h-6 w-6" />} title="No channels yet" description="Create one above." />
+        ) : rows.map((c) => (
           <Card key={c.id} className="flex items-center justify-between p-3 text-sm">
             <span>{c.name} <span className="text-muted-foreground">· {[c.subject, c.exam_board].filter(Boolean).join(" · ")}</span></span>
             <Button size="icon" variant="ghost" onClick={() => del("chat_channels", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>

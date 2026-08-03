@@ -8,6 +8,7 @@ import { ensureDailyChallenges, refillHeartsIfDue, touchStreak } from "@/lib/gam
 import { A11yProvider } from "@/lib/a11y";
 import { A11yToggle } from "@/components/a11y-toggle";
 import { EmojiBurstLayer } from "@/components/emoji-burst";
+import { MobileNav } from "@/components/mobile-nav";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -49,11 +50,12 @@ function AuthLayout() {
                 <A11yToggle />
               </div>
             </header>
-            <main className="flex-1">
+            <main className="flex-1 pb-[calc(env(safe-area-inset-bottom)+64px)] md:pb-0">
               <Outlet />
             </main>
           </div>
         </div>
+        <MobileNav />
         <EmojiBurstLayer />
       </SidebarProvider>
     </A11yProvider>

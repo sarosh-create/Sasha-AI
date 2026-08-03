@@ -804,6 +804,8 @@ export type Database = {
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
+          email_daily_reminders: boolean
+          email_weekly_digest: boolean
           exam_board: string | null
           exam_date: string | null
           grade_level: string | null
@@ -812,6 +814,8 @@ export type Database = {
           id: string
           lab_xp: number
           last_active_date: string | null
+          last_daily_email_at: string | null
+          last_weekly_email_at: string | null
           leaderboard_opt_in: boolean
           level: number
           onboarded: boolean
@@ -830,6 +834,8 @@ export type Database = {
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
+          email_daily_reminders?: boolean
+          email_weekly_digest?: boolean
           exam_board?: string | null
           exam_date?: string | null
           grade_level?: string | null
@@ -838,6 +844,8 @@ export type Database = {
           id?: string
           lab_xp?: number
           last_active_date?: string | null
+          last_daily_email_at?: string | null
+          last_weekly_email_at?: string | null
           leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean
@@ -856,6 +864,8 @@ export type Database = {
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
+          email_daily_reminders?: boolean
+          email_weekly_digest?: boolean
           exam_board?: string | null
           exam_date?: string | null
           grade_level?: string | null
@@ -864,6 +874,8 @@ export type Database = {
           id?: string
           lab_xp?: number
           last_active_date?: string | null
+          last_daily_email_at?: string | null
+          last_weekly_email_at?: string | null
           leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean

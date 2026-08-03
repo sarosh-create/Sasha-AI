@@ -92,7 +92,7 @@ function StaffChatPage() {
   }
 
   return (
-    <div className="container mx-auto flex h-[calc(100vh-4rem)] max-w-3xl flex-col p-4">
+    <div className="container mx-auto flex h-[calc(100dvh-7rem)] max-w-3xl flex-col p-4 md:h-[calc(100dvh-4rem)]">
       <div className="mb-3 flex items-center gap-2">
         <Shield className="h-5 w-5 text-primary" />
         <h1 className="font-display text-2xl font-semibold">Staff chat</h1>
