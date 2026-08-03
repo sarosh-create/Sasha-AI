@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
+import { BookMarked } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/schemes")({
   head: () => ({ meta: [
@@ -17,14 +19,30 @@ export const Route = createFileRoute("/_authenticated/schemes")({
 
 function SchemesPage() {
   const [rows, setRows] = useState<any[]>([]);
-  useEffect(() => {
-    supabase.from("schemes").select("*").order("created_at", { ascending: false }).then(({ data }) => setRows(data ?? []));
-  }, []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    setError(null);
+    supabase.from("schemes").select("*").order("created_at", { ascending: false }).then(({ data, error: err }) => {
+      if (err) setError(err.message);
+      else setRows(data ?? []);
+      setLoading(false);
+    });
+  };
+  useEffect(() => { load(); }, []);
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="font-display text-3xl font-semibold">Schemes</h1>
       <p className="mb-6 text-sm text-muted-foreground">Curated study schemes and learning paths.</p>
-      {rows.length === 0 && <p className="text-muted-foreground">No schemes yet.</p>}
+      {loading ? (
+        <PageLoading className="p-0" label="Loading schemes…" />
+      ) : error ? (
+        <ErrorState description={error} onRetry={load} />
+      ) : rows.length === 0 ? (
+        <EmptyState icon={<BookMarked className="h-6 w-6" />} title="No schemes yet" description="Curated schemes will appear here once published." />
+      ) : (
       <div className="grid gap-3 sm:grid-cols-2">
         {rows.map((s) => (
           <Card key={s.id} className="overflow-hidden">
@@ -37,6 +55,7 @@ function SchemesPage() {
           </Card>
         ))}
       </div>
+      )}
     </div>
   );
 }

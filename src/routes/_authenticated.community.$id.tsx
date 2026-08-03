@@ -6,8 +6,10 @@ import { useRoles } from "@/lib/use-role";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ChevronLeft, Send, ThumbsUp, Trash2, Shield, GraduationCap } from "lucide-react";
+import { ChevronLeft, MessageCircle, Send, ThumbsUp, Trash2, Shield, GraduationCap } from "lucide-react";
 import { toast } from "sonner";
+import { EmptyState, ErrorState } from "@/components/ui/states";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/community/$id")({
   loader: async ({ params }) => {
@@ -65,6 +67,8 @@ function ChannelPage() {
   const [ratings, setRatings] = useState<Record<string, number>>({});
   const [myRatings, setMyRatings] = useState<Set<string>>(new Set());
   const [body, setBody] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
   const loadProfiles = async (ids: string[]) => {
@@ -96,14 +100,24 @@ function ChannelPage() {
   };
 
 
-  useEffect(() => { (async () => {
-    const { data: c } = await supabase.from("chat_channels").select("*").eq("id", id).maybeSingle();
-    setChannel(c);
-    const { data: m } = await supabase.from("channel_messages").select("*").eq("channel_id", id).order("created_at");
-    setMessages((m ?? []) as Msg[]);
-    await loadProfiles(Array.from(new Set((m ?? []).map((x: any) => x.user_id))));
-    await loadRatings((m ?? []).map((x: any) => x.id));
-  })(); }, [id]);
+  const load = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data: c } = await supabase.from("chat_channels").select("*").eq("id", id).maybeSingle();
+      setChannel(c);
+      const { data: m, error: err } = await supabase.from("channel_messages").select("*").eq("channel_id", id).order("created_at");
+      if (err) throw err;
+      setMessages((m ?? []) as Msg[]);
+      await loadProfiles(Array.from(new Set((m ?? []).map((x: any) => x.user_id))));
+      await loadRatings((m ?? []).map((x: any) => x.id));
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load channel");
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => { load(); }, [id]);
 
   useEffect(() => {
     const ch = supabase.channel(`channel:${id}`)
@@ -154,7 +168,21 @@ function ChannelPage() {
         </div>
       </div>
       <div ref={listRef} className="flex-1 space-y-2 overflow-y-auto p-4">
-        {messages.map((m) => {
+        {loading ? (
+          <div className="space-y-2" aria-busy="true">
+            <Skeleton className="ml-auto h-12 w-2/3 rounded-2xl" />
+            <Skeleton className="h-12 w-1/2 rounded-2xl" />
+            <Skeleton className="ml-auto h-12 w-3/5 rounded-2xl" />
+          </div>
+        ) : error ? (
+          <ErrorState description={error} onRetry={load} />
+        ) : messages.length === 0 ? (
+          <EmptyState
+            icon={<MessageCircle className="h-6 w-6" />}
+            title="No messages yet"
+            description="Be the first to ask a question in this channel."
+          />
+        ) : messages.map((m) => {
           const isMine = m.user_id === user?.id;
           const author = profiles[m.user_id];
           const authorRoles = roles[m.user_id] ?? [];

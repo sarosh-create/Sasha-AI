@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Users, Video, Plus } from "lucide-react";
+import { CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/rooms/")({
@@ -33,22 +34,33 @@ function RoomsIndex() {
   const [open, setOpen] = useState(false);
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
-    const { data } = await supabase
-      .from("study_rooms")
-      .select("*")
-      .order("created_at", { ascending: false })
-      .limit(50);
-    setRooms((data as Room[]) ?? []);
-    if (data?.length) {
-      const { data: parts } = await supabase
-        .from("room_participants")
-        .select("room_id")
-        .in("room_id", data.map((r: any) => r.id));
-      const c: Record<string, number> = {};
-      (parts ?? []).forEach((p: any) => { c[p.room_id] = (c[p.room_id] ?? 0) + 1; });
-      setCounts(c);
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: err } = await supabase
+        .from("study_rooms")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(50);
+      if (err) throw err;
+      setRooms((data as Room[]) ?? []);
+      if (data?.length) {
+        const { data: parts } = await supabase
+          .from("room_participants")
+          .select("room_id")
+          .in("room_id", data.map((r: any) => r.id));
+        const c: Record<string, number> = {};
+        (parts ?? []).forEach((p: any) => { c[p.room_id] = (c[p.room_id] ?? 0) + 1; });
+        setCounts(c);
+      }
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load rooms");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -87,11 +99,18 @@ function RoomsIndex() {
         </Dialog>
       </div>
 
-      {rooms.length === 0 ? (
-        <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
-          <Video className="mb-2 h-8 w-8 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">No rooms yet. Be the first to host one.</p>
-        </div>
+      {loading ? (
+        <CardSkeletons count={4} className="mt-6" />
+      ) : error ? (
+        <ErrorState className="mt-10" description={error} onRetry={load} />
+      ) : rooms.length === 0 ? (
+        <EmptyState
+          className="mt-10"
+          icon={<Video className="h-6 w-6" />}
+          title="No rooms yet"
+          description="Be the first to host one."
+          action={<Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> New room</Button>}
+        />
       ) : (
         <ul className="mt-6 grid gap-3 sm:grid-cols-2">
           {rooms.map((r) => (

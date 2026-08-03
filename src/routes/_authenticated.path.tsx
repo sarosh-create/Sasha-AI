@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Check, Lock, MessageSquare, ScrollText, BookOpen, Star } from "lucide-react";
+import { PageLoading, ErrorState } from "@/components/ui/states";
 import { TalkingFalcon } from "@/components/talking-falcon";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Film } from "lucide-react";
@@ -96,19 +97,35 @@ function PathPage() {
 
   const [noSubjects, setNoSubjects] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
     if (!user) return;
-    const [{ data: subs }, { data: ls }] = await Promise.all([
-      supabase.from("subjects").select("id, name, color, strength_score").eq("user_id", user.id),
-      supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position"),
-    ]);
+    setError(null);
+    let subs: any[] | null = null;
+    let ls: any[] | null = null;
+    try {
+      const [{ data: s1, error: e1 }, { data: s2, error: e2 }] = await Promise.all([
+        supabase.from("subjects").select("id, name, color, strength_score").eq("user_id", user.id),
+        supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position"),
+      ]);
+      if (e1) throw e1;
+      if (e2) throw e2;
+      subs = s1;
+      ls = s2;
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load study path");
+      setLoading(false);
+      return;
+    }
     const map: Record<string, Subject> = {};
     (subs ?? []).forEach((s: any) => (map[s.id] = s));
     setSubjects(map);
     if (!subs || subs.length === 0) {
       setNoSubjects(true);
       setLessons([]);
+      setLoading(false);
       return;
     }
     setNoSubjects(false);
@@ -116,20 +133,27 @@ function PathPage() {
       setBusy(true);
       try {
         await generatePathFor(user.id);
-        const { data: ls2, error } = await supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position");
-        if (error) throw error;
+        const { data: ls2, error: err } = await supabase.from("lesson_path").select("*").eq("user_id", user.id).order("position");
+        if (err) throw err;
         setLessons((ls2 as Lesson[]) ?? []);
         if (!ls2 || ls2.length === 0) toast.error("Couldn't create your path — please try regenerating.");
       } catch (e: any) {
         toast.error(e.message ?? "Failed to build study path");
-      } finally { setBusy(false); }
+      } finally { setBusy(false); setLoading(false); }
     } else {
       setLessons(ls as Lesson[]);
+      setLoading(false);
     }
   };
 
   useEffect(() => { load(); }, [user]);
 
+  if (loading) return <PageLoading label="Loading your study path…" />;
+  if (error) return (
+    <div className="container mx-auto max-w-3xl px-6 py-8">
+      <ErrorState description={error} onRetry={load} />
+    </div>
+  );
 
   const start = async (l: Lesson) => {
     if (l.status === "locked") return;

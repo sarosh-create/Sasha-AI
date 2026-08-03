@@ -4,9 +4,11 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ArrowLeft, Send, Video, VideoOff, Mic, MicOff, PhoneOff } from "lucide-react";
+import { ArrowLeft, MessageCircle, Send, Video, VideoOff, Mic, MicOff, PhoneOff } from "lucide-react";
 import { awardBadge } from "@/lib/gamification";
 import { toast } from "sonner";
+import { EmptyState, PageLoading } from "@/components/ui/states";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/rooms/$id")({
   loader: async ({ params }) => {
@@ -56,6 +58,8 @@ function RoomPage() {
   const { user } = useAuth();
   const nav = useNavigate();
   const [room, setRoom] = useState<{ name: string; subject: string | null } | null>(null);
+  const [loadingRoom, setLoadingRoom] = useState(true);
+  const [messagesLoading, setMessagesLoading] = useState(true);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [input, setInput] = useState("");
@@ -78,6 +82,7 @@ function RoomPage() {
       if (!active) return;
       if (!r) { toast.error("Room not found"); nav({ to: "/rooms" }); return; }
       setRoom(r);
+      setLoadingRoom(false);
 
       const { data: p } = await supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle();
       const dn = p?.display_name ?? user.email?.split("@")[0] ?? "Student";
@@ -96,6 +101,7 @@ function RoomPage() {
       if (!active) return;
       setMessages((msgs as Msg[]) ?? []);
       setParticipants((parts as Participant[]) ?? []);
+      setMessagesLoading(false);
 
       // Realtime: messages + participants
       const dataChannel = supabase
@@ -229,6 +235,8 @@ function RoomPage() {
     });
   };
 
+  if (loadingRoom) return <PageLoading label="Loading room…" />;
+
   return (
     <div className="flex h-[calc(100vh-3rem)] flex-col">
       <div className="flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur">
@@ -288,12 +296,26 @@ function RoomPage() {
             </ul>
           </div>
           <div ref={msgScrollRef} className="flex-1 space-y-2 overflow-y-auto p-3">
-            {messages.map((m) => (
-              <div key={m.id} className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.user_id === user?.id ? "ml-auto bg-primary text-primary-foreground" : "bg-card border border-border"}`}>
-                <p className="text-[10px] opacity-70">{m.display_name ?? "Student"}</p>
-                <p>{m.content}</p>
+            {messagesLoading ? (
+              <div className="space-y-2" aria-busy="true">
+                <Skeleton className="h-10 w-3/4 rounded-2xl" />
+                <Skeleton className="ml-auto h-10 w-2/3 rounded-2xl" />
               </div>
-            ))}
+            ) : messages.length === 0 ? (
+              <EmptyState
+                icon={<MessageCircle className="h-6 w-6" />}
+                title="No messages yet"
+                description="Say hi to get the conversation going."
+                className="border-none bg-transparent p-3"
+              />
+            ) : (
+              messages.map((m) => (
+                <div key={m.id} className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${m.user_id === user?.id ? "ml-auto bg-primary text-primary-foreground" : "bg-card border border-border"}`}>
+                  <p className="text-[10px] opacity-70">{m.display_name ?? "Student"}</p>
+                  <p>{m.content}</p>
+                </div>
+              ))
+            )}
           </div>
           <div className="border-t border-border p-2">
             <div className="flex gap-2">

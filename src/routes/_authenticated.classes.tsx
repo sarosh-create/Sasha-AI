@@ -5,7 +5,8 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Calendar, ExternalLink } from "lucide-react";
+import { Calendar, ExternalLink, CalendarClock } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/classes")({
   head: () => ({ meta: [
@@ -23,14 +24,25 @@ function ClassesPage() {
   const { user } = useAuth();
   const [classes, setClasses] = useState<any[]>([]);
   const [signups, setSignups] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
-    const { data } = await supabase.rpc("list_live_classes");
-    setClasses((data ?? []).map((c: any) => ({ ...c, teachers: { name: c.teacher_name, subject: c.teacher_subject } })));
+    setLoading(true);
+    setError(null);
+    try {
+      const { data, error: err } = await supabase.rpc("list_live_classes");
+      if (err) throw err;
+      setClasses((data ?? []).map((c: any) => ({ ...c, teachers: { name: c.teacher_name, subject: c.teacher_subject } })));
 
-    if (user) {
-      const { data: su } = await supabase.from("class_signups").select("class_id").eq("user_id", user.id);
-      setSignups(new Set((su ?? []).map((r: any) => r.class_id)));
+      if (user) {
+        const { data: su } = await supabase.from("class_signups").select("class_id").eq("user_id", user.id);
+        setSignups(new Set((su ?? []).map((r: any) => r.class_id)));
+      }
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load classes");
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => { load(); /* eslint-disable-next-line */ }, [user]);
@@ -53,7 +65,13 @@ function ClassesPage() {
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="font-display text-3xl font-semibold">Live classes</h1>
       <p className="mb-6 text-sm text-muted-foreground">Scheduled lessons with real teachers. Sign up to reserve your spot.</p>
-      {classes.length === 0 && <p className="text-muted-foreground">No classes scheduled yet.</p>}
+      {loading ? (
+        <PageLoading className="p-0" label="Loading classes…" />
+      ) : error ? (
+        <ErrorState description={error} onRetry={load} />
+      ) : classes.length === 0 ? (
+        <EmptyState icon={<CalendarClock className="h-6 w-6" />} title="No classes scheduled yet" description="Live classes with real teachers will appear here once scheduled." />
+      ) : (
       <div className="space-y-3">
         {classes.map((c) => (
           <Card key={c.id} className="p-4">
@@ -80,6 +98,7 @@ function ClassesPage() {
           </Card>
         ))}
       </div>
+      )}
     </div>
   );
 }

@@ -2,7 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Calendar, MapPin, ExternalLink } from "lucide-react";
+import { Calendar, MapPin, ExternalLink, CalendarDays } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/events")({
   head: () => ({ meta: [
@@ -18,14 +19,30 @@ export const Route = createFileRoute("/_authenticated/events")({
 
 function EventsPage() {
   const [rows, setRows] = useState<any[]>([]);
-  useEffect(() => {
-    supabase.from("events").select("*").order("starts_at", { ascending: true }).then(({ data }) => setRows(data ?? []));
-  }, []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    setError(null);
+    supabase.from("events").select("*").order("starts_at", { ascending: true }).then(({ data, error: err }) => {
+      if (err) setError(err.message);
+      else setRows(data ?? []);
+      setLoading(false);
+    });
+  };
+  useEffect(() => { load(); }, []);
   return (
     <div className="mx-auto max-w-4xl p-6">
       <h1 className="font-display text-3xl font-semibold">Events</h1>
       <p className="mb-6 text-sm text-muted-foreground">Upcoming events, contests, and meetups.</p>
-      {rows.length === 0 && <p className="text-muted-foreground">No events yet.</p>}
+      {loading ? (
+        <PageLoading className="p-0" label="Loading events…" />
+      ) : error ? (
+        <ErrorState description={error} onRetry={load} />
+      ) : rows.length === 0 ? (
+        <EmptyState icon={<CalendarDays className="h-6 w-6" />} title="No events yet" description="Check back soon for upcoming workshops and study sessions." />
+      ) : (
       <div className="space-y-3">
         {rows.map((e) => (
           <Card key={e.id} className="overflow-hidden">
@@ -46,6 +63,7 @@ function EventsPage() {
           </Card>
         ))}
       </div>
+      )}
     </div>
   );
 }

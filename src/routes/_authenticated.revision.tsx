@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { MessageSquare, ScrollText } from "lucide-react";
+import { MessageSquare, ScrollText, BookOpenCheck } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/revision")({
   head: () => ({
@@ -26,18 +27,40 @@ type Subject = { id: string; name: string; strength_score: number };
 function Revision() {
   const { user } = useAuth();
   const [subjects, setSubjects] = useState<Subject[]>([]);
-  useEffect(() => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
     if (!user) return;
+    setLoading(true);
+    setError(null);
     supabase.from("subjects").select("id, name, strength_score").eq("user_id", user.id)
       .order("strength_score", { ascending: true })
-      .then(({ data }) => setSubjects(data ?? []));
-  }, [user]);
+      .then(({ data, error: err }) => {
+        if (err) setError(err.message);
+        else setSubjects(data ?? []);
+        setLoading(false);
+      });
+  };
+  useEffect(() => { load(); }, [user]);
 
   return (
     <div className="container mx-auto max-w-4xl px-6 py-8">
       <h1 className="font-display text-3xl font-semibold">Revision</h1>
       <p className="text-sm text-muted-foreground">Topic-by-topic mastery — focus on the lowest bars first.</p>
 
+      {loading ? (
+        <PageLoading className="p-0" label="Loading revision plan…" />
+      ) : error ? (
+        <ErrorState className="mt-6" description={error} onRetry={load} />
+      ) : subjects.length === 0 ? (
+        <EmptyState
+          className="mt-6"
+          icon={<BookOpenCheck className="h-6 w-6" />}
+          title="No subjects yet"
+          description="Add subjects in study setup to build a revision plan."
+        />
+      ) : (
       <div className="mt-6 space-y-3">
         {subjects.map((s) => (
           <div key={s.id} className="rounded-2xl border border-border bg-card p-5 shadow-card">
@@ -54,10 +77,8 @@ function Revision() {
             <Progress value={s.strength_score} className="mt-3" />
           </div>
         ))}
-        {subjects.length === 0 && (
-          <p className="text-sm text-muted-foreground">Add subjects in study setup.</p>
-        )}
       </div>
+      )}
     </div>
   );
 }

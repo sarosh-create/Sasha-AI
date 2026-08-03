@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ScrollText, Plus, CheckCircle2 } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/quiz/")({
   head: () => ({
@@ -29,14 +30,24 @@ type Quiz = {
 function QuizList() {
   const { user } = useAuth();
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
-  useEffect(() => {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
     if (!user) return;
+    setLoading(true);
+    setError(null);
     supabase.from("quizzes")
       .select("id, topic, score, total, completed, created_at, subject_id")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .then(({ data }) => setQuizzes(data ?? []));
-  }, [user]);
+      .then(({ data, error: err }) => {
+        if (err) setError(err.message);
+        else setQuizzes(data ?? []);
+        setLoading(false);
+      });
+  };
+  useEffect(() => { load(); }, [user]);
 
   return (
     <div className="container mx-auto max-w-4xl px-6 py-8">
@@ -48,13 +59,20 @@ function QuizList() {
         <Link to="/quiz/new"><Button><Plus className="h-4 w-4" /> New quiz</Button></Link>
       </div>
 
+      {loading ? (
+        <PageLoading className="p-0" label="Loading quizzes…" />
+      ) : error ? (
+        <ErrorState className="mt-6" description={error} onRetry={load} />
+      ) : quizzes.length === 0 ? (
+        <EmptyState
+          className="mt-6"
+          icon={<ScrollText className="h-6 w-6" />}
+          title="No quizzes yet"
+          description="Create your first quiz to start practising."
+          action={<Link to="/quiz/new" search={{} as any}><Button><Plus className="h-4 w-4" /> New quiz</Button></Link>}
+        />
+      ) : (
       <div className="mt-6 space-y-3">
-        {quizzes.length === 0 && (
-          <div className="rounded-2xl border border-dashed border-border bg-card p-10 text-center">
-            <ScrollText className="mx-auto mb-3 h-6 w-6 text-muted-foreground" />
-            <p className="text-sm text-muted-foreground">No quizzes yet — create your first one.</p>
-          </div>
-        )}
         {quizzes.map((q) => (
           <Link key={q.id} to="/quiz/$id" params={{ id: q.id }}>
             <div className="flex items-center justify-between rounded-xl border border-border bg-card p-4 shadow-card transition hover:-translate-y-0.5 hover:shadow-glow">
@@ -75,6 +93,7 @@ function QuizList() {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 }

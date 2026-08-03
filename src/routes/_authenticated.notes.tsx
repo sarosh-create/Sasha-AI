@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Plus, Trash2, StickyNote } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 import { TAG_COLORS, TAG_LABELS, awardBadge, bumpChallenge } from "@/lib/gamification";
 import { toast } from "sonner";
 
@@ -41,15 +42,26 @@ function NotesPage() {
   const [filterTag, setFilterTag] = useState<string>("all");
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState({ subject_id: "", tag: "key-idea", title: "", body: "" });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = async () => {
     if (!user) return;
-    const [{ data: subs }, { data: ns }] = await Promise.all([
-      supabase.from("subjects").select("id, name, color").eq("user_id", user.id).order("name"),
-      supabase.from("notes").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
-    ]);
-    setSubjects(subs ?? []);
-    setNotes((ns as Note[]) ?? []);
+    setError(null);
+    try {
+      const [{ data: subs, error: e1 }, { data: ns, error: e2 }] = await Promise.all([
+        supabase.from("subjects").select("id, name, color").eq("user_id", user.id).order("name"),
+        supabase.from("notes").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
+      ]);
+      if (e1) throw e1;
+      if (e2) throw e2;
+      setSubjects(subs ?? []);
+      setNotes((ns as Note[]) ?? []);
+    } catch (e: any) {
+      setError(e.message ?? "Failed to load notes");
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => { load(); }, [user]);
@@ -87,6 +99,13 @@ function NotesPage() {
     (n) =>
       (filterSub === "all" || n.subject_id === filterSub) &&
       (filterTag === "all" || n.tag === filterTag),
+  );
+
+  if (loading) return <PageLoading label="Loading notes…" />;
+  if (error) return (
+    <div className="container mx-auto max-w-6xl px-6 py-8">
+      <ErrorState description={error} onRetry={load} />
+    </div>
   );
 
   return (
@@ -157,10 +176,13 @@ function NotesPage() {
       </div>
 
       {filtered.length === 0 ? (
-        <div className="mt-10 grid place-items-center rounded-2xl border border-dashed border-border bg-card/40 py-16 text-center">
-          <StickyNote className="mb-2 h-8 w-8 text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">No notes yet. Hit "New note" to start.</p>
-        </div>
+        <EmptyState
+          className="mt-10"
+          icon={<StickyNote className="h-6 w-6" />}
+          title="No notes yet"
+          description='Hit "New note" to capture your first idea.'
+          action={<Button onClick={() => setOpen(true)}><Plus className="h-4 w-4" /> New note</Button>}
+        />
       ) : (
         <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((n) => (

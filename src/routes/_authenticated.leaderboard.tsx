@@ -6,6 +6,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Switch } from "@/components/ui/switch";
 import { Crown, Flame, Beaker, Zap } from "lucide-react";
 import { awardBadge } from "@/lib/gamification";
+import { PageLoading, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/leaderboard")({
   head: () => ({ meta: [
@@ -43,18 +44,25 @@ function LeaderboardPage() {
   const [rows, setRows] = useState<Row[]>([]);
   const [me, setMe] = useState<Row | null>(null);
   const [optIn, setOptIn] = useState(true);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  const loadRows = () => {
+    setLoading(true);
+    setError(null);
     (async () => {
-      const { data } = await supabase
+      const { data, error: err } = await supabase
         .from("profiles")
         .select("user_id, display_name, xp, lab_xp, xp_week, streak_count, leaderboard_opt_in")
         .eq("leaderboard_opt_in", true)
         .order(metric, { ascending: false })
         .limit(50) as any;
-      setRows((data ?? []) as Row[]);
+      if (err) setError(err.message);
+      else setRows((data ?? []) as Row[]);
+      setLoading(false);
     })();
-  }, [metric]);
+  };
+  useEffect(() => { loadRows(); }, [metric]);
 
   useEffect(() => {
     if (!user) return;
@@ -100,6 +108,11 @@ function LeaderboardPage() {
           <Switch checked={optIn} onCheckedChange={toggleOpt} />
         </div>
 
+        {loading ? (
+          <PageLoading className="p-0" label="Loading leaderboard…" />
+        ) : error ? (
+          <ErrorState description={error} onRetry={loadRows} />
+        ) : (
         <Tabs value={metric} onValueChange={(v) => setMetric(v as Metric)}>
           <TabsList className="grid w-full grid-cols-4">
             {TABS.map((t) => (
@@ -147,6 +160,7 @@ function LeaderboardPage() {
             </TabsContent>
           ))}
         </Tabs>
+        )}
       </div>
     </div>
   );

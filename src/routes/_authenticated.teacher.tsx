@@ -5,7 +5,8 @@ import { useAuth } from "@/lib/auth-context";
 import { useRoles } from "@/lib/use-role";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Loader2, User } from "lucide-react";
+import { User, Users } from "lucide-react";
+import { PageLoading, CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/teacher")({
   head: () => ({
@@ -29,15 +30,28 @@ function TeacherDashboard() {
   const [students, setStudents] = useState<any[]>([]);
   const [selected, setSelected] = useState<any>(null);
   const [details, setDetails] = useState<{ subjects: any[]; quizzes: any[]; path: any[] } | null>(null);
+  const [studentsLoading, setStudentsLoading] = useState(true);
+  const [studentsError, setStudentsError] = useState<string | null>(null);
 
-  useEffect(() => { (async () => {
+  const loadStudents = async () => {
     if (!user) return;
-    const { data: links } = await supabase.from("teacher_students").select("student_user_id").eq("teacher_user_id", user.id);
-    const ids = (links ?? []).map((l: any) => l.student_user_id);
-    if (!ids.length) { setStudents([]); return; }
-    const { data: profs } = await supabase.from("profiles").select("user_id, display_name, grade_level, exam_board, account_type").in("user_id", ids);
-    setStudents(profs ?? []);
-  })(); }, [user]);
+    setStudentsLoading(true);
+    setStudentsError(null);
+    try {
+      const { data: links, error: err1 } = await supabase.from("teacher_students").select("student_user_id").eq("teacher_user_id", user.id);
+      if (err1) throw err1;
+      const ids = (links ?? []).map((l: any) => l.student_user_id);
+      if (!ids.length) { setStudents([]); return; }
+      const { data: profs, error: err2 } = await supabase.from("profiles").select("user_id, display_name, grade_level, exam_board, account_type").in("user_id", ids);
+      if (err2) throw err2;
+      setStudents(profs ?? []);
+    } catch (e: any) {
+      setStudentsError(e.message ?? "Failed to load students");
+    } finally {
+      setStudentsLoading(false);
+    }
+  };
+  useEffect(() => { loadStudents(); }, [user]);
 
   useEffect(() => { (async () => {
     if (!selected) { setDetails(null); return; }
@@ -49,7 +63,7 @@ function TeacherDashboard() {
     setDetails({ subjects: subjects ?? [], quizzes: quizzes ?? [], path: path ?? [] });
   })(); }, [selected]);
 
-  if (loading) return <div className="grid h-[40vh] place-items-center"><Loader2 className="h-5 w-5 animate-spin" /></div>;
+  if (loading) return <PageLoading label="Loading teacher dashboard…" />;
   if (!isTeacher && !isStaff) return <Navigate to="/dashboard" />;
 
   return (
@@ -60,8 +74,17 @@ function TeacherDashboard() {
       <div className="mt-6 grid gap-4 md:grid-cols-[280px_1fr]">
         <div className="space-y-2">
           <p className="text-xs font-semibold uppercase text-muted-foreground">Students ({students.length})</p>
-          {students.length === 0 && <p className="text-sm text-muted-foreground">No students assigned. Ask admin to link students.</p>}
-          {students.map((s) => (
+          {studentsLoading ? (
+            <CardSkeletons count={3} className="sm:grid-cols-1 lg:grid-cols-1" />
+          ) : studentsError ? (
+            <ErrorState description={studentsError} onRetry={loadStudents} />
+          ) : students.length === 0 ? (
+            <EmptyState
+              icon={<Users className="h-6 w-6" />}
+              title="No students assigned"
+              description="Ask an admin to link students to your account."
+            />
+          ) : students.map((s) => (
             <Card key={s.user_id} className={`cursor-pointer p-3 ${selected?.user_id === s.user_id ? "border-primary" : ""}`} onClick={() => setSelected(s)}>
               <div className="flex items-center gap-2">
                 <div className="grid h-8 w-8 place-items-center rounded-full bg-muted"><User className="h-4 w-4" /></div>
@@ -77,7 +100,7 @@ function TeacherDashboard() {
           {!selected ? (
             <Card className="grid h-40 place-items-center text-muted-foreground">Select a student to view their progress.</Card>
           ) : !details ? (
-            <Card className="grid h-40 place-items-center"><Loader2 className="h-4 w-4 animate-spin" /></Card>
+            <Card className="grid h-40 place-items-center"><CardSkeletons count={1} className="w-full px-4 sm:grid-cols-1 lg:grid-cols-1" /></Card>
           ) : (
             <div className="space-y-4">
               <Card className="p-4">

@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
+import { PageLoading, ErrorState } from "@/components/ui/states";
 import { addXp, awardBadge, bumpChallenge, fireConfetti, loseHeart } from "@/lib/gamification";
 
 export const Route = createFileRoute("/_authenticated/quiz/$id")({
@@ -50,27 +51,32 @@ function QuizPage() {
   const [score, setScore] = useState<number | null>(null);
   const [completed, setCompleted] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("quizzes")
-        .select("topic, questions, answers, feedback, score, completed")
-        .eq("id", id)
-        .maybeSingle();
-      if (!data) return;
-      setTopic(data.topic);
-      setQuestions((data.questions as Question[]) ?? []);
-      setAnswers((data.answers as string[]) ?? Array((data.questions as any[])?.length ?? 0).fill(""));
-      if (data.completed && data.feedback) {
-        const fb = data.feedback as any;
-        setResults(fb.results ?? []);
-        setSummary(fb.summary ?? "");
-        setScore(data.score ?? null);
-        setCompleted(true);
-      }
-    })();
-  }, [id]);
+  const load = async () => {
+    setLoading(true);
+    setLoadError(null);
+    const { data, error: err } = await supabase
+      .from("quizzes")
+      .select("topic, questions, answers, feedback, score, completed")
+      .eq("id", id)
+      .maybeSingle();
+    if (err) { setLoadError(err.message); setLoading(false); return; }
+    if (!data) { setLoadError("Quiz not found"); setLoading(false); return; }
+    setTopic(data.topic);
+    setQuestions((data.questions as Question[]) ?? []);
+    setAnswers((data.answers as string[]) ?? Array((data.questions as any[])?.length ?? 0).fill(""));
+    if (data.completed && data.feedback) {
+      const fb = data.feedback as any;
+      setResults(fb.results ?? []);
+      setSummary(fb.summary ?? "");
+      setScore(data.score ?? null);
+      setCompleted(true);
+    }
+    setLoading(false);
+  };
+  useEffect(() => { load(); }, [id]);
 
   const submit = async () => {
     if (!user) return;
@@ -132,8 +138,9 @@ function QuizPage() {
     }
   };
 
-  if (!questions.length) {
-    return <div className="p-10 text-sm text-muted-foreground">Loading…</div>;
+  if (loading) return <PageLoading label="Loading your quiz…" />;
+  if (loadError || !questions.length) {
+    return <ErrorState className="m-6" title="Quiz not available" description={loadError ?? "This quiz has no questions."} onRetry={load} />;
   }
 
   return (

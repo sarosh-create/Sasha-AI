@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Download, FileText } from "lucide-react";
+import { PageLoading, ErrorState, EmptyState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/papers")({
   head: () => ({ meta: [
@@ -21,10 +22,19 @@ export const Route = createFileRoute("/_authenticated/papers")({
 function PapersPage() {
   const [rows, setRows] = useState<any[]>([]);
   const [q, setQ] = useState("");
-  useEffect(() => { (async () => {
-    const { data } = await supabase.from("past_papers").select("*").order("year", { ascending: false });
-    setRows(data ?? []);
-  })(); }, []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = () => {
+    setLoading(true);
+    setError(null);
+    supabase.from("past_papers").select("*").order("year", { ascending: false }).then(({ data, error: err }) => {
+      if (err) setError(err.message);
+      else setRows(data ?? []);
+      setLoading(false);
+    });
+  };
+  useEffect(() => { load(); }, []);
 
   const filtered = rows.filter((r) => {
     if (!q) return true;
@@ -44,8 +54,19 @@ function PapersPage() {
       <h1 className="font-display text-3xl font-semibold">Past papers</h1>
       <p className="mt-1 text-sm text-muted-foreground">Browse and download exam papers and marking schemes.</p>
       <Input className="mt-4" placeholder="Search by subject, board, year…" value={q} onChange={(e) => setQ(e.target.value)} />
+      {loading ? (
+        <PageLoading className="px-0 py-6" label="Loading past papers…" />
+      ) : error ? (
+        <ErrorState className="mt-6" description={error} onRetry={load} />
+      ) : filtered.length === 0 ? (
+        <EmptyState
+          className="mt-6"
+          icon={<FileText className="h-6 w-6" />}
+          title="No papers yet"
+          description="Your admin will upload past papers soon."
+        />
+      ) : (
       <div className="mt-6 grid gap-3 sm:grid-cols-2">
-        {filtered.length === 0 && <p className="col-span-full text-sm text-muted-foreground">No papers yet — your admin will upload soon.</p>}
         {filtered.map((p) => (
           <Card key={p.id} className="p-4">
             <div className="flex items-start gap-2">
@@ -64,6 +85,7 @@ function PapersPage() {
           </Card>
         ))}
       </div>
+      )}
     </div>
   );
 }

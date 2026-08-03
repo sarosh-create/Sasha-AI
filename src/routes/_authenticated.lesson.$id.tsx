@@ -5,9 +5,10 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { ChevronLeft, ChevronRight, Sparkles, Check, X, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Sparkles, Check, X, BookOpen } from "lucide-react";
 import { addXp, awardBadge } from "@/lib/gamification";
 import { toast } from "sonner";
+import { PageLoading, ErrorState } from "@/components/ui/states";
 
 export const Route = createFileRoute("/_authenticated/lesson/$id")({
   head: () => ({
@@ -42,6 +43,7 @@ function LessonPage() {
   const [picked, setPicked] = useState<number | null>(null);
   const [correct, setCorrect] = useState(0);
   const [done, setDone] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -74,13 +76,16 @@ function LessonPage() {
         if (error) throw error;
         setLesson(data.lesson);
       } catch (e: any) {
+        setLoadError(e.message || "Could not load lesson");
         toast.error(e.message || "Could not load lesson");
       } finally { setLoading(false); }
     })();
   }, [id, user]);
 
-  if (loading) return <div className="grid h-[60vh] place-items-center text-muted-foreground"><Loader2 className="mr-2 inline h-4 w-4 animate-spin" /> Loading your lesson…</div>;
-  if (!lesson) return <div className="p-6">Lesson not available.</div>;
+  const retry = () => nav({ to: "/lesson/$id", params: { id } });
+
+  if (loading) return <PageLoading label="Loading your lesson…" />;
+  if (!lesson) return <ErrorState className="m-6" title="Lesson not available" description={loadError ?? "We couldn't load this lesson."} onRetry={retry} />;
 
   const slides: Slide[] = lesson.slides ?? [];
   const quiz: Quiz[] = lesson.quiz ?? [];
