@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Strict grading with feedback via Lovable AI Gateway
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,8 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const user = await getAuthedUser(req);
+  if (!user) return unauthorized(corsHeaders);
   try {
     const { questions, answers } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
