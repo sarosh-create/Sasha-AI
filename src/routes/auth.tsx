@@ -100,12 +100,21 @@ function AuthPage() {
           } else {
             toast.success("Account created. Let's set up your study plan.");
           }
-          // Fire-and-forget admin email notification (Resend)
-          fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-signup`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
-            body: JSON.stringify({ email, name, source: accountType }),
-          }).catch(() => {});
+          // Fire-and-forget admin email notification (Resend) — authenticated call
+          const { data: sessionData } = await supabase.auth.getSession();
+          const accessToken = sessionData.session?.access_token;
+          if (accessToken) {
+            fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-signup`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+                Authorization: `Bearer ${accessToken}`,
+              },
+              body: JSON.stringify({ name, source: accountType }),
+            }).catch(() => {});
+          }
+
           goNext("/onboarding");
         } else {
           toast.success("Check your email to confirm your account.");
