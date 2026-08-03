@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Generates an avatar image via Lovable AI Gateway (Gemini nano-banana).
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,8 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const user = await getAuthedUser(req);
+  if (!user) return unauthorized(corsHeaders);
   try {
     const { prompt } = await req.json();
     if (!prompt || typeof prompt !== "string") {

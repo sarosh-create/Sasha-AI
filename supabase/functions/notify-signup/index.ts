@@ -1,4 +1,6 @@
 // Sends an admin notification email via Resend when a new user signs up.
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -11,16 +13,27 @@ const GATEWAY = "https://connector-gateway.lovable.dev/resend";
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { email, name, source } = await req.json();
-    if (!email || typeof email !== "string") {
-      return new Response(JSON.stringify({ error: "email required" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    // Only a real, signed-in user can trigger their own signup notification.
+    const user = await getAuthedUser(req);
+    if (!user) return unauthorized(corsHeaders);
+
+    const payload = await req.json().catch(() => ({}));
+    const rawName = typeof payload?.name === "string" ? payload.name.slice(0, 100) : "";
+    const rawSource = typeof payload?.source === "string" ? payload.source.slice(0, 40) : "signup";
+    // Email always comes from the verified JWT, never from the request body.
+    const email = user.email ?? "";
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return new Response(JSON.stringify({ error: "invalid account email" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+    const name = rawName;
+    const source = rawSource;
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     const RESEND_API_KEY = Deno.env.get("RESEND_API_KEY");
     if (!LOVABLE_API_KEY || !RESEND_API_KEY) {
       return new Response(JSON.stringify({ ok: false, error: "email not configured" }), { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     }
+
 
     const subject = `🎉 New Sasha AI signup: ${name || email}`;
     const html = `

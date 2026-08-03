@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // ElevenLabs TTS for the Talking Falcon. Returns MP3 audio bytes.
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,8 @@ const cors = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const user = await getAuthedUser(req);
+  if (!user) return unauthorized(cors);
   try {
     const { text, voiceId } = await req.json();
     if (!text || typeof text !== "string") {
