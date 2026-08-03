@@ -24,9 +24,8 @@ export const Route = createFileRoute("/_authenticated/tutor")({
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/tutor" }],
   }),
-  validateSearch: (s: Record<string, unknown>) => ({
-    subject: typeof s.subject === "string" ? s.subject : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { subject?: string } =>
+    typeof s.subject === "string" ? { subject: s.subject } : {},
 });
 
 type Msg = { role: "user" | "assistant"; content: string };

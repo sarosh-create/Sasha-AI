@@ -21,9 +21,8 @@ export const Route = createFileRoute("/_authenticated/quiz/new")({
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/quiz/new" }],
   }),
   component: NewQuiz,
-  validateSearch: (s: Record<string, unknown>) => ({
-    subject: typeof s.subject === "string" ? s.subject : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { subject?: string } =>
+    typeof s.subject === "string" ? { subject: s.subject } : {},
 });
 
 type Subject = { id: string; name: string };
