@@ -1368,6 +1368,14 @@ export type Database = {
           video_url: string
         }[]
       }
+      staff_list_teacher_emails: {
+        Args: never
+        Returns: {
+          email: string
+          id: string
+          name: string
+        }[]
+      }
     }
     Enums: {
       app_role: "admin" | "teacher" | "user" | "co_admin"
