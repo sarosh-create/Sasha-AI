@@ -159,7 +159,7 @@ function ChannelPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-4rem)] flex-col">
+    <div className="flex h-[calc(100dvh-7rem)] flex-col md:h-[calc(100dvh-4rem)]">
       <div className="flex items-center gap-2 border-b p-3">
         <Link to="/community"><Button size="icon" variant="ghost"><ChevronLeft className="h-4 w-4" /></Button></Link>
         <div>

@@ -238,7 +238,7 @@ function RoomPage() {
   if (loadingRoom) return <PageLoading label="Loading room…" />;
 
   return (
-    <div className="flex h-[calc(100vh-3rem)] flex-col">
+    <div className="flex h-[calc(100dvh-7rem)] flex-col md:h-[calc(100dvh-3rem)]">
       <div className="flex items-center justify-between border-b border-border bg-background/80 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-3">
           <Link to="/rooms" className="text-muted-foreground hover:text-foreground"><ArrowLeft className="h-4 w-4" /></Link>

@@ -208,7 +208,7 @@ function TutorPage() {
   };
 
   return (
-    <div className="flex h-[calc(100vh-3rem)]">
+    <div className="flex h-[calc(100dvh-7rem)] md:h-[calc(100dvh-3rem)]">
       <aside className="hidden w-64 border-r border-border bg-sidebar/40 p-3 md:flex md:flex-col">
         <Button onClick={newSession} variant="outline" size="sm" className="mb-3"><Plus className="h-4 w-4" /> New chat</Button>
         <ScrollArea className="flex-1">
