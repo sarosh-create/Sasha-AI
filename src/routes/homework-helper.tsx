@@ -264,7 +264,9 @@ Rules:
   return (
     <div className="mt-4 rounded-2xl border border-border bg-card p-5 shadow-card">
       <p className="text-sm text-muted-foreground">Vent your messy thoughts (type or talk). I'll organise them into an outline — in your own voice.</p>
+      <Label htmlFor="dump-raw" className="sr-only">Brain dump thoughts</Label>
       <Textarea
+        id="dump-raw"
         value={raw}
         onChange={(e) => setRaw(e.target.value)}
         placeholder="Just dump everything you're thinking about the topic, even if it's messy…"
@@ -312,11 +314,17 @@ Subject context: ${subject}. Be specific and concrete, not generic.`;
     <div className="mt-4 rounded-2xl border border-border bg-card p-5 shadow-card">
       <p className="text-sm text-muted-foreground">Pick a topic and I'll project it as a guided 3D scene you can "walk through" in your head.</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-[1fr_220px]">
-        <Input placeholder="e.g. The Battle of Yorktown, or a plant cell, or DNA replication" value={topic} onChange={(e) => setTopic(e.target.value)} />
-        <Select value={subject} onValueChange={setSubject}>
-          <SelectTrigger><SelectValue /></SelectTrigger>
-          <SelectContent className="max-h-72">{SUBJECTS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
-        </Select>
+        <div>
+          <Label htmlFor="hologram-topic" className="sr-only">Hologram topic</Label>
+          <Input id="hologram-topic" placeholder="e.g. The Battle of Yorktown, or a plant cell, or DNA replication" value={topic} onChange={(e) => setTopic(e.target.value)} />
+        </div>
+        <div>
+          <Label htmlFor="hologram-subject" className="sr-only">Hologram subject</Label>
+          <Select value={subject} onValueChange={setSubject}>
+            <SelectTrigger id="hologram-subject"><SelectValue /></SelectTrigger>
+            <SelectContent className="max-h-72">{SUBJECTS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
+          </Select>
+        </div>
       </div>
       <div className="mt-3 flex justify-end">
         <Button onClick={project} disabled={loading || !topic.trim()}>
@@ -374,12 +382,12 @@ function FocusPanel() {
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <div>
-          <label className="text-xs uppercase tracking-wide text-muted-foreground">Focus minutes</label>
-          <Input type="number" min={5} max={120} value={minutes} onChange={(e) => setMinutes(Number(e.target.value) || 25)} className="mt-1" />
+          <Label htmlFor="focus-minutes" className="text-xs uppercase tracking-wide text-muted-foreground">Focus minutes</Label>
+          <Input id="focus-minutes" type="number" min={5} max={120} value={minutes} onChange={(e) => setMinutes(Number(e.target.value) || 25)} className="mt-1" />
         </div>
         <div>
-          <label className="text-xs uppercase tracking-wide text-muted-foreground">Break minutes</label>
-          <Input type="number" min={1} max={30} value={breakMin} onChange={(e) => setBreakMin(Number(e.target.value) || 5)} className="mt-1" />
+          <Label htmlFor="break-minutes" className="text-xs uppercase tracking-wide text-muted-foreground">Break minutes</Label>
+          <Input id="break-minutes" type="number" min={1} max={30} value={breakMin} onChange={(e) => setBreakMin(Number(e.target.value) || 5)} className="mt-1" />
         </div>
       </div>
 
