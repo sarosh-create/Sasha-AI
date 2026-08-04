@@ -213,7 +213,7 @@ function ChannelPage() {
       </div>
       <div className="flex gap-2 border-t p-3">
         <Input value={body} onChange={(e) => setBody(e.target.value)} placeholder="Type your question…" onKeyDown={(e) => { if (e.key === "Enter") send(); }} />
-        <Button onClick={send}><Send className="h-4 w-4" /></Button>
+        <Button aria-label="Send message" onClick={send}><Send className="h-4 w-4" /></Button>
       </div>
     </div>
   );

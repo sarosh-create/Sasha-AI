@@ -251,7 +251,7 @@ function LiveClassesAdmin() {
               <p className="font-medium">{c.title}</p>
               <p className="text-xs text-muted-foreground">{new Date(c.scheduled_at).toLocaleString()} · {c.duration_minutes}min{c.subject ? ` · ${c.subject}` : ""}</p>
             </div>
-            <Button size="icon" variant="ghost" aria-label="Delete live classe" onClick={() => del("live_classes", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete live class" onClick={() => del("live_classes", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>

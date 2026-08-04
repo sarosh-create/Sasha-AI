@@ -370,7 +370,7 @@ function StudyBuddyPage() {
                   }
                 }}
               />
-              <Button onClick={() => void send()} disabled={streaming || !input.trim()}>
+              <Button aria-label="Send message" onClick={() => void send()} disabled={streaming || !input.trim()}>
                 <Send className="h-4 w-4" />
               </Button>
             </div>
