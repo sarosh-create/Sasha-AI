@@ -192,7 +192,7 @@ function TeachersAdmin() {
               <p className="font-medium">{t.name} {t.subject && <span className="text-muted-foreground">· {t.subject}</span>}</p>
               {t.bio && <p className="text-xs text-muted-foreground">{t.bio}</p>}
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del("teachers", t.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete teacher" onClick={() => del("teachers", t.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -251,7 +251,7 @@ function LiveClassesAdmin() {
               <p className="font-medium">{c.title}</p>
               <p className="text-xs text-muted-foreground">{new Date(c.scheduled_at).toLocaleString()} · {c.duration_minutes}min{c.subject ? ` · ${c.subject}` : ""}</p>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del("live_classes", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete live class" onClick={() => del("live_classes", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -307,7 +307,7 @@ function EventsAdmin() {
               <p className="font-medium">{e.title}</p>
               <p className="text-xs text-muted-foreground">{new Date(e.starts_at).toLocaleString()}{e.location ? ` · ${e.location}` : ""}</p>
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del("events", e.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete event" onClick={() => del("events", e.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -350,7 +350,7 @@ function SchemesAdmin() {
               <p className="font-medium">{s.title}</p>
               {s.description && <p className="text-xs text-muted-foreground line-clamp-2">{s.description}</p>}
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del("schemes", s.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete scheme" onClick={() => del("schemes", s.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -393,7 +393,7 @@ function VideosAdmin() {
               <p className="font-medium">{v.title}</p>
               {v.topic && <p className="text-xs text-muted-foreground">{v.topic}</p>}
             </div>
-            <Button size="icon" variant="ghost" onClick={() => del("explainer_reels", v.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete explainer reel" onClick={() => del("explainer_reels", v.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -451,7 +451,7 @@ function AssignStudentsAdmin() {
         ) : links.map((l) => (
           <Card key={l.id} className="flex items-center justify-between p-3 text-sm">
             <span>{teachers.find((t) => t.user_id === l.teacher_user_id)?.display_name ?? l.teacher_user_id} → {students.find((s) => s.user_id === l.student_user_id)?.display_name ?? l.student_user_id}</span>
-            <Button size="icon" variant="ghost" onClick={() => del("teacher_students", l.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete teacher student" onClick={() => del("teacher_students", l.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -560,7 +560,7 @@ function PastPapersAdmin() {
         ) : rows.map((p) => (
           <Card key={p.id} className="flex items-center justify-between p-3 text-sm">
             <span>{p.title} <span className="text-muted-foreground">· {[p.exam_board, p.level, p.subject, p.year].filter(Boolean).join(" · ")}</span></span>
-            <Button size="icon" variant="ghost" onClick={() => del("past_papers", p.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete past paper" onClick={() => del("past_papers", p.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>
@@ -600,7 +600,7 @@ function ChannelsAdmin() {
         ) : rows.map((c) => (
           <Card key={c.id} className="flex items-center justify-between p-3 text-sm">
             <span>{c.name} <span className="text-muted-foreground">· {[c.subject, c.exam_board].filter(Boolean).join(" · ")}</span></span>
-            <Button size="icon" variant="ghost" onClick={() => del("chat_channels", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
+            <Button size="icon" variant="ghost" aria-label="Delete chat channel" onClick={() => del("chat_channels", c.id, reload)}><Trash2 className="h-4 w-4" /></Button>
           </Card>
         ))}
       </div>

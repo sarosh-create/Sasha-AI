@@ -25,7 +25,24 @@ export const Route = createFileRoute("/homework-helper")({
       { name: "twitter:description", content: "Hologram explanations, learning-style tutoring, brain-dump organizer, focus timer." },
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          name: "Sasha AI Homework Helper",
+          url: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper",
+          applicationCategory: "EducationalApplication",
+          operatingSystem: "Web",
+          description:
+            "Free AI homework helper for every subject: hologram-style explanations, learning-style tutoring, brain-dump organiser and a focus timer.",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+        }),
+      },
+    ],
   }),
+
   component: HomeworkHelper,
 });
 
