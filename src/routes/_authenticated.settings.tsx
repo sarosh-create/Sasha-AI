@@ -8,8 +8,10 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Trash2, Plus, Save, BookOpen, Settings as SettingsIcon } from "lucide-react";
+import { Trash2, Plus, Save, BookOpen, Settings as SettingsIcon, Mail, Bell } from "lucide-react";
 import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { sendTestEmail } from "@/lib/test-email.functions";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
@@ -82,6 +84,31 @@ function SettingsPage() {
     if (error) toast.error(error.message);
     else toast.success("Settings saved");
   };
+
+  const [testing, setTesting] = useState(false);
+  const runTestEmail = useServerFn(sendTestEmail);
+  const sendTest = async () => {
+    setTesting(true);
+    try {
+      const res = await runTestEmail({ data: {} } as never);
+      if (res?.ok) toast.success(`Test email sent to ${res.to}`);
+      else toast.error(res?.error ?? "Could not send the test email");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Could not send the test email");
+    } finally {
+      setTesting(false);
+    }
+  };
+
+  const testNotification = async () => {
+    if (typeof Notification === "undefined") return toast.error("This browser doesn't support notifications");
+    const perm = Notification.permission === "granted" ? "granted" : await Notification.requestPermission();
+    if (perm !== "granted") return toast.error("Notifications are blocked for this site");
+    new Notification("Sasha AI", { body: "Test notification — reminders will look like this." });
+    toast.success("Test notification sent");
+  };
+
+
 
   const addSubject = async () => {
     if (!user || !newSubject.trim()) return;
@@ -186,8 +213,17 @@ function SettingsPage() {
             </div>
             <Switch checked={weeklyEmail} onCheckedChange={setWeeklyEmail} aria-label="Weekly progress summary" />
           </div>
+          <div className="flex flex-wrap items-center gap-2 pt-1">
+            <Button variant="outline" size="sm" disabled={testing} onClick={sendTest}>
+              <Mail className="h-4 w-4" /> {testing ? "Sending…" : "Send test email"}
+            </Button>
+            <Button variant="outline" size="sm" onClick={testNotification}>
+              <Bell className="h-4 w-4" /> Send test notification
+            </Button>
+          </div>
         </div>
       </section>
+
 
 
       <div className="mt-6 flex items-center justify-between">

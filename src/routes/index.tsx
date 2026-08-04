@@ -28,7 +28,33 @@ export const Route = createFileRoute("/")({
       { name: "twitter:description", content: "Adaptive plans, AI tutor, strict-marked exam quizzes, magical homework helper, custom study buddy." },
     ],
     links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebApplication",
+              name: "Sasha AI",
+              url: "https://study-mentor-by-sarosh-ai.lovable.app/",
+              applicationCategory: "EducationalApplication",
+              operatingSystem: "Web",
+              description:
+                "Free AI study mentor: adaptive plans, AI tutor, strict exam-style quizzes and a magical homework helper.",
+              offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+            },
+            {
+              "@type": "Organization",
+              name: "Sasha AI",
+              url: "https://study-mentor-by-sarosh-ai.lovable.app/",
+            },
+          ],
+        }),
+      },
+    ],
   }),
+
   component: Landing,
 });
 

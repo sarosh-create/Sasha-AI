@@ -18,17 +18,20 @@ export function adminClient(): SupabaseClient {
   });
 }
 
-/** pg_cron authenticates with the project's publishable/anon key. */
+/** pg_cron authenticates with a dedicated server-only secret (never the public anon key). */
 export function authorizeCron(request: Request): boolean {
-  const key =
-    request.headers.get("apikey") ??
+  const expected = process.env["CRON_SECRET"] ?? "";
+  const got =
+    request.headers.get("x-cron-secret") ??
     request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
     "";
-  const expected = [process.env["SUPABASE_ANON_KEY"], process.env["SUPABASE_PUBLISHABLE_KEY"]].filter(
-    Boolean,
-  ) as string[];
-  return expected.some((e) => e.length > 0 && e === key);
+  if (expected.length === 0 || got.length !== expected.length) return false;
+  // constant-time compare
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ got.charCodeAt(i);
+  return diff === 0;
 }
+
 
 export function escapeHtml(s: string) {
   return s.replace(
