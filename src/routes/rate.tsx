@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Logo } from "@/components/logo";
@@ -108,9 +109,9 @@ function RatePage() {
             </div>
 
             <div className="mt-4">
-              <h2 className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Category</h2>
+              <Label htmlFor="rate-category" className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Category</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="rate-category"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="general">General feedback</SelectItem>
                   <SelectItem value="feature">Feature request</SelectItem>

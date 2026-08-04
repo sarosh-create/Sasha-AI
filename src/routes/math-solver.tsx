@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { toast } from "sonner";
@@ -107,7 +108,8 @@ function MathSolver() {
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-5 shadow-card">
           <h2 className="sr-only">Solve a problem</h2>
-          <Textarea value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. Solve 2x² − 5x − 3 = 0, or find the derivative of sin(x)·e^x" className="min-h-[140px] resize-none text-base" maxLength={4000} />
+          <Label htmlFor="math-problem" className="sr-only">Math problem</Label>
+          <Textarea id="math-problem" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. Solve 2x² − 5x − 3 = 0, or find the derivative of sin(x)·e^x" className="min-h-[140px] resize-none text-base" maxLength={4000} />
           <div className="mt-3 flex items-center justify-between gap-3">
             <span className="text-xs text-muted-foreground">{q.length}/4000</span>
             <Button onClick={solve} disabled={loading || !q.trim()} size="lg"><Calculator className="h-4 w-4" /> {loading ? "Solving…" : "Solve"}</Button>
