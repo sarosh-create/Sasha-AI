@@ -185,22 +185,24 @@ Return a clear, numbered step-by-step solution in markdown. End with a one-line 
     <div className="mt-4 rounded-2xl border border-border bg-card p-5 shadow-card">
       <div className="grid gap-3 sm:grid-cols-2">
         <div>
-          <label className="text-xs uppercase tracking-wide text-muted-foreground">Subject</label>
+          <Label htmlFor="solve-subject" className="text-xs uppercase tracking-wide text-muted-foreground">Subject</Label>
           <Select value={subject} onValueChange={setSubject}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger id="solve-subject" className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent className="max-h-72">{SUBJECTS.map((s) => <SelectItem key={s} value={s}>{s}</SelectItem>)}</SelectContent>
           </Select>
         </div>
         <div>
-          <label className="text-xs uppercase tracking-wide text-muted-foreground">Teach me like a…</label>
+          <Label htmlFor="solve-style" className="text-xs uppercase tracking-wide text-muted-foreground">Teach me like a…</Label>
           <Select value={style} onValueChange={setStyle}>
-            <SelectTrigger className="mt-1"><SelectValue /></SelectTrigger>
+            <SelectTrigger id="solve-style" className="mt-1"><SelectValue /></SelectTrigger>
             <SelectContent>{LEARNING_STYLES.map((s) => <SelectItem key={s.id} value={s.id}>{s.label}</SelectItem>)}</SelectContent>
           </Select>
         </div>
       </div>
 
+      <Label htmlFor="solve-question" className="sr-only">Homework question</Label>
       <Textarea
+        id="solve-question"
         value={q}
         onChange={(e) => setQ(e.target.value)}
         placeholder="Paste your homework question here — any subject…"

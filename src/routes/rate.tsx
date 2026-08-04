@@ -108,9 +108,9 @@ function RatePage() {
             </div>
 
             <div className="mt-4">
-              <h2 className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Category</h2>
+              <Label htmlFor="rate-category" className="mb-1 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">Category</Label>
               <Select value={category} onValueChange={setCategory}>
-                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectTrigger id="rate-category"><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="general">General feedback</SelectItem>
                   <SelectItem value="feature">Feature request</SelectItem>
