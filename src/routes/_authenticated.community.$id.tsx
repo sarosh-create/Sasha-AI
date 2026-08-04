@@ -161,7 +161,7 @@ function ChannelPage() {
   return (
     <div className="flex h-[calc(100dvh-7rem)] flex-col md:h-[calc(100dvh-4rem)]">
       <div className="flex items-center gap-2 border-b p-3">
-        <Link to="/community"><Button size="icon" variant="ghost"><ChevronLeft className="h-4 w-4" /></Button></Link>
+        <Link to="/community"><Button size="icon" variant="ghost" aria-label="Back to channels"><ChevronLeft className="h-4 w-4" /></Button></Link>
         <div>
           <p className="font-medium">{channel?.name ?? "Channel"}</p>
           {channel?.description && <p className="text-xs text-muted-foreground">{channel.description}</p>}
