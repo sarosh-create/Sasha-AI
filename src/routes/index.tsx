@@ -94,7 +94,7 @@ function Landing() {
                 <Button size="lg" className="shadow-glow">Start studying — it's free</Button>
               </Link>
               <a href="#how" className="text-sm text-muted-foreground hover:text-foreground">
-                How it works ↓
+                Learn how Sasha AI helps you study ↓
               </a>
             </div>
           </div>
