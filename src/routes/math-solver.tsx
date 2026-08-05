@@ -7,7 +7,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { Calculator, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
-import { aiHeaders } from "@/lib/fn-auth";
+import { aiHeaders, SIGN_IN_REQUIRED } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/math-solver")({
   head: () => ({
@@ -57,6 +57,7 @@ function MathSolver() {
           messages: [{ role: "user", content: question }],
         }),
       });
+      if (resp.status === 401) { toast.error(SIGN_IN_REQUIRED); return; }
       if (resp.status === 429) { toast.error("Too many requests."); return; }
       if (resp.status === 402) { toast.error("AI credits exhausted."); return; }
       if (!resp.ok || !resp.body) { toast.error("Couldn't reach the solver."); return; }
