@@ -68,21 +68,25 @@ function AdminPage() {
   );
 }
 
-function useTable(table: string, order = "created_at") {
+function useTable(table: string, order = "created_at", columns = "*") {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const reload = async () => {
     setLoading(true);
     setError(null);
-    const { data, error: err } = await supabase.from(table as any).select("*").order(order, { ascending: false });
+    const { data, error: err } = await supabase.from(table as any).select(columns).order(order, { ascending: false });
     if (err) { toast.error(err.message); setError(err.message); }
-    setRows(data ?? []);
+    setRows((data as any) ?? []);
     setLoading(false);
   };
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [table]);
   return { rows, loading, error, reload };
 }
+
+// Teacher emails are column-revoked from normal reads; staff fetch them via a security-definer RPC.
+const TEACHER_COLUMNS = "id,user_id,name,subject,bio,avatar_url,created_at";
+
 
 async function del(table: string, id: string, reload: () => void) {
   if (!confirm("Delete this item?")) return;
