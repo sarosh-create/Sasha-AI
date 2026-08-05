@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Volume2, VolumeX, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { aiHeaders } from "@/lib/fn-auth";
 
 type Mood = "idle" | "happy" | "thinking" | "alert";
 export type FalconTheme = "slate" | "desert" | "midnight" | "arctic" | "ember";
@@ -98,7 +99,7 @@ export function TalkingFalcon({ name, lines, autoSpeak = false, mood = "idle", c
     try {
       const resp = await fetch(TTS_URL, {
         method: "POST",
-        headers: { "Content-Type": "application/json", apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string },
+        headers: await aiHeaders(),
         body: JSON.stringify({ text }),
       });
       if (!resp.ok) return;

@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { GraduationCap, Trophy } from "lucide-react";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/teach")({
   component: Teach,
@@ -40,7 +41,7 @@ function Teach() {
     try {
       const r = await fetch(FN, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({ topic, transcript: next, round }),
       });
       if (!r.ok) throw new Error((await r.json()).error ?? "Failed");

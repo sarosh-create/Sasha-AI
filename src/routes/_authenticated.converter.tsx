@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
 import { Wand2, FileText, Layers, Network, ListChecks, Sparkles, Sigma } from "lucide-react";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/converter")({
   component: Converter,
@@ -54,7 +55,7 @@ function Converter() {
     try {
       const r = await fetch(FN, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({ text, kind, title: title || "Untitled" }),
       });
       if (!r.ok) throw new Error((await r.json()).error ?? "Conversion failed");

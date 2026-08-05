@@ -12,6 +12,7 @@ import { Slider } from "@/components/ui/slider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import {
+import { aiHeaders } from "@/lib/fn-auth";
   TalkingFalcon,
   readFalconCustomization,
   saveFalconCustomization,
@@ -153,10 +154,7 @@ function StudyBuddyPage() {
     try {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiHeaders(),
         body: JSON.stringify({ messages: next, system: buddySystemPrompt(buddy) }),
       });
       if (resp.status === 429) throw new Error("Rate limit reached. Wait a moment.");

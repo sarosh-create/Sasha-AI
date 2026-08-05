@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { Heart, Gavel, Flame, GraduationCap, Repeat, Brain, Compass, Briefcase } from "lucide-react";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/mentors")({
   component: Mentors,
@@ -50,7 +51,7 @@ function Mentors() {
     try {
       const r = await fetch(FN, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({ persona, messages: next }),
       });
       if (!r.ok || !r.body) throw new Error("Teacher unavailable");

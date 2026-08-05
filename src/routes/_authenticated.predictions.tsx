@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { Crosshair, Sparkles } from "lucide-react";
 import { CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/predictions")({
   component: Predictions,
@@ -60,7 +61,7 @@ function Predictions() {
     try {
       const r = await fetch(FN("exam-predict"), {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({ subject_id: subjectId }),
       });
       if (!r.ok) throw new Error((await r.json()).error ?? "Prediction failed");

@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/quiz/new")({
   head: () => ({
@@ -61,10 +62,7 @@ function NewQuiz() {
       const subject = subjects.find((s) => s.id === subjectId)?.name ?? "General";
       const resp = await fetch(FN_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiHeaders(),
         body: JSON.stringify({ subject, topic, count, examBoard, style }),
       });
       if (resp.status === 429) throw new Error("Rate limit — try again shortly.");

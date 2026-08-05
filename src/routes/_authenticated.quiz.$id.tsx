@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import { PageLoading, ErrorState } from "@/components/ui/states";
 import { addXp, awardBadge, bumpChallenge, fireConfetti, loseHeart } from "@/lib/gamification";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/quiz/$id")({
   head: () => ({
@@ -84,10 +85,7 @@ function QuizPage() {
     try {
       const resp = await fetch(GRADE_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiHeaders(),
         body: JSON.stringify({ questions, answers }),
       });
       if (!resp.ok) throw new Error("Grading failed");
