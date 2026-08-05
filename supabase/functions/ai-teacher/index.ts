@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // AI Teacher Ecosystem — chat with a chosen persona. Streaming.
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -17,6 +18,8 @@ const PERSONAS: Record<string, string> = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(cors);
   try {
     const { persona = "friendly", messages = [] } = await req.json();
     const system = PERSONAS[persona] ?? PERSONAS.friendly;

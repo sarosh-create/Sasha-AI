@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Streaming AI tutor via Lovable AI Gateway
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,6 +8,8 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(corsHeaders);
 
   try {
     const { messages, system } = await req.json();

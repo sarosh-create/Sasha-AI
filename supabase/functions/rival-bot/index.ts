@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Rival System — generates the AI rival's quiz score and a taunt/encouragement.
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -6,6 +7,8 @@ const cors = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(cors);
   try {
     const { user_score, total, rival_level = 1, topic = "study", history = [] } = await req.json();
     if (typeof user_score !== "number" || typeof total !== "number")
