@@ -203,6 +203,8 @@ function TeachersAdmin() {
           <Card key={t.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{t.name} {t.subject && <span className="text-muted-foreground">· {t.subject}</span>}</p>
+              {emails[t.id] && <p className="text-xs text-muted-foreground">{emails[t.id]}</p>}
+
               {t.bio && <p className="text-xs text-muted-foreground">{t.bio}</p>}
             </div>
             <Button size="icon" variant="ghost" aria-label="Delete teacher" onClick={() => del("teachers", t.id, reload)}><Trash2 className="h-4 w-4" /></Button>
