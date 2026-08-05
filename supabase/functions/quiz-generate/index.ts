@@ -11,7 +11,12 @@ Deno.serve(async (req) => {
   const user = await getAuthedUser(req);
   if (!user) return unauthorized(corsHeaders);
   try {
-    const { subject, topic, count = 5, examBoard, style = "mix" } = await req.json();
+    const raw = await req.json();
+    const subject = String(raw.subject ?? "").slice(0, 120);
+    const topic = String(raw.topic ?? "").slice(0, 300);
+    const examBoard = raw.examBoard ? String(raw.examBoard).slice(0, 120) : undefined;
+    const style = ["mix", "short", "mcq"].includes(raw.style) ? raw.style : "mix";
+    const count = Math.min(Math.max(Number(raw.count) || 5, 1), 10);
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {

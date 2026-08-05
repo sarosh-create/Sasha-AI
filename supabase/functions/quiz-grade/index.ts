@@ -11,7 +11,11 @@ Deno.serve(async (req) => {
   const user = await getAuthedUser(req);
   if (!user) return unauthorized(corsHeaders);
   try {
-    const { questions, answers } = await req.json();
+    const parsedBody = await req.json();
+    const questions = Array.isArray(parsedBody.questions) ? parsedBody.questions.slice(0, 20) : [];
+    const answers = Array.isArray(parsedBody.answers) ? parsedBody.answers.slice(0, 20) : [];
+    if (questions.length === 0)
+      return new Response(JSON.stringify({ error: "No questions supplied" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
@@ -23,9 +27,9 @@ Deno.serve(async (req) => {
     const items = questions.map((q: any, i: number) => ({
       index: i,
       type: q.type,
-      prompt: q.prompt,
+      prompt: String(q.prompt ?? "").slice(0, 2000),
       correct_answer: q.correct_answer,
-      student_answer: answers?.[i] ?? "",
+      student_answer: String(answers?.[i] ?? "").slice(0, 4000),
     }));
 
     const body = {
