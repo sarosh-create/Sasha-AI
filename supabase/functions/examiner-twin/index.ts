@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Examiner Twin — strict exam-style marking with mark scheme breakdown.
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -6,6 +7,8 @@ const cors = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(cors);
   try {
     const { question, answer, max_marks = 6, subject = "General", examBoard = "general" } = await req.json();
     if (!question || typeof question !== "string" || question.length > 4000)

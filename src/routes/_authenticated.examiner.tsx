@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { toast } from "sonner";
 import { CheckCircle2, XCircle, Stamp, BookMarked, Gavel } from "lucide-react";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/examiner")({
   component: Examiner,
@@ -59,7 +60,7 @@ function Examiner() {
     try {
       const r = await fetch(FN("examiner-twin"), {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({ question, answer, max_marks: maxMarks, subject, examBoard }),
       });
       if (!r.ok) throw new Error((await r.json()).error ?? "Marking failed");

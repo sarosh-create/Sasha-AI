@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Streaming AI tutor via Lovable AI Gateway
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -7,9 +8,15 @@ const corsHeaders = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(corsHeaders);
 
   try {
-    const { messages, system } = await req.json();
+    const payload = await req.json();
+    const system = payload.system ? String(payload.system).slice(0, 4000) : undefined;
+    const messages = (Array.isArray(payload.messages) ? payload.messages : [])
+      .slice(-20)
+      .map((m: any) => ({ role: m?.role === "assistant" ? "assistant" : "user", content: String(m?.content ?? "").slice(0, 4000) }));
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {

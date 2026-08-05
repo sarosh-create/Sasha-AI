@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Universal Content Converter — text -> chosen artifact type (notes/flashcards/mindmap/mcqs/summary/formula).
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -24,6 +25,8 @@ const TOOLS: Record<string, string> = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(cors);
   try {
     const { text, kind = "notes", title = "Untitled" } = await req.json();
     if (!text || typeof text !== "string" || text.length < 30 || text.length > 60000)

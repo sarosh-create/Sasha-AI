@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { bumpChallenge, checkReelBadges, fireConfetti } from "@/lib/gamification";
 import { fireEmojiBurst } from "@/components/emoji-burst";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/explainers")({
   head: () => ({
@@ -76,10 +77,7 @@ function ExplainersPage() {
     try {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiHeaders(),
         body: JSON.stringify({
           system: SYSTEM,
           messages: [{ role: "user", content: `Topic: ${t}` }],

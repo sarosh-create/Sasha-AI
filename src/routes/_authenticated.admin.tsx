@@ -68,21 +68,25 @@ function AdminPage() {
   );
 }
 
-function useTable(table: string, order = "created_at") {
+function useTable(table: string, order = "created_at", columns = "*") {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const reload = async () => {
     setLoading(true);
     setError(null);
-    const { data, error: err } = await supabase.from(table as any).select("*").order(order, { ascending: false });
+    const { data, error: err } = await supabase.from(table as any).select(columns).order(order, { ascending: false });
     if (err) { toast.error(err.message); setError(err.message); }
-    setRows(data ?? []);
+    setRows((data as any) ?? []);
     setLoading(false);
   };
   useEffect(() => { reload(); /* eslint-disable-next-line */ }, [table]);
   return { rows, loading, error, reload };
 }
+
+// Teacher emails are column-revoked from normal reads; staff fetch them via a security-definer RPC.
+const TEACHER_COLUMNS = "id,user_id,name,subject,bio,avatar_url,created_at";
+
 
 async function del(table: string, id: string, reload: () => void) {
   if (!confirm("Delete this item?")) return;
@@ -154,7 +158,16 @@ function TeacherApplicationsAdmin() {
 }
 
 function TeachersAdmin() {
-  const { rows, loading, error, reload } = useTable("teachers");
+  const { rows, loading, error, reload } = useTable("teachers", "created_at", TEACHER_COLUMNS);
+  const [emails, setEmails] = useState<Record<string, string>>({});
+  useEffect(() => {
+    supabase.rpc("staff_list_teacher_emails").then(({ data }) => {
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((t: any) => { if (t.email) map[t.id] = t.email; });
+      setEmails(map);
+    });
+  }, [rows.length]);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
@@ -190,6 +203,8 @@ function TeachersAdmin() {
           <Card key={t.id} className="flex items-center justify-between p-3">
             <div>
               <p className="font-medium">{t.name} {t.subject && <span className="text-muted-foreground">· {t.subject}</span>}</p>
+              {emails[t.id] && <p className="text-xs text-muted-foreground">{emails[t.id]}</p>}
+
               {t.bio && <p className="text-xs text-muted-foreground">{t.bio}</p>}
             </div>
             <Button size="icon" variant="ghost" aria-label="Delete teacher" onClick={() => del("teachers", t.id, reload)}><Trash2 className="h-4 w-4" /></Button>
@@ -202,7 +217,7 @@ function TeachersAdmin() {
 
 function LiveClassesAdmin() {
   const { rows, loading, error, reload } = useTable("live_classes", "scheduled_at");
-  const { rows: teachers } = useTable("teachers");
+  const { rows: teachers } = useTable("teachers", "created_at", TEACHER_COLUMNS);
   const [form, setForm] = useState({ title: "", description: "", subject: "", scheduled_at: "", duration_minutes: 60, meeting_url: "", video_url: "", teacher_id: "" });
   const { user } = useAuth();
   const add = async () => {

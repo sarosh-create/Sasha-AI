@@ -10,6 +10,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { Sparkles, Wand2, Brain, Pause, Play, Coffee, Cookie, Music2, Boxes, Mic } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { aiHeaders, SIGN_IN_REQUIRED } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/homework-helper")({
   head: () => ({
@@ -138,16 +139,14 @@ async function streamAI(opts: { system: string; user: string; onDelta: (s: strin
     `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`,
     {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-      },
+      headers: await aiHeaders(),
       body: JSON.stringify({
         system: opts.system,
         messages: [{ role: "user", content: opts.user }],
       }),
     },
   );
+  if (resp.status === 401) { toast.error(SIGN_IN_REQUIRED); return; }
   if (resp.status === 429) { toast.error("Too many requests. Please wait a moment."); return; }
   if (resp.status === 402) { toast.error("AI credits exhausted — please try again later."); return; }
   if (!resp.ok || !resp.body) { toast.error("Couldn't reach the AI helper."); return; }

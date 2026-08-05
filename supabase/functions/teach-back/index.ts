@@ -1,3 +1,4 @@
+import { getAuthedUser, unauthorized } from "../_shared/auth.ts";
 // Teach-to-Learn — the student teaches, the AI plays a curious student and tests understanding.
 const cors = {
   "Access-Control-Allow-Origin": "*",
@@ -6,6 +7,8 @@ const cors = {
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: cors });
+  const authedUser = await getAuthedUser(req);
+  if (!authedUser) return unauthorized(cors);
   try {
     const { topic, transcript = [], round = 1 } = await req.json();
     if (!topic || typeof topic !== "string" || topic.length > 200)

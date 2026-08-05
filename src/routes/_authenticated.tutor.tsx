@@ -12,6 +12,7 @@ import { Send, Sparkles, Plus, StickyNote, History } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 import { bumpChallenge } from "@/lib/gamification";
+import { aiHeaders } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/_authenticated/tutor")({
   component: TutorPage,
@@ -144,10 +145,7 @@ function TutorPage() {
     try {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
-        },
+        headers: await aiHeaders(),
         body: JSON.stringify({ messages: next, system: systemCtx }),
       });
       if (resp.status === 429) { toast.error("Rate limit reached. Wait a moment."); setStreaming(false); return; }

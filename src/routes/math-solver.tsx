@@ -7,6 +7,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { Calculator, Sparkles } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import { aiHeaders, SIGN_IN_REQUIRED } from "@/lib/fn-auth";
 
 export const Route = createFileRoute("/math-solver")({
   head: () => ({
@@ -50,12 +51,13 @@ function MathSolver() {
     try {
       const resp = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}` },
+        headers: await aiHeaders(),
         body: JSON.stringify({
           system: `You are an expert math tutor. Solve the problem step-by-step in clean markdown. Use plain math notation (write x^2, not LaTeX). Show every step. End with **Answer:** on its own line.`,
           messages: [{ role: "user", content: question }],
         }),
       });
+      if (resp.status === 401) { toast.error(SIGN_IN_REQUIRED); return; }
       if (resp.status === 429) { toast.error("Too many requests."); return; }
       if (resp.status === 402) { toast.error("AI credits exhausted."); return; }
       if (!resp.ok || !resp.body) { toast.error("Couldn't reach the solver."); return; }
