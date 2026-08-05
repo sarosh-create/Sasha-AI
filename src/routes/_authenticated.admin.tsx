@@ -158,7 +158,16 @@ function TeacherApplicationsAdmin() {
 }
 
 function TeachersAdmin() {
-  const { rows, loading, error, reload } = useTable("teachers");
+  const { rows, loading, error, reload } = useTable("teachers", "created_at", TEACHER_COLUMNS);
+  const [emails, setEmails] = useState<Record<string, string>>({});
+  useEffect(() => {
+    supabase.rpc("staff_list_teacher_emails").then(({ data }) => {
+      const map: Record<string, string> = {};
+      (data ?? []).forEach((t: any) => { if (t.email) map[t.id] = t.email; });
+      setEmails(map);
+    });
+  }, [rows.length]);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
