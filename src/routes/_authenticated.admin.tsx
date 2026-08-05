@@ -217,7 +217,7 @@ function TeachersAdmin() {
 
 function LiveClassesAdmin() {
   const { rows, loading, error, reload } = useTable("live_classes", "scheduled_at");
-  const { rows: teachers } = useTable("teachers");
+  const { rows: teachers } = useTable("teachers", "created_at", TEACHER_COLUMNS);
   const [form, setForm] = useState({ title: "", description: "", subject: "", scheduled_at: "", duration_minutes: 60, meeting_url: "", video_url: "", teacher_id: "" });
   const { user } = useAuth();
   const add = async () => {
