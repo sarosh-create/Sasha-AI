@@ -15,9 +15,9 @@ import { aiHeaders } from "@/lib/fn-auth";
 export const Route = createFileRoute("/_authenticated/converter")({
   component: Converter,
   head: () => ({ meta: [
-    { title: "Universal Content Converter — Notes, flashcards, mindmaps | Sasha AI" },
+    { title: "Content Converter — Notes & Mindmaps | Sasha AI" },
     { name: "description", content: "Paste any text and instantly turn it into notes, flashcards, mindmaps, MCQs, summaries, or a formula sheet." },
-      { property: "og:title", content: "Universal Content Converter — Notes, flashcards, mindmaps | Sasha AI" },
+      { property: "og:title", content: "Content Converter — Notes & Mindmaps | Sasha AI" },
       { property: "og:description", content: "Paste any text and instantly turn it into notes, flashcards, mindmaps, MCQs, summaries, or a formula sheet." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

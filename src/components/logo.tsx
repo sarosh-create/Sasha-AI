@@ -5,7 +5,7 @@ export function Logo({ size = 32 }: { size?: number }) {
     <div className="flex items-center gap-2">
       <img
         src={falconLogo}
-        alt="Sasha AI falcon logo"
+        alt="Sasha AI"
         width={size}
         height={size}
         style={{ width: size, height: size }}

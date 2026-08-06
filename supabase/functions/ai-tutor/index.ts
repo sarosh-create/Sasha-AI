@@ -13,7 +13,8 @@ Deno.serve(async (req) => {
 
   try {
     const payload = await req.json();
-    const system = payload.system ? String(payload.system).slice(0, 4000) : undefined;
+    const deep = payload.mode === "deep";
+    const system = payload.system ? String(payload.system).slice(0, deep ? 12000 : 4000) : undefined;
     const messages = (Array.isArray(payload.messages) ? payload.messages : [])
       .slice(-20)
       .map((m: any) => ({ role: m?.role === "assistant" ? "assistant" : "user", content: String(m?.content ?? "").slice(0, 4000) }));
@@ -32,7 +33,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: deep ? "google/gemini-3-pro-preview" : "google/gemini-3-flash-preview",
         stream: true,
         messages: [
           { role: "system", content: system ?? "You are a helpful study tutor." },

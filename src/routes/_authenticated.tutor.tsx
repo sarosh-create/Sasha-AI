@@ -6,9 +6,9 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { tutorSystemPrompt } from "@/lib/ai/system-prompts";
+import { tutorSystemPrompt, deepResearchPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
-import { Send, Sparkles, Plus, StickyNote, History } from "lucide-react";
+import { Send, Sparkles, Plus, StickyNote, History, Telescope } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 import { bumpChallenge } from "@/lib/gamification";
@@ -44,24 +44,27 @@ function TutorPage() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [systemCtx, setSystemCtx] = useState<string>("");
+  const [deepCtx, setDeepCtx] = useState<string>("");
+  const [deep, setDeep] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const [{ data: profile }, { data: subs }, { data: sess }] = await Promise.all([
-        supabase.from("profiles").select("display_name, exam_board, exam_date").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("display_name, exam_board, exam_date, grade_level").eq("user_id", user.id).maybeSingle(),
         supabase.from("subjects").select("name, strength_score").eq("user_id", user.id),
         supabase.from("chat_sessions").select("id, title, created_at").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(20),
       ]);
-      setSystemCtx(
-        tutorSystemPrompt({
-          displayName: profile?.display_name,
-          examBoard: profile?.exam_board,
-          examDate: profile?.exam_date,
-          subjects: subs ?? [],
-        }),
-      );
+      const ctx = {
+        displayName: profile?.display_name,
+        examBoard: profile?.exam_board,
+        examDate: profile?.exam_date,
+        gradeLevel: (profile as any)?.grade_level,
+        subjects: subs ?? [],
+      };
+      setSystemCtx(tutorSystemPrompt(ctx));
+      setDeepCtx(deepResearchPrompt(ctx));
       setSessions(sess ?? []);
       if (sess && sess.length) {
         await openSession(sess[0].id);
@@ -146,7 +149,7 @@ function TutorPage() {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: await aiHeaders(),
-        body: JSON.stringify({ messages: next, system: systemCtx }),
+        body: JSON.stringify({ messages: next, system: deep ? deepCtx : systemCtx, mode: deep ? "deep" : "chat" }),
       });
       if (resp.status === 429) { toast.error("Rate limit reached. Wait a moment."); setStreaming(false); return; }
       if (resp.status === 402) { toast.error("AI credits exhausted. Add credits to continue."); setStreaming(false); return; }
@@ -295,6 +298,21 @@ function TutorPage() {
           </div>
         </div>
         <div className="border-t border-border bg-background/80 p-3 backdrop-blur">
+          <div className="mx-auto mb-2 flex max-w-3xl items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setDeep((d) => !d)}
+              aria-pressed={deep}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${
+                deep ? "border-accent bg-accent/15 text-accent-foreground" : "border-border text-muted-foreground hover:border-accent/50"
+              }`}
+            >
+              <Telescope className="h-3.5 w-3.5" /> Deep research {deep ? "on" : "off"}
+            </button>
+            <span className="text-xs text-muted-foreground">
+              {deep ? "Full briefing: theory, history, worked examples, sources." : "Answers stay tuned to your board and level."}
+            </span>
+          </div>
           <div className="mx-auto flex max-w-3xl items-end gap-2">
             <Textarea
               value={input}
@@ -302,7 +320,7 @@ function TutorPage() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
               }}
-              placeholder="Ask anything about your subjects…"
+              placeholder={deep ? "Ask anything — Sasha will research it deeply…" : "Ask anything about your subjects…"}
               className="min-h-[44px] flex-1 resize-none"
               rows={1}
               disabled={streaming}

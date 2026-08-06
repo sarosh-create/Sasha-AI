@@ -252,7 +252,7 @@ function RoomPage() {
             <Button size="sm" onClick={startVideo}><Video className="h-4 w-4" /> Join video</Button>
           ) : (
             <>
-              <Button size="sm" variant="outline" onClick={toggleMic}>{micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}</Button>
+              <Button size="sm" variant="outline" onClick={toggleMic} aria-label={micOn ? "Mute microphone" : "Unmute microphone"}>{micOn ? <Mic className="h-4 w-4" /> : <MicOff className="h-4 w-4" />}</Button>
               <Button size="sm" variant="destructive" onClick={stopVideo}><PhoneOff className="h-4 w-4" /> Leave call</Button>
             </>
           )}
@@ -320,7 +320,7 @@ function RoomPage() {
           <div className="border-t border-border p-2">
             <div className="flex gap-2">
               <Input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") sendMsg(); }} placeholder="Say hi…" />
-              <Button onClick={sendMsg} size="icon"><Send className="h-4 w-4" /></Button>
+              <Button onClick={sendMsg} size="icon" aria-label="Send message"><Send className="h-4 w-4" /></Button>
             </div>
           </div>
         </aside>
