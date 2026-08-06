@@ -44,24 +44,27 @@ function TutorPage() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const [systemCtx, setSystemCtx] = useState<string>("");
+  const [deepCtx, setDeepCtx] = useState<string>("");
+  const [deep, setDeep] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!user) return;
     (async () => {
       const [{ data: profile }, { data: subs }, { data: sess }] = await Promise.all([
-        supabase.from("profiles").select("display_name, exam_board, exam_date").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("display_name, exam_board, exam_date, grade_level").eq("user_id", user.id).maybeSingle(),
         supabase.from("subjects").select("name, strength_score").eq("user_id", user.id),
         supabase.from("chat_sessions").select("id, title, created_at").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(20),
       ]);
-      setSystemCtx(
-        tutorSystemPrompt({
-          displayName: profile?.display_name,
-          examBoard: profile?.exam_board,
-          examDate: profile?.exam_date,
-          subjects: subs ?? [],
-        }),
-      );
+      const ctx = {
+        displayName: profile?.display_name,
+        examBoard: profile?.exam_board,
+        examDate: profile?.exam_date,
+        gradeLevel: (profile as any)?.grade_level,
+        subjects: subs ?? [],
+      };
+      setSystemCtx(tutorSystemPrompt(ctx));
+      setDeepCtx(deepResearchPrompt(ctx));
       setSessions(sess ?? []);
       if (sess && sess.length) {
         await openSession(sess[0].id);
