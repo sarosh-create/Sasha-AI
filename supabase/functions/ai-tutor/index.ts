@@ -33,7 +33,7 @@ Deno.serve(async (req) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
+        model: deep ? "google/gemini-3-pro-preview" : "google/gemini-3-flash-preview",
         stream: true,
         messages: [
           { role: "system", content: system ?? "You are a helpful study tutor." },
