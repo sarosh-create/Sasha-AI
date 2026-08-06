@@ -184,15 +184,21 @@ function PathPage() {
     load();
   };
 
+  const doneCount = lessons.filter((l) => l.status === "done").length;
+  const pct = lessons.length ? Math.round((doneCount / lessons.length) * 100) : 0;
+  const totalMins = lessons.filter((l) => l.status !== "done").reduce((t, l) => t + (l.est_minutes ?? 0), 0);
+  const nextUp = lessons.find((l) => l.status === "available");
+
   return (
-    <div className="container mx-auto max-w-3xl px-6 py-8">
-      <div className="flex items-end justify-between gap-3">
+    <div className="container mx-auto max-w-4xl px-4 py-8 sm:px-6">
+      <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Roadmap</p>
           <h1 className="font-display text-3xl font-semibold">Your study path</h1>
-          <p className="text-sm text-muted-foreground">One lesson at a time. Unlock the next as you finish.</p>
+          <p className="text-sm text-muted-foreground">One lesson at a time. Each finished stop unlocks the next.</p>
         </div>
-        <Button variant="ghost" size="sm" onClick={reset} disabled={busy || noSubjects}>Regenerate path</Button>
-      </div>
+        <Button variant="outline" size="sm" onClick={reset} disabled={busy || noSubjects}>Regenerate path</Button>
+      </header>
 
       {noSubjects && (
         <div className="mt-8 rounded-2xl border border-border bg-card p-6 text-center shadow-card">
@@ -202,82 +208,98 @@ function PathPage() {
         </div>
       )}
 
-      {!noSubjects && (
-        <div className="mt-6 flex justify-center">
-          <TalkingFalcon
-            compact
-            lines={[
-              `Your path's got ${lessons.length} stops. I'll perch on every one with you.`,
-              `Tap a glowing node — I'll narrate what to learn, then quiz you.`,
-              `Pick a video style per lesson. Cartoon if you're tired, whiteboard if you're locked in.`,
-            ]}
-          />
-        </div>
-      )}
-
       {!noSubjects && lessons.length > 0 && (
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-xs text-muted-foreground">
-          <Film className="h-3.5 w-3.5" /> Video style per lesson can be picked below — saved instantly.
-        </div>
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-card">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div className="grid grid-cols-3 gap-6">
+              <div>
+                <p className="font-display text-2xl font-semibold">{doneCount}/{lessons.length}</p>
+                <p className="text-xs text-muted-foreground">Lessons complete</p>
+              </div>
+              <div>
+                <p className="font-display text-2xl font-semibold">{pct}%</p>
+                <p className="text-xs text-muted-foreground">Path progress</p>
+              </div>
+              <div>
+                <p className="font-display text-2xl font-semibold">{totalMins}m</p>
+                <p className="text-xs text-muted-foreground">Time remaining</p>
+              </div>
+            </div>
+            <TalkingFalcon
+              compact
+              lines={[
+                nextUp ? `Next up: ${nextUp.title}. Roughly ${nextUp.est_minutes} minutes.` : "Path complete — regenerate for a fresh run.",
+                `You're ${pct}% through. I'll perch on every stop with you.`,
+                `Pick a video style per lesson — cartoon if you're tired, whiteboard if you're locked in.`,
+              ]}
+            />
+          </div>
+          <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-secondary">
+            <div className="h-full rounded-full bg-gradient-to-r from-falcon-gold to-falcon-gold-deep transition-all" style={{ width: `${pct}%` }} />
+          </div>
+          {nextUp && (
+            <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-falcon-gold/40 bg-falcon-soft/60 p-3">
+              <div>
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Do this now</p>
+                <p className="text-sm font-semibold">{nextUp.title}</p>
+              </div>
+              <Button size="sm" onClick={() => start(nextUp)}>Start lesson</Button>
+            </div>
+          )}
+        </section>
       )}
 
-
-      <ol className="relative mt-10 space-y-6">
-        {lessons.map((l, i) => {
+      <ol className="relative mt-8 space-y-3 border-l border-border pl-6 sm:pl-8">
+        {lessons.map((l) => {
           const sub = l.subject_id ? subjects[l.subject_id] : null;
           const color = sub?.color ?? "#a78bfa";
-          const offset = i % 4 === 0 ? "ml-0" : i % 4 === 1 ? "ml-16" : i % 4 === 2 ? "ml-24" : "ml-8";
           const Icon = l.activity === "quiz" ? ScrollText : l.activity === "teach" ? BookOpen : MessageSquare;
           const styleKey = `sasha:videoStyle:${l.id}`;
           const currentStyle = (typeof window !== "undefined" && localStorage.getItem(styleKey)) || (typeof window !== "undefined" && localStorage.getItem("sasha:videoStyle")) || "cartoon";
+          const locked = l.status === "locked";
           return (
-            <li key={l.id} className={`flex items-center gap-4 ${offset}`}>
-              <button
-                onClick={() => start(l)}
-                disabled={l.status === "locked"}
-                className="relative grid h-20 w-20 place-items-center rounded-full text-white shadow-card transition hover:scale-105 disabled:cursor-not-allowed disabled:opacity-40"
+            <li key={l.id} className="relative">
+              <span
+                className="absolute -left-[2.15rem] top-5 grid h-9 w-9 place-items-center rounded-full border-2 border-background text-white shadow-card sm:-left-[2.65rem]"
                 style={{
                   background: l.status === "done"
-                    ? "linear-gradient(135deg, #22c55e, #16a34a)"
+                    ? "linear-gradient(135deg,#22c55e,#16a34a)"
                     : l.status === "available"
                     ? `linear-gradient(135deg, ${color}, #7c3aed)`
-                    : "linear-gradient(135deg, #94a3b8, #64748b)",
-                  boxShadow: l.status === "available" ? `0 0 0 4px ${color}33, 0 8px 24px ${color}55` : undefined,
+                    : "hsl(var(--muted))",
+                  boxShadow: l.status === "available" ? `0 0 0 4px ${color}25` : undefined,
                 }}
               >
-                {l.status === "done" ? <Check className="h-8 w-8" />
-                  : l.status === "locked" ? <Lock className="h-6 w-6" />
-                  : <Icon className="h-8 w-8" />}
-                {l.status === "available" && (
-                  <span className="absolute inset-0 animate-ping rounded-full" style={{ background: color, opacity: 0.25 }} />
-                )}
-              </button>
-              <div className="flex-1">
-                <div className="flex items-center gap-2">
+                {l.status === "done" ? <Check className="h-4 w-4" /> : locked ? <Lock className="h-3.5 w-3.5" /> : <Icon className="h-4 w-4" />}
+              </span>
+
+              <div className={`rounded-2xl border bg-card p-4 shadow-card transition ${
+                l.status === "available" ? "border-falcon-gold/50" : locked ? "border-border opacity-60" : "border-border"
+              }`}>
+                <div className="flex flex-wrap items-center gap-2">
                   <p className="font-medium">{l.title}</p>
-                  {sub && <span className="text-xs text-muted-foreground">• {sub.name}</span>}
+                  {sub && <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">{sub.name}</span>}
+                  <span className="rounded-full border border-border px-2 py-0.5 text-xs capitalize text-muted-foreground">{l.activity}</span>
+                  <span className="text-xs text-muted-foreground">{l.est_minutes} min</span>
                 </div>
-                <p className="text-xs text-muted-foreground">{l.est_minutes} min · {l.activity}</p>
-                {l.content && <p className="mt-1 text-sm text-muted-foreground">{l.content}</p>}
-                {!!l.lesson_steps?.length && (
+                {l.content && <p className="mt-2 text-sm text-muted-foreground">{l.content}</p>}
+                {!!l.lesson_steps?.length && !locked && (
                   <ul className="mt-2 list-disc space-y-1 pl-5 text-xs text-muted-foreground">
                     {l.lesson_steps.map((step) => <li key={step}>{step}</li>)}
                   </ul>
                 )}
-                {l.practice_prompt && <p className="mt-2 text-xs font-medium text-foreground">Practice: {l.practice_prompt}</p>}
-                {l.status !== "locked" && (
-                  <div className="mt-2 flex items-center gap-2">
-                    <Film className="h-3.5 w-3.5 text-muted-foreground" />
-                    <Select defaultValue={currentStyle} onValueChange={(v) => localStorage.setItem(styleKey, v)}>
-                      <SelectTrigger className="h-7 w-44 text-xs"><SelectValue /></SelectTrigger>
-                      <SelectContent>{VIDEO_STYLES.map((v) => <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>)}</SelectContent>
-                    </Select>
-                  </div>
-                )}
-                {l.status === "available" && (
-                  <div className="mt-2 flex gap-2">
-                    <Button size="sm" onClick={() => start(l)}>Start</Button>
-                    <Button size="sm" variant="outline" onClick={() => markDone(l)}>Mark done</Button>
+                {l.practice_prompt && !locked && <p className="mt-2 text-xs font-medium text-foreground">Practice: {l.practice_prompt}</p>}
+                {!locked && (
+                  <div className="mt-3 flex flex-wrap items-center gap-2">
+                    {l.status === "available" && <Button size="sm" onClick={() => start(l)}>Start</Button>}
+                    {l.status === "available" && <Button size="sm" variant="outline" onClick={() => markDone(l)}>Mark done</Button>}
+                    <span className="ml-auto flex items-center gap-2">
+                      <Film className="h-3.5 w-3.5 text-muted-foreground" />
+                      <Select defaultValue={currentStyle} onValueChange={(v) => localStorage.setItem(styleKey, v)}>
+                        <SelectTrigger className="h-8 w-40 text-xs" aria-label="Lesson video style"><SelectValue /></SelectTrigger>
+                        <SelectContent>{VIDEO_STYLES.map((v) => <SelectItem key={v.id} value={v.id}>{v.label}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </span>
                   </div>
                 )}
               </div>
