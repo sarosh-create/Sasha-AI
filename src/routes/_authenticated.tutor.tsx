@@ -6,9 +6,9 @@ import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { tutorSystemPrompt } from "@/lib/ai/system-prompts";
+import { tutorSystemPrompt, deepResearchPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
-import { Send, Sparkles, Plus, StickyNote, History } from "lucide-react";
+import { Send, Sparkles, Plus, StickyNote, History, Telescope } from "lucide-react";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 import { bumpChallenge } from "@/lib/gamification";
