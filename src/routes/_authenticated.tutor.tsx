@@ -149,7 +149,7 @@ function TutorPage() {
       const resp = await fetch(CHAT_URL, {
         method: "POST",
         headers: await aiHeaders(),
-        body: JSON.stringify({ messages: next, system: systemCtx }),
+        body: JSON.stringify({ messages: next, system: deep ? deepCtx : systemCtx, mode: deep ? "deep" : "chat" }),
       });
       if (resp.status === 429) { toast.error("Rate limit reached. Wait a moment."); setStreaming(false); return; }
       if (resp.status === 402) { toast.error("AI credits exhausted. Add credits to continue."); setStreaming(false); return; }
@@ -298,6 +298,21 @@ function TutorPage() {
           </div>
         </div>
         <div className="border-t border-border bg-background/80 p-3 backdrop-blur">
+          <div className="mx-auto mb-2 flex max-w-3xl items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setDeep((d) => !d)}
+              aria-pressed={deep}
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${
+                deep ? "border-accent bg-accent/15 text-accent-foreground" : "border-border text-muted-foreground hover:border-accent/50"
+              }`}
+            >
+              <Telescope className="h-3.5 w-3.5" /> Deep research {deep ? "on" : "off"}
+            </button>
+            <span className="text-xs text-muted-foreground">
+              {deep ? "Full briefing: theory, history, worked examples, sources." : "Answers stay tuned to your board and level."}
+            </span>
+          </div>
           <div className="mx-auto flex max-w-3xl items-end gap-2">
             <Textarea
               value={input}
@@ -305,7 +320,7 @@ function TutorPage() {
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); }
               }}
-              placeholder="Ask anything about your subjects…"
+              placeholder={deep ? "Ask anything — Sasha will research it deeply…" : "Ask anything about your subjects…"}
               className="min-h-[44px] flex-1 resize-none"
               rows={1}
               disabled={streaming}
