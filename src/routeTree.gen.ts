@@ -55,6 +55,7 @@ import { Route as AuthenticatedQuizIdRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticated.quiz.new'
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
+import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -295,6 +296,11 @@ const AuthenticatedRoomsIdRoute = AuthenticatedRoomsIdRouteImport.update({
   path: '/rooms/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedUIdRoute = AuthenticatedUIdRouteImport.update({
+  id: '/u/$id',
+  path: '/u/$id',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -352,6 +358,7 @@ export interface FileRoutesByFullPath {
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
+  '/u/$id': typeof AuthenticatedUIdRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
+  '/u/$id': typeof AuthenticatedUIdRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz/$id': typeof AuthenticatedQuizIdRoute
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
+  '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -503,6 +512,7 @@ export interface FileRouteTypes {
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
+    | '/u/$id'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -552,6 +562,7 @@ export interface FileRouteTypes {
     | '/quiz/$id'
     | '/quiz/new'
     | '/rooms/$id'
+    | '/u/$id'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
@@ -602,6 +613,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz/$id'
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
+    | '/_authenticated/u/$id'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -949,6 +961,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRoomsIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/u/$id': {
+      id: '/_authenticated/u/$id'
+      path: '/u/$id'
+      fullPath: '/u/$id'
+      preLoaderRoute: typeof AuthenticatedUIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -1025,6 +1044,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedQuizIdRoute: typeof AuthenticatedQuizIdRoute
   AuthenticatedQuizNewRoute: typeof AuthenticatedQuizNewRoute
   AuthenticatedRoomsIdRoute: typeof AuthenticatedRoomsIdRoute
+  AuthenticatedUIdRoute: typeof AuthenticatedUIdRoute
   AuthenticatedQuizIndexRoute: typeof AuthenticatedQuizIndexRoute
   AuthenticatedRoomsIndexRoute: typeof AuthenticatedRoomsIndexRoute
 }
@@ -1060,6 +1080,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedQuizIdRoute: AuthenticatedQuizIdRoute,
   AuthenticatedQuizNewRoute: AuthenticatedQuizNewRoute,
   AuthenticatedRoomsIdRoute: AuthenticatedRoomsIdRoute,
+  AuthenticatedUIdRoute: AuthenticatedUIdRoute,
   AuthenticatedQuizIndexRoute: AuthenticatedQuizIndexRoute,
   AuthenticatedRoomsIndexRoute: AuthenticatedRoomsIndexRoute,
 }

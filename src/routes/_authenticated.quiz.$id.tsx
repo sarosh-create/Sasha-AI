@@ -86,12 +86,13 @@ function QuizPage() {
       const resp = await fetch(GRADE_URL, {
         method: "POST",
         headers: await aiHeaders(),
-        body: JSON.stringify({ questions, answers }),
+        body: JSON.stringify({ quiz_id: id, answers }),
       });
       if (!resp.ok) throw new Error("Grading failed");
       const data = await resp.json();
       const res: GradeResult[] = data.results ?? [];
-      const sc = res.filter((r) => r.is_correct).length;
+      const sc = typeof data.score === "number" ? data.score : res.filter((r) => r.is_correct).length;
+
       setResults(res);
       setSummary(data.summary ?? "");
       setScore(sc);
