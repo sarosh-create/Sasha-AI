@@ -98,8 +98,9 @@ function LeaderboardPage() {
           <div className="mb-2 inline-flex items-center gap-2 rounded-full bg-warning/30 px-3 py-1 text-xs font-semibold text-warning-foreground">
             <Crown className="h-3.5 w-3.5" /> Leaderboard
           </div>
-          <h1 className="font-display text-4xl font-bold text-gradient">Climb the ranks 🦉</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Top 50 learners. You're never publicly named unless you opt in.</p>
+          <h1 className="font-display text-4xl font-bold text-gradient">Climb the ranks 🦅</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Every Sasha learner worldwide, ranked live. You're only named if you opt in.</p>
+
         </header>
 
         <div className="flex items-center justify-end gap-2 rounded-2xl border bg-card p-3 shadow-pop">
@@ -131,31 +132,35 @@ function LeaderboardPage() {
                 const mine = r.user_id === user?.id;
                 const medal = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `#${i + 1}`;
                 return (
-                  <div
+                  <Link
                     key={r.user_id}
-                    className={`flex items-center justify-between rounded-2xl border bg-card p-3 shadow-pop transition ${mine ? "ring-2 ring-primary" : ""}`}
+                    to="/u/$id"
+                    params={{ id: r.user_id }}
+                    className={`flex items-center justify-between rounded-2xl border bg-card p-3 shadow-pop transition hover:border-primary ${mine ? "ring-2 ring-primary" : ""}`}
                   >
                     <div className="flex items-center gap-3">
                       <span className="grid h-9 w-9 place-items-center rounded-full bg-secondary text-sm font-bold">{medal}</span>
+                      {r.avatar_url ? (
+                        <img src={r.avatar_url} alt={`${nameOf(r)}'s profile picture`} className="h-9 w-9 rounded-full object-cover" />
+                      ) : null}
                       <div>
                         <div className="font-semibold">{nameOf(r)}{mine && " (you)"}</div>
-                        <div className="text-xs text-muted-foreground">Level {Math.max(1, Math.floor(Math.sqrt(r.xp / 50)) + 1)}</div>
+                        <div className="text-xs text-muted-foreground">
+                          Level {r.level || 1}{r.status ? ` · ${r.status_emoji ?? ""} ${r.status}` : ""}
+                        </div>
                       </div>
                     </div>
                     <div className="font-display text-lg font-bold text-primary">{valueOf(r)}{t.id === "streak_count" ? " 🔥" : " XP"}</div>
-                  </div>
+                  </Link>
                 );
               })}
 
-              {me && !rows.find((r) => r.user_id === me.user_id) && (
-                <>
-                  <div className="text-center text-xs text-muted-foreground">… your position …</div>
-                  <div className="flex items-center justify-between rounded-2xl border bg-card p-3 shadow-pop ring-2 ring-primary">
-                    <div className="font-semibold">{nameOf(me)} (you)</div>
-                    <div className="font-display text-lg font-bold text-primary">{valueOf(me)}</div>
-                  </div>
-                </>
+              {me && (
+                <div className="pt-1 text-center text-xs text-muted-foreground">
+                  You're ranked #{rows.findIndex((r) => r.user_id === me.user_id) + 1} with {valueOf(me)}{t.id === "streak_count" ? " 🔥" : " XP"}.
+                </div>
               )}
+
             </TabsContent>
           ))}
         </Tabs>
