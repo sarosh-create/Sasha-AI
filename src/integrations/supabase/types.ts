@@ -35,6 +35,39 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_audit_log: {
+        Row: {
+          action: string
+          actor_email: string | null
+          actor_user_id: string
+          created_at: string
+          details: Json
+          entity: string
+          entity_id: string | null
+          id: string
+        }
+        Insert: {
+          action: string
+          actor_email?: string | null
+          actor_user_id: string
+          created_at?: string
+          details?: Json
+          entity: string
+          entity_id?: string | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          actor_email?: string | null
+          actor_user_id?: string
+          created_at?: string
+          details?: Json
+          entity?: string
+          entity_id?: string | null
+          id?: string
+        }
+        Relationships: []
+      }
       channel_message_ratings: {
         Row: {
           created_at: string
@@ -801,6 +834,8 @@ export type Database = {
           a11y_mode: string
           account_type: string
           avatar_config: Json | null
+          avatar_url: string | null
+          bio: string | null
           created_at: string
           daily_minutes_goal: number
           display_name: string | null
@@ -819,6 +854,9 @@ export type Database = {
           leaderboard_opt_in: boolean
           level: number
           onboarded: boolean
+          profile_public: boolean
+          status: string | null
+          status_emoji: string | null
           streak_count: number
           streak_freezes: number
           updated_at: string
@@ -831,6 +869,8 @@ export type Database = {
           a11y_mode?: string
           account_type?: string
           avatar_config?: Json | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
@@ -849,6 +889,9 @@ export type Database = {
           leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean
+          profile_public?: boolean
+          status?: string | null
+          status_emoji?: string | null
           streak_count?: number
           streak_freezes?: number
           updated_at?: string
@@ -861,6 +904,8 @@ export type Database = {
           a11y_mode?: string
           account_type?: string
           avatar_config?: Json | null
+          avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           daily_minutes_goal?: number
           display_name?: string | null
@@ -879,6 +924,9 @@ export type Database = {
           leaderboard_opt_in?: boolean
           level?: number
           onboarded?: boolean
+          profile_public?: boolean
+          status?: string | null
+          status_emoji?: string | null
           streak_count?: number
           streak_freezes?: number
           updated_at?: string
@@ -966,6 +1014,36 @@ export type Database = {
           streak?: number
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      role_invites: {
+        Row: {
+          claimed_at: string | null
+          claimed_by: string | null
+          created_at: string
+          email: string
+          id: string
+          invited_by: string | null
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Insert: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          invited_by?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+        }
+        Update: {
+          claimed_at?: string | null
+          claimed_by?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          invited_by?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
         }
         Relationships: []
       }
@@ -1353,6 +1431,21 @@ export type Database = {
           message_id: string
         }[]
       }
+      get_public_profile: {
+        Args: { _user: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          display_name: string
+          exam_board: string
+          level: number
+          status: string
+          status_emoji: string
+          streak_count: number
+          user_id: string
+          xp: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1363,6 +1456,21 @@ export type Database = {
       is_my_student: { Args: { _student: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_staff_or_teacher: { Args: { _user_id: string }; Returns: boolean }
+      leaderboard: {
+        Args: { _metric: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          lab_xp: number
+          level: number
+          status: string
+          status_emoji: string
+          streak_count: number
+          user_id: string
+          xp: number
+          xp_week: number
+        }[]
+      }
       list_live_classes: {
         Args: never
         Returns: {
