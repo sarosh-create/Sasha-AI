@@ -52,6 +52,8 @@ function AdminPage() {
           <TabsTrigger value="papers">Past papers</TabsTrigger>
           <TabsTrigger value="channels">Channels</TabsTrigger>
           <TabsTrigger value="videos">Videos</TabsTrigger>
+          <TabsTrigger value="invites">Role invites</TabsTrigger>
+          <TabsTrigger value="audit">Audit log</TabsTrigger>
         </TabsList>
         <TabsContent value="classes"><LiveClassesAdmin /></TabsContent>
         <TabsContent value="applications"><TeacherApplicationsAdmin /></TabsContent>
@@ -63,6 +65,9 @@ function AdminPage() {
         <TabsContent value="papers"><PastPapersAdmin /></TabsContent>
         <TabsContent value="channels"><ChannelsAdmin /></TabsContent>
         <TabsContent value="videos"><VideosAdmin /></TabsContent>
+        <TabsContent value="invites"><RoleInvitesAdmin /></TabsContent>
+        <TabsContent value="audit"><AuditLogAdmin /></TabsContent>
+
       </Tabs>
     </div>
   );
