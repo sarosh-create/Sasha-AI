@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Slider } from "@/components/ui/slider";
-import { Trash2, Plus, Save, BookOpen, Settings as SettingsIcon, Mail, Bell } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Trash2, Plus, Save, BookOpen, Settings as SettingsIcon, Mail, Bell, Palette, UserRound, Moon } from "lucide-react";
 import { toast } from "sonner";
 import { useServerFn } from "@tanstack/react-start";
 import { sendTestEmail } from "@/lib/test-email.functions";
+import { THEMES, useTheme } from "@/lib/theme";
+
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
