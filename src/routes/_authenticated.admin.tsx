@@ -121,6 +121,7 @@ function TeacherApplicationsAdmin() {
     await supabase.from("profiles").update({ account_type: "teacher" } as any).eq("user_id", application.user_id);
     const { error } = await supabase.from("teacher_applications" as any).update({ status: "approved", reviewed_by: user?.id, reviewed_at: new Date().toISOString() }).eq("id", application.id);
     if (error) return toast.error(error.message);
+    await logAdminAction(user, "approve_teacher_application", "teacher_applications", application.id, { email: application.email });
     toast.success("Teacher approved and added");
     reload();
   };
