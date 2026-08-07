@@ -12,10 +12,27 @@ Deno.serve(async (req) => {
   if (!user) return unauthorized(corsHeaders);
   try {
     const parsedBody = await req.json();
-    const questions = Array.isArray(parsedBody.questions) ? parsedBody.questions.slice(0, 20) : [];
+    const quizId = typeof parsedBody.quiz_id === "string" ? parsedBody.quiz_id : "";
     const answers = Array.isArray(parsedBody.answers) ? parsedBody.answers.slice(0, 20) : [];
-    if (questions.length === 0)
-      return new Response(JSON.stringify({ error: "No questions supplied" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    if (!quizId) {
+      return new Response(JSON.stringify({ error: "No quiz_id supplied" }), { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
+    // Questions (and their correct answers) are ALWAYS read from the database for
+    // the quiz owned by the caller — never taken from the request body — so a
+    // client cannot forge correct answers to farm a perfect score.
+    const SUPABASE_URL = Deno.env.get("SUPABASE_URL")!;
+    const SERVICE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const quizRes = await fetch(
+      `${SUPABASE_URL}/rest/v1/quizzes?id=eq.${encodeURIComponent(quizId)}&user_id=eq.${user.id}&select=questions`,
+      { headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}` } },
+    );
+    const quizRows = quizRes.ok ? await quizRes.json() : [];
+    const questions = Array.isArray(quizRows?.[0]?.questions) ? quizRows[0].questions.slice(0, 20) : [];
+    if (questions.length === 0) {
+      return new Response(JSON.stringify({ error: "Quiz not found" }), { status: 404, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    }
+
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
@@ -97,6 +114,9 @@ Deno.serve(async (req) => {
     const args =
       data.choices?.[0]?.message?.tool_calls?.[0]?.function?.arguments;
     const parsed = args ? JSON.parse(args) : { results: [], summary: "" };
+    const results = Array.isArray(parsed.results) ? parsed.results : [];
+    parsed.score = results.filter((r: any) => r?.is_correct).length;
+    parsed.total = questions.length;
     return new Response(JSON.stringify(parsed), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
