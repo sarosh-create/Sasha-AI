@@ -44,12 +44,20 @@ type Subject = { id: string; name: string; strength_score: number; color: string
 
 function SettingsPage() {
   const { user } = useAuth();
+  const { theme, setTheme, dark, setDark } = useTheme();
   const [board, setBoard] = useState("");
   const [examDate, setExamDate] = useState("");
   const [dailyGoal, setDailyGoal] = useState(45);
   const [optIn, setOptIn] = useState(true);
   const [dailyEmail, setDailyEmail] = useState(true);
   const [weeklyEmail, setWeeklyEmail] = useState(true);
+
+  const [displayName, setDisplayName] = useState("");
+  const [bio, setBio] = useState("");
+  const [avatarUrl, setAvatarUrl] = useState("");
+  const [status, setStatus] = useState("");
+  const [statusEmoji, setStatusEmoji] = useState("🦅");
+  const [profilePublic, setProfilePublic] = useState(true);
 
   const [subjects, setSubjects] = useState<Subject[]>([]);
   const [newSubject, setNewSubject] = useState("");
@@ -60,7 +68,7 @@ function SettingsPage() {
     if (!user) return;
     (async () => {
       const [{ data: p }, { data: subs }] = await Promise.all([
-        supabase.from("profiles").select("exam_board, exam_date, daily_minutes_goal, leaderboard_opt_in, email_daily_reminders, email_weekly_digest").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("display_name, bio, avatar_url, status, status_emoji, profile_public, exam_board, exam_date, daily_minutes_goal, leaderboard_opt_in, email_daily_reminders, email_weekly_digest").eq("user_id", user.id).maybeSingle() as any,
         supabase.from("subjects").select("id, name, strength_score, color").eq("user_id", user.id).order("name"),
       ]);
       if (p) {
@@ -70,6 +78,12 @@ function SettingsPage() {
         setOptIn(p.leaderboard_opt_in ?? true);
         setDailyEmail(p.email_daily_reminders ?? true);
         setWeeklyEmail(p.email_weekly_digest ?? true);
+        setDisplayName(p.display_name ?? "");
+        setBio(p.bio ?? "");
+        setAvatarUrl(p.avatar_url ?? "");
+        setStatus(p.status ?? "");
+        setStatusEmoji(p.status_emoji ?? "🦅");
+        setProfilePublic(p.profile_public ?? true);
       }
       setSubjects(subs ?? []);
     })();
@@ -80,13 +94,28 @@ function SettingsPage() {
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ exam_board: board || null, exam_date: examDate || null, daily_minutes_goal: dailyGoal, leaderboard_opt_in: optIn, email_daily_reminders: dailyEmail, email_weekly_digest: weeklyEmail })
+      .update({
+        exam_board: board || null,
+        exam_date: examDate || null,
+        daily_minutes_goal: dailyGoal,
+        leaderboard_opt_in: optIn,
+        email_daily_reminders: dailyEmail,
+        email_weekly_digest: weeklyEmail,
+        display_name: displayName.trim().slice(0, 40) || null,
+        bio: bio.trim().slice(0, 500) || null,
+        avatar_url: avatarUrl.trim().slice(0, 500) || null,
+        status: status.trim().slice(0, 80) || null,
+        status_emoji: statusEmoji.slice(0, 4) || null,
+        profile_public: profilePublic,
+      } as any)
       .eq("user_id", user.id);
     localStorage.setItem("sasha:videoStyle", videoStyle);
     setSaving(false);
     if (error) toast.error(error.message);
     else toast.success("Settings saved");
   };
+
+
 
   const [testing, setTesting] = useState(false);
   const runTestEmail = useServerFn(sendTestEmail);
