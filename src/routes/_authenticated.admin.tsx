@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 import { CheckCircle2, Mail, MessageCircle, Trash2, Plus, XCircle, Inbox, GraduationCap, Users, ShieldCheck, FileText, Hash, Video as VideoIcon, CalendarDays, BookOpen } from "lucide-react";
 import { PageLoading, CardSkeletons, EmptyState, ErrorState } from "@/components/ui/states";
+import { logAdminAction } from "@/lib/audit";
 
 export const Route = createFileRoute("/_authenticated/admin")({
   head: () => ({
@@ -624,6 +625,91 @@ function ChannelsAdmin() {
           </Card>
         ))}
       </div>
+    </div>
+  );
+}
+
+function RoleInvitesAdmin() {
+  const { user } = useAuth();
+  const { rows, loading, error, reload } = useTable("role_invites");
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("teacher");
+
+  const add = async () => {
+    const clean = email.trim().toLowerCase();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(clean)) return toast.error("Enter a valid email address");
+    const { error: err } = await supabase.from("role_invites" as any).insert({ email: clean, role, invited_by: user?.id } as any);
+    if (err) return toast.error(err.message);
+    await logAdminAction(user, "invite_role", "role_invites", clean, { role });
+    toast.success(`${clean} will become a ${role.replace("_", "-")} as soon as they sign up`);
+    setEmail("");
+    reload();
+  };
+
+  const remove = async (row: Row) => {
+    const { error: err } = await supabase.from("role_invites" as any).delete().eq("id", row.id);
+    if (err) return toast.error(err.message);
+    await logAdminAction(user, "revoke_role_invite", "role_invites", row.email, { role: row.role });
+    reload();
+  };
+
+  return (
+    <div className="mt-4 space-y-4">
+      <Card className="p-4">
+        <h2 className="font-display text-base font-semibold">Invite by email — no sign-up needed first</h2>
+        <p className="text-xs text-muted-foreground">The role is applied automatically the moment they create their account with this email.</p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <div className="min-w-[220px] flex-1">
+            <Label htmlFor="invite-email">Email address</Label>
+            <Input id="invite-email" className="mt-1" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="teacher@school.com" />
+          </div>
+          <div>
+            <Label htmlFor="invite-role">Role</Label>
+            <select id="invite-role" className="mt-1 block h-10 rounded-md border border-input bg-background px-3 text-sm" value={role} onChange={(e) => setRole(e.target.value)}>
+              <option value="teacher">Teacher</option>
+              <option value="co_admin">Co-admin</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+          <Button className="self-end" onClick={add}><Plus className="h-4 w-4" /> Invite</Button>
+        </div>
+      </Card>
+
+      {loading ? <CardSkeletons count={3} /> : error ? <ErrorState description={error} onRetry={reload} />
+        : rows.length === 0 ? <EmptyState title="No role invites yet" description="Invite a teacher or co-admin by email above." />
+        : rows.map((r) => (
+          <Card key={r.id} className="flex items-center justify-between p-3">
+            <div>
+              <p className="font-medium">{r.email}</p>
+              <p className="text-xs text-muted-foreground">
+                {r.role} · {r.claimed_at ? `claimed ${new Date(r.claimed_at).toLocaleDateString()}` : "waiting for sign-up"}
+              </p>
+            </div>
+            <Button size="sm" variant="ghost" onClick={() => remove(r)} aria-label={`Remove invite for ${r.email}`}><Trash2 className="h-4 w-4" /></Button>
+          </Card>
+        ))}
+    </div>
+  );
+}
+
+function AuditLogAdmin() {
+  const { rows, loading, error, reload } = useTable("admin_audit_log");
+  return (
+    <div className="mt-4 space-y-2">
+      <p className="text-xs text-muted-foreground">Every staff action is recorded here with who did it and when.</p>
+      {loading ? <CardSkeletons count={4} /> : error ? <ErrorState description={error} onRetry={reload} />
+        : rows.length === 0 ? <EmptyState title="No admin activity yet" description="Actions performed by admins and co-admins will appear here." />
+        : rows.map((r) => (
+          <Card key={r.id} className="p-3 text-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <span className="font-medium">{r.action.replace(/_/g, " ")} · {r.entity}</span>
+              <span className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()}</span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              by {r.actor_email ?? r.actor_user_id}{r.entity_id ? ` · ${r.entity_id}` : ""}
+            </p>
+          </Card>
+        ))}
     </div>
   );
 }
