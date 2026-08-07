@@ -164,6 +164,7 @@ function SettingsPage() {
         <SettingsIcon className="h-5 w-5" />
         <h1 className="font-display text-3xl font-semibold">Settings</h1>
       </div>
+      <p className="text-sm text-muted-foreground">Change your profile, theme, exam board, subjects, and how Sasha teaches you — anytime.</p>
 
       <section className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-card">
         <h2 className="flex items-center gap-2 font-display text-lg font-semibold"><UserRound className="h-4 w-4" /> Your public profile</h2>
