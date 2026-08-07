@@ -23,11 +23,14 @@ export const Route = createFileRoute("/_authenticated/leaderboard")({
 type Row = {
   user_id: string;
   display_name: string | null;
+  avatar_url: string | null;
+  status: string | null;
+  status_emoji: string | null;
   xp: number;
   lab_xp: number;
   xp_week: number;
   streak_count: number;
-  leaderboard_opt_in: boolean;
+  level: number;
 };
 
 type Metric = "xp" | "xp_week" | "lab_xp" | "streak_count";
@@ -42,7 +45,6 @@ function LeaderboardPage() {
   const { user } = useAuth();
   const [metric, setMetric] = useState<Metric>("xp_week");
   const [rows, setRows] = useState<Row[]>([]);
-  const [me, setMe] = useState<Row | null>(null);
   const [optIn, setOptIn] = useState(true);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -51,12 +53,7 @@ function LeaderboardPage() {
     setLoading(true);
     setError(null);
     (async () => {
-      const { data, error: err } = await supabase
-        .from("profiles")
-        .select("user_id, display_name, xp, lab_xp, xp_week, streak_count, leaderboard_opt_in")
-        .eq("leaderboard_opt_in", true)
-        .order(metric, { ascending: false })
-        .limit(50) as any;
+      const { data, error: err } = await supabase.rpc("leaderboard" as any, { _metric: metric });
       if (err) setError(err.message);
       else setRows((data ?? []) as Row[]);
       setLoading(false);
@@ -64,16 +61,16 @@ function LeaderboardPage() {
   };
   useEffect(() => { loadRows(); }, [metric]);
 
+  const me = rows.find((r) => r.user_id === user?.id) ?? null;
+
   useEffect(() => {
     if (!user) return;
     supabase
       .from("profiles")
-      .select("user_id, display_name, xp, lab_xp, xp_week, streak_count, leaderboard_opt_in")
+      .select("leaderboard_opt_in")
       .eq("user_id", user.id)
       .maybeSingle()
-      .then(({ data }: any) => {
-        if (data) { setMe(data as Row); setOptIn(!!data.leaderboard_opt_in); }
-      });
+      .then(({ data }: any) => { if (data) setOptIn(!!data.leaderboard_opt_in); });
   }, [user]);
 
   useEffect(() => {
@@ -86,11 +83,13 @@ function LeaderboardPage() {
     setOptIn(v);
     if (user) {
       await supabase.from("profiles").update({ leaderboard_opt_in: v } as any).eq("user_id", user.id);
+      loadRows();
     }
   };
 
   const valueOf = (r: Row) => r[metric] ?? 0;
-  const nameOf = (r: Row) => (r.leaderboard_opt_in ? (r.display_name || "Owl") : "Anonymous Owl");
+  const nameOf = (r: Row) => r.display_name || "Falcon";
+
 
   return (
     <div className="bg-aurora min-h-[calc(100vh-3rem)] p-6">
