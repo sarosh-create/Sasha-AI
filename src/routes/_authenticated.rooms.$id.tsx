@@ -118,7 +118,7 @@ function RoomPage() {
         .subscribe();
 
       // Signalling channel (broadcast)
-      const sig = supabase.channel(`room-sig-${id}`, { config: { broadcast: { self: false } } });
+      const sig = supabase.channel(`room-sig-${id}`, { config: { broadcast: { self: false }, private: true } });
       sig.on("broadcast", { event: "signal" }, async ({ payload }) => {
         const { from, to, kind, data } = payload as any;
         if (to !== user.id) return;
