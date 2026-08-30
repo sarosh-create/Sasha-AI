@@ -1,6 +1,6 @@
 # Sasha AI
 
-Learn Kata AI is a personalized AI study platform designed for students who want a smarter and more organized way to prepare for exams. It creates a custom study experience for each student by understanding their strengths, weak areas, pace, and learning style. The interface uses calm and focused colors like deep blue, white, and soft purple to reduce stress and help students stay concentrated while studying.
+Sasha AI is a personalized AI study platform designed for students who want a smarter and more organized way to prepare for exams. It creates a custom study experience for each student by understanding their strengths, weak areas, pace, and learning style. The interface uses calm and focused colors like deep blue, white, and soft purple to reduce stress and help students stay concentrated while studying.
 
 The MVP version includes an AI tutor chat, personalized study plans, topic-by-topic revision, quizzes, strict marking, progress tracking, and motivational learning streaks — all completely free. Students can select their subjects, exam board, and upcoming test dates, and the AI automatically builds a daily study roadmap for them. For example, if a student struggles with Biology but performs well in History, Learn Kata AI adjusts the schedule to spend more time on Biology revision and practice questions.
 
