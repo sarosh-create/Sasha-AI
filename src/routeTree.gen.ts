@@ -33,6 +33,7 @@ import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
+import { Route as AuthenticatedPaperCheckerRouteImport } from './routes/_authenticated.paper-checker'
 import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
@@ -56,6 +57,7 @@ import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
+import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -182,6 +184,12 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPaperCheckerRoute =
+  AuthenticatedPaperCheckerRouteImport.update({
+    id: '/paper-checker',
+    path: '/paper-checker',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPapersRoute = AuthenticatedPapersRouteImport.update({
   id: '/papers',
   path: '/papers',
@@ -301,6 +309,11 @@ const AuthenticatedUIdRoute = AuthenticatedUIdRouteImport.update({
   path: '/u/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicPaperCheckRoute = ApiPublicPaperCheckRouteImport.update({
+  id: '/api/public/paper-check',
+  path: '/api/public/paper-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -338,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
@@ -359,6 +373,7 @@ export interface FileRoutesByFullPath {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -388,6 +403,7 @@ export interface FileRoutesByTo {
   '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
@@ -409,6 +425,7 @@ export interface FileRoutesByTo {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -440,6 +457,7 @@ export interface FileRoutesById {
   '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
@@ -461,6 +479,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -492,6 +511,7 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/notes'
     | '/onboarding'
+    | '/paper-checker'
     | '/papers'
     | '/path'
     | '/predictions'
@@ -513,6 +533,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/paper-check'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -542,6 +563,7 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/notes'
     | '/onboarding'
+    | '/paper-checker'
     | '/papers'
     | '/path'
     | '/predictions'
@@ -563,6 +585,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/paper-check'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
@@ -593,6 +616,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mentors'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
+    | '/_authenticated/paper-checker'
     | '/_authenticated/papers'
     | '/_authenticated/path'
     | '/_authenticated/predictions'
@@ -614,6 +638,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
     | '/_authenticated/u/$id'
+    | '/api/public/paper-check'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -633,6 +658,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -807,6 +833,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/paper-checker': {
+      id: '/_authenticated/paper-checker'
+      path: '/paper-checker'
+      fullPath: '/paper-checker'
+      preLoaderRoute: typeof AuthenticatedPaperCheckerRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/papers': {
       id: '/_authenticated/papers'
       path: '/papers'
@@ -968,6 +1001,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/paper-check': {
+      id: '/api/public/paper-check'
+      path: '/api/public/paper-check'
+      fullPath: '/api/public/paper-check'
+      preLoaderRoute: typeof ApiPublicPaperCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -1028,6 +1068,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPaperCheckerRoute: typeof AuthenticatedPaperCheckerRoute
   AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
   AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
@@ -1064,6 +1105,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPaperCheckerRoute: AuthenticatedPaperCheckerRoute,
   AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
   AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
@@ -1103,6 +1145,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
