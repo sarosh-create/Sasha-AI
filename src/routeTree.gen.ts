@@ -56,6 +56,7 @@ import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
+import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -301,6 +302,11 @@ const AuthenticatedUIdRoute = AuthenticatedUIdRouteImport.update({
   path: '/u/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicPaperCheckRoute = ApiPublicPaperCheckRouteImport.update({
+  id: '/api/public/paper-check',
+  path: '/api/public/paper-check',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -359,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -409,6 +416,7 @@ export interface FileRoutesByTo {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -461,6 +469,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -513,6 +522,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/paper-check'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -563,6 +573,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/paper-check'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
@@ -614,6 +625,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
     | '/_authenticated/u/$id'
+    | '/api/public/paper-check'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -633,6 +645,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -968,6 +981,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/paper-check': {
+      id: '/api/public/paper-check'
+      path: '/api/public/paper-check'
+      fullPath: '/api/public/paper-check'
+      preLoaderRoute: typeof ApiPublicPaperCheckRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -1103,6 +1123,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
