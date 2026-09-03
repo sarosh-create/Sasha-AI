@@ -33,6 +33,7 @@ import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenti
 import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
+import { Route as AuthenticatedPaperCheckerRouteImport } from './routes/_authenticated.paper-checker'
 import { Route as AuthenticatedPapersRouteImport } from './routes/_authenticated.papers'
 import { Route as AuthenticatedPathRouteImport } from './routes/_authenticated.path'
 import { Route as AuthenticatedPredictionsRouteImport } from './routes/_authenticated.predictions'
@@ -183,6 +184,12 @@ const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
   path: '/onboarding',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedPaperCheckerRoute =
+  AuthenticatedPaperCheckerRouteImport.update({
+    id: '/paper-checker',
+    path: '/paper-checker',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedPapersRoute = AuthenticatedPapersRouteImport.update({
   id: '/papers',
   path: '/papers',
@@ -344,6 +351,7 @@ export interface FileRoutesByFullPath {
   '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
@@ -395,6 +403,7 @@ export interface FileRoutesByTo {
   '/mentors': typeof AuthenticatedMentorsRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
+  '/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/papers': typeof AuthenticatedPapersRoute
   '/path': typeof AuthenticatedPathRoute
   '/predictions': typeof AuthenticatedPredictionsRoute
@@ -448,6 +457,7 @@ export interface FileRoutesById {
   '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
+  '/_authenticated/paper-checker': typeof AuthenticatedPaperCheckerRoute
   '/_authenticated/papers': typeof AuthenticatedPapersRoute
   '/_authenticated/path': typeof AuthenticatedPathRoute
   '/_authenticated/predictions': typeof AuthenticatedPredictionsRoute
@@ -501,6 +511,7 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/notes'
     | '/onboarding'
+    | '/paper-checker'
     | '/papers'
     | '/path'
     | '/predictions'
@@ -552,6 +563,7 @@ export interface FileRouteTypes {
     | '/mentors'
     | '/notes'
     | '/onboarding'
+    | '/paper-checker'
     | '/papers'
     | '/path'
     | '/predictions'
@@ -604,6 +616,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mentors'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
+    | '/_authenticated/paper-checker'
     | '/_authenticated/papers'
     | '/_authenticated/path'
     | '/_authenticated/predictions'
@@ -818,6 +831,13 @@ declare module '@tanstack/react-router' {
       path: '/onboarding'
       fullPath: '/onboarding'
       preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/paper-checker': {
+      id: '/_authenticated/paper-checker'
+      path: '/paper-checker'
+      fullPath: '/paper-checker'
+      preLoaderRoute: typeof AuthenticatedPaperCheckerRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/papers': {
@@ -1048,6 +1068,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
+  AuthenticatedPaperCheckerRoute: typeof AuthenticatedPaperCheckerRoute
   AuthenticatedPapersRoute: typeof AuthenticatedPapersRoute
   AuthenticatedPathRoute: typeof AuthenticatedPathRoute
   AuthenticatedPredictionsRoute: typeof AuthenticatedPredictionsRoute
@@ -1084,6 +1105,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
+  AuthenticatedPaperCheckerRoute: AuthenticatedPaperCheckerRoute,
   AuthenticatedPapersRoute: AuthenticatedPapersRoute,
   AuthenticatedPathRoute: AuthenticatedPathRoute,
   AuthenticatedPredictionsRoute: AuthenticatedPredictionsRoute,
