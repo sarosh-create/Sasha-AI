@@ -142,6 +142,8 @@ function PathPage() {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<PathMode>("balanced");
+  const [subjectId, setSubjectId] = useState<string>("all");
 
   const load = async () => {
     if (!user) return;
@@ -247,7 +249,7 @@ function PathPage() {
           <h1 className="font-display text-3xl font-semibold">Your study path</h1>
           <p className="text-sm text-muted-foreground">One lesson at a time. Each finished stop unlocks the next.</p>
         </div>
-        <Button variant="outline" size="sm" onClick={reset} disabled={busy || noSubjects}>Regenerate path</Button>
+        <Button variant="outline" size="sm" onClick={rebuild} disabled={busy || noSubjects}>Regenerate path</Button>
       </header>
 
       {noSubjects && (
@@ -363,7 +365,7 @@ function PathPage() {
           <Star className="mx-auto h-8 w-8 text-warning" />
           <p className="mt-2 font-display text-xl font-semibold">Path complete!</p>
           <p className="text-sm text-muted-foreground">Generate a fresh path to keep going.</p>
-          <Button className="mt-3" onClick={reset}>Regenerate</Button>
+          <Button className="mt-3" onClick={rebuild}>Regenerate</Button>
         </div>
       )}
     </div>
