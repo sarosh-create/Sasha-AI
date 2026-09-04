@@ -221,9 +221,16 @@ function PathPage() {
     load();
   };
 
-  const reset = async () => {
+  const rebuild = async () => {
     if (!user) return;
-    await supabase.from("lesson_path").delete().eq("user_id", user.id);
+    setBusy(true);
+    try {
+      await supabase.from("lesson_path").delete().eq("user_id", user.id);
+      await generatePathFor(user.id, { mode, subjectId: subjectId === "all" ? null : subjectId });
+      toast.success("New path ready");
+    } catch (e: any) {
+      toast.error(e.message ?? "Couldn't build the path");
+    } finally { setBusy(false); }
     load();
   };
 
