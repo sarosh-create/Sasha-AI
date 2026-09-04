@@ -260,6 +260,38 @@ function PathPage() {
         </div>
       )}
 
+      {!noSubjects && (
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-card">
+          <p className="font-display text-lg font-semibold">Build the path you need right now</p>
+          <p className="text-sm text-muted-foreground">Pick a subject and how you want to study — Sasha rewrites the roadmap with matching instructions.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground" htmlFor="path-subject">Subject</label>
+              <Select value={subjectId} onValueChange={setSubjectId}>
+                <SelectTrigger id="path-subject" className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All my subjects</SelectItem>
+                  {Object.values(subjects).map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground" htmlFor="path-mode">Study mode</label>
+              <Select value={mode} onValueChange={(v) => setMode(v as PathMode)}>
+                <SelectTrigger id="path-mode" className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PATH_MODES.map((m) => <SelectItem key={m.id} value={m.id}>{m.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground">{PATH_MODES.find((m) => m.id === mode)?.blurb}</p>
+            <Button size="sm" onClick={rebuild} disabled={busy}>{busy ? "Building…" : "Generate this path"}</Button>
+          </div>
+        </section>
+      )}
+
       {!noSubjects && lessons.length > 0 && (
         <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-card">
           <div className="flex flex-wrap items-center justify-between gap-4">
