@@ -1,7 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/logo";
+import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
+import { PaperChecker } from "@/components/paper-checker";
+import { useState } from "react";
 import {
   BrainCircuit,
   CalendarCheck,
@@ -128,6 +131,21 @@ function Landing() {
       </section>
 
 
+      <section id="try" className="border-b border-border bg-background">
+        <div className="container mx-auto max-w-3xl px-6 py-16">
+          <div className="text-center">
+            <h2 className="font-display text-3xl font-semibold">Try the marking before you sign up</h2>
+            <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">
+              Photograph a handwritten answer and Sasha marks it against your board's mark scheme.
+              Free trial: up to 2 questions, no account needed.
+            </p>
+          </div>
+          <div className="mt-8">
+            <TrialChecker />
+          </div>
+        </div>
+      </section>
+
       <section id="how" className="container mx-auto px-6 py-20">
         <div className="grid gap-5 md:grid-cols-3">
           {[
@@ -170,6 +188,43 @@ function Landing() {
         <Logo size={22} />
         <span>© {new Date().getFullYear()} Sasha AI</span>
       </footer>
+    </div>
+  );
+}
+
+const TRIAL_KEY = "sasha:trialChecks";
+
+function TrialChecker() {
+  const [used, setUsed] = useState(() => {
+    if (typeof window === "undefined") return 0;
+    return Number(localStorage.getItem(TRIAL_KEY) ?? 0);
+  });
+  const left = Math.max(0, 2 - used);
+  return (
+    <div>
+      <p className="mb-3 text-center text-xs font-medium text-muted-foreground">
+        {left > 0 ? `${left} free question${left === 1 ? "" : "s"} left` : "Free trial used — sign up to keep marking"}
+      </p>
+      <PaperChecker
+        trial
+        canRun={() => {
+          if (left <= 0) {
+            toast.error("Free trial finished — create a free account to keep marking.");
+            return false;
+          }
+          const next = used + 1;
+          localStorage.setItem(TRIAL_KEY, String(next));
+          setUsed(next);
+          return true;
+        }}
+        footer={
+          <div className="rounded-xl border border-border bg-card p-4 text-center">
+            <p className="text-sm font-medium">Happy with the marking?</p>
+            <p className="mt-1 text-xs text-muted-foreground">Sign up free for full papers, mistake tracking and a study path.</p>
+            <Link to="/auth"><Button className="mt-3" size="sm">Create a free account</Button></Link>
+          </div>
+        }
+      />
     </div>
   );
 }

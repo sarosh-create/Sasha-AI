@@ -42,36 +42,79 @@ type Lesson = {
 };
 type Subject = { id: string; name: string; color: string; strength_score: number };
 
-const lessonContent = (subject: Subject, activity: Lesson["activity"]) => {
+export type PathMode = "balanced" | "crash" | "mastery" | "weak";
+
+export const PATH_MODES: { id: PathMode; label: string; blurb: string; lessons: number }[] = [
+  { id: "balanced", label: "Balanced", blurb: "Teach, quiz and review in a steady rotation.", lessons: 14 },
+  { id: "crash", label: "Exam sprint", blurb: "Short, quiz-heavy run for the days before a paper.", lessons: 8 },
+  { id: "mastery", label: "Deep mastery", blurb: "Longer teaching stops, then applied practice.", lessons: 18 },
+  { id: "weak", label: "Weak spots only", blurb: "Everything aimed at your lowest-scoring topics.", lessons: 12 },
+];
+
+const lessonContent = (subject: Subject, activity: Lesson["activity"], mode: PathMode) => {
   const focus = subject.strength_score < 45 ? "core basics" : subject.strength_score < 70 ? "exam application" : "high-mark practice";
+  const modeLine =
+    mode === "crash" ? "Keep it fast: recall, apply, move on." :
+    mode === "mastery" ? "Go deep: derive it, explain it, then stretch to harder marks." :
+    mode === "weak" ? "This stop targets a topic you keep losing marks on." :
+    "Steady progress across teaching, practice and review.";
   return {
-    content: `${activity === "quiz" ? "Practice" : activity === "review" ? "Review" : "Learn"} ${subject.name} through ${focus}. Sasha AI will connect the lesson to your chosen subject, then check whether you can explain and apply it.` ,
-    lesson_steps: [
-      `Recall the main ${subject.name} idea in your own words.`,
-      `Work through one guided example from your level.`,
-      `Answer a short exam-style question and fix mistakes.`,
-    ],
+    content: `${activity === "quiz" ? "Practice" : activity === "review" ? "Review" : "Learn"} ${subject.name} through ${focus}. ${modeLine}`,
+    lesson_steps:
+      mode === "mastery"
+        ? [
+            `Explain the core ${subject.name} idea from first principles.`,
+            `Work two contrasting examples, one deliberately harder.`,
+            `Answer a full exam question and self-mark against the scheme.`,
+            `Write one sentence on what you'd do differently next time.`,
+          ]
+        : mode === "crash"
+        ? [
+            `Skim the key ${subject.name} facts for 2 minutes.`,
+            `Do a rapid exam-style question under time.`,
+            `Fix only the marks you dropped.`,
+          ]
+        : [
+            `Recall the main ${subject.name} idea in your own words.`,
+            `Work through one guided example from your level.`,
+            `Answer a short exam-style question and fix mistakes.`,
+          ],
     practice_prompt: `Create one ${subject.name} question on today's weakest topic, then mark my answer strictly.`,
   };
 };
 
-export async function generatePathFor(userId: string) {
+export async function generatePathFor(
+  userId: string,
+  opts: { mode?: PathMode; subjectId?: string | null } = {},
+) {
+  const mode: PathMode = opts.mode ?? "balanced";
   const { data: subs } = await supabase
     .from("subjects").select("id, name, strength_score, color")
     .eq("user_id", userId);
   if (!subs || subs.length === 0) return;
+  let pool: any[] = subs;
+  if (opts.subjectId) pool = subs.filter((s: any) => s.id === opts.subjectId);
+  if (mode === "weak" && pool.length > 1) {
+    const sorted = [...pool].sort((a: any, b: any) => a.strength_score - b.strength_score);
+    pool = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)));
+  }
+  if (pool.length === 0) pool = subs;
   // Weighted picks: weaker → more frequent
   const weighted: Subject[] = [];
-  subs.forEach((s: any) => {
+  pool.forEach((s: any) => {
     const w = Math.max(2, Math.ceil((100 - s.strength_score) / 15));
     for (let i = 0; i < w; i++) weighted.push(s);
   });
-  const activities: Lesson["activity"][] = ["teach", "quiz", "review"];
+  const activities: Lesson["activity"][] =
+    mode === "crash" ? ["quiz", "teach", "quiz"] :
+    mode === "mastery" ? ["teach", "teach", "quiz", "review"] :
+    ["teach", "quiz", "review"];
+  const total = PATH_MODES.find((m) => m.id === mode)?.lessons ?? 14;
   const rows: any[] = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < total; i++) {
     const s = weighted[Math.floor(Math.random() * weighted.length)];
-    const act = activities[i % 3];
-    const details = lessonContent(s, act);
+    const act = activities[i % activities.length];
+    const details = lessonContent(s, act, mode);
     rows.push({
       user_id: userId,
       subject_id: s.id,
@@ -81,7 +124,7 @@ export async function generatePathFor(userId: string) {
         act === "teach" ? `Teach: ${s.name}` :
         act === "quiz" ? `Quiz: ${s.name}` :
         `Review: ${s.name}`,
-      est_minutes: act === "quiz" ? 8 : 10,
+      est_minutes: mode === "crash" ? (act === "quiz" ? 6 : 8) : mode === "mastery" ? (act === "quiz" ? 12 : 15) : act === "quiz" ? 8 : 10,
       status: i === 0 ? "available" : "locked",
       ...details,
     });
@@ -99,6 +142,8 @@ function PathPage() {
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [mode, setMode] = useState<PathMode>("balanced");
+  const [subjectId, setSubjectId] = useState<string>("all");
 
   const load = async () => {
     if (!user) return;
@@ -178,9 +223,16 @@ function PathPage() {
     load();
   };
 
-  const reset = async () => {
+  const rebuild = async () => {
     if (!user) return;
-    await supabase.from("lesson_path").delete().eq("user_id", user.id);
+    setBusy(true);
+    try {
+      await supabase.from("lesson_path").delete().eq("user_id", user.id);
+      await generatePathFor(user.id, { mode, subjectId: subjectId === "all" ? null : subjectId });
+      toast.success("New path ready");
+    } catch (e: any) {
+      toast.error(e.message ?? "Couldn't build the path");
+    } finally { setBusy(false); }
     load();
   };
 
@@ -197,7 +249,7 @@ function PathPage() {
           <h1 className="font-display text-3xl font-semibold">Your study path</h1>
           <p className="text-sm text-muted-foreground">One lesson at a time. Each finished stop unlocks the next.</p>
         </div>
-        <Button variant="outline" size="sm" onClick={reset} disabled={busy || noSubjects}>Regenerate path</Button>
+        <Button variant="outline" size="sm" onClick={rebuild} disabled={busy || noSubjects}>Regenerate path</Button>
       </header>
 
       {noSubjects && (
@@ -206,6 +258,38 @@ function PathPage() {
           <p className="mt-1 text-sm text-muted-foreground">Sasha needs to know what you study before building a path.</p>
           <Button className="mt-4" onClick={() => nav({ to: "/onboarding" })}>Go to study setup</Button>
         </div>
+      )}
+
+      {!noSubjects && (
+        <section className="mt-6 rounded-2xl border border-border bg-card p-5 shadow-card">
+          <p className="font-display text-lg font-semibold">Build the path you need right now</p>
+          <p className="text-sm text-muted-foreground">Pick a subject and how you want to study — Sasha rewrites the roadmap with matching instructions.</p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label className="text-xs font-medium text-muted-foreground" htmlFor="path-subject">Subject</label>
+              <Select value={subjectId} onValueChange={setSubjectId}>
+                <SelectTrigger id="path-subject" className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All my subjects</SelectItem>
+                  {Object.values(subjects).map((s) => <SelectItem key={s.id} value={s.id}>{s.name}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-muted-foreground" htmlFor="path-mode">Study mode</label>
+              <Select value={mode} onValueChange={(v) => setMode(v as PathMode)}>
+                <SelectTrigger id="path-mode" className="mt-1"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {PATH_MODES.map((m) => <SelectItem key={m.id} value={m.id}>{m.label}</SelectItem>)}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="mt-3 flex flex-wrap items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground">{PATH_MODES.find((m) => m.id === mode)?.blurb}</p>
+            <Button size="sm" onClick={rebuild} disabled={busy}>{busy ? "Building…" : "Generate this path"}</Button>
+          </div>
+        </section>
       )}
 
       {!noSubjects && lessons.length > 0 && (
@@ -313,7 +397,7 @@ function PathPage() {
           <Star className="mx-auto h-8 w-8 text-warning" />
           <p className="mt-2 font-display text-xl font-semibold">Path complete!</p>
           <p className="text-sm text-muted-foreground">Generate a fresh path to keep going.</p>
-          <Button className="mt-3" onClick={reset}>Regenerate</Button>
+          <Button className="mt-3" onClick={rebuild}>Regenerate</Button>
         </div>
       )}
     </div>

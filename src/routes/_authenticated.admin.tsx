@@ -430,10 +430,26 @@ function AssignStudentsAdmin() {
   const [teacherId, setTeacherId] = useState("");
   const [studentId, setStudentId] = useState("");
   useEffect(() => { (async () => {
-    const { data: rs } = await supabase.from("user_roles").select("user_id").eq("role", "teacher" as any);
-    const tIds = (rs ?? []).map((r: any) => r.user_id);
+    // Teachers can come from a role row OR from the teachers directory (approved
+    // applications). Union both so the dropdown is never empty.
+    const [{ data: rs }, { data: dir }] = await Promise.all([
+      supabase.from("user_roles").select("user_id").eq("role", "teacher" as any),
+      supabase.from("teachers").select("user_id, name"),
+    ]);
+    const dirRows = (dir ?? []).filter((d: any) => d.user_id);
+    const tIds = Array.from(new Set([
+      ...(rs ?? []).map((r: any) => r.user_id),
+      ...dirRows.map((d: any) => d.user_id),
+    ]));
     const { data: t } = tIds.length ? await supabase.from("profiles").select("user_id, display_name").in("user_id", tIds) : { data: [] } as any;
-    setTeachers(t ?? []);
+    const byId = new Map<string, any>();
+    tIds.forEach((id) => byId.set(id, { user_id: id, display_name: null }));
+    (t ?? []).forEach((p: any) => byId.set(p.user_id, p));
+    dirRows.forEach((d: any) => {
+      const cur = byId.get(d.user_id);
+      if (cur && !cur.display_name) cur.display_name = d.name;
+    });
+    setTeachers(Array.from(byId.values()).map((r) => ({ ...r, display_name: r.display_name ?? r.user_id })));
     const { data: s } = await supabase.from("profiles").select("user_id, display_name, account_type").eq("account_type", "student");
     setStudents(s ?? []);
   })(); }, []);

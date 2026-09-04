@@ -1424,6 +1424,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_use_realtime_topic: { Args: { _topic: string }; Returns: boolean }
       channel_message_rating_counts: {
         Args: { _message_ids: string[] }
         Returns: {
