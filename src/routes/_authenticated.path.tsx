@@ -42,36 +42,79 @@ type Lesson = {
 };
 type Subject = { id: string; name: string; color: string; strength_score: number };
 
-const lessonContent = (subject: Subject, activity: Lesson["activity"]) => {
+export type PathMode = "balanced" | "crash" | "mastery" | "weak";
+
+export const PATH_MODES: { id: PathMode; label: string; blurb: string; lessons: number }[] = [
+  { id: "balanced", label: "Balanced", blurb: "Teach, quiz and review in a steady rotation.", lessons: 14 },
+  { id: "crash", label: "Exam sprint", blurb: "Short, quiz-heavy run for the days before a paper.", lessons: 8 },
+  { id: "mastery", label: "Deep mastery", blurb: "Longer teaching stops, then applied practice.", lessons: 18 },
+  { id: "weak", label: "Weak spots only", blurb: "Everything aimed at your lowest-scoring topics.", lessons: 12 },
+];
+
+const lessonContent = (subject: Subject, activity: Lesson["activity"], mode: PathMode) => {
   const focus = subject.strength_score < 45 ? "core basics" : subject.strength_score < 70 ? "exam application" : "high-mark practice";
+  const modeLine =
+    mode === "crash" ? "Keep it fast: recall, apply, move on." :
+    mode === "mastery" ? "Go deep: derive it, explain it, then stretch to harder marks." :
+    mode === "weak" ? "This stop targets a topic you keep losing marks on." :
+    "Steady progress across teaching, practice and review.";
   return {
-    content: `${activity === "quiz" ? "Practice" : activity === "review" ? "Review" : "Learn"} ${subject.name} through ${focus}. Sasha AI will connect the lesson to your chosen subject, then check whether you can explain and apply it.` ,
-    lesson_steps: [
-      `Recall the main ${subject.name} idea in your own words.`,
-      `Work through one guided example from your level.`,
-      `Answer a short exam-style question and fix mistakes.`,
-    ],
+    content: `${activity === "quiz" ? "Practice" : activity === "review" ? "Review" : "Learn"} ${subject.name} through ${focus}. ${modeLine}`,
+    lesson_steps:
+      mode === "mastery"
+        ? [
+            `Explain the core ${subject.name} idea from first principles.`,
+            `Work two contrasting examples, one deliberately harder.`,
+            `Answer a full exam question and self-mark against the scheme.`,
+            `Write one sentence on what you'd do differently next time.`,
+          ]
+        : mode === "crash"
+        ? [
+            `Skim the key ${subject.name} facts for 2 minutes.`,
+            `Do a rapid exam-style question under time.`,
+            `Fix only the marks you dropped.`,
+          ]
+        : [
+            `Recall the main ${subject.name} idea in your own words.`,
+            `Work through one guided example from your level.`,
+            `Answer a short exam-style question and fix mistakes.`,
+          ],
     practice_prompt: `Create one ${subject.name} question on today's weakest topic, then mark my answer strictly.`,
   };
 };
 
-export async function generatePathFor(userId: string) {
+export async function generatePathFor(
+  userId: string,
+  opts: { mode?: PathMode; subjectId?: string | null } = {},
+) {
+  const mode: PathMode = opts.mode ?? "balanced";
   const { data: subs } = await supabase
     .from("subjects").select("id, name, strength_score, color")
     .eq("user_id", userId);
   if (!subs || subs.length === 0) return;
+  let pool: any[] = subs;
+  if (opts.subjectId) pool = subs.filter((s: any) => s.id === opts.subjectId);
+  if (mode === "weak" && pool.length > 1) {
+    const sorted = [...pool].sort((a: any, b: any) => a.strength_score - b.strength_score);
+    pool = sorted.slice(0, Math.max(1, Math.ceil(sorted.length / 2)));
+  }
+  if (pool.length === 0) pool = subs;
   // Weighted picks: weaker → more frequent
   const weighted: Subject[] = [];
-  subs.forEach((s: any) => {
+  pool.forEach((s: any) => {
     const w = Math.max(2, Math.ceil((100 - s.strength_score) / 15));
     for (let i = 0; i < w; i++) weighted.push(s);
   });
-  const activities: Lesson["activity"][] = ["teach", "quiz", "review"];
+  const activities: Lesson["activity"][] =
+    mode === "crash" ? ["quiz", "teach", "quiz"] :
+    mode === "mastery" ? ["teach", "teach", "quiz", "review"] :
+    ["teach", "quiz", "review"];
+  const total = PATH_MODES.find((m) => m.id === mode)?.lessons ?? 14;
   const rows: any[] = [];
-  for (let i = 0; i < 14; i++) {
+  for (let i = 0; i < total; i++) {
     const s = weighted[Math.floor(Math.random() * weighted.length)];
-    const act = activities[i % 3];
-    const details = lessonContent(s, act);
+    const act = activities[i % activities.length];
+    const details = lessonContent(s, act, mode);
     rows.push({
       user_id: userId,
       subject_id: s.id,
