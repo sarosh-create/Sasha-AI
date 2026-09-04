@@ -124,7 +124,7 @@ export async function generatePathFor(
         act === "teach" ? `Teach: ${s.name}` :
         act === "quiz" ? `Quiz: ${s.name}` :
         `Review: ${s.name}`,
-      est_minutes: act === "quiz" ? 8 : 10,
+      est_minutes: mode === "crash" ? (act === "quiz" ? 6 : 8) : mode === "mastery" ? (act === "quiz" ? 12 : 15) : act === "quiz" ? 8 : 10,
       status: i === 0 ? "available" : "locked",
       ...details,
     });
