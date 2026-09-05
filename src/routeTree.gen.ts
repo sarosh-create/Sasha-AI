@@ -17,6 +17,7 @@ import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as McpRouteImport } from './routes/mcp'
 import { Route as RateRouteImport } from './routes/rate'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as StudyScheduleRouteImport } from './routes/study-schedule'
 import { Route as Char91DotmcpChar93ListToolsRouteImport } from './routes/[.mcp]/list-tools'
 import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as AuthenticatedAchievementsRouteImport } from './routes/_authenticated.achievements'
@@ -98,6 +99,11 @@ const RateRoute = RateRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StudyScheduleRoute = StudyScheduleRouteImport.update({
+  id: '/study-schedule',
+  path: '/study-schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const Char91DotmcpChar93ListToolsRoute =
@@ -335,6 +341,7 @@ export interface FileRoutesByFullPath {
   '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/study-schedule': typeof StudyScheduleRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
@@ -387,6 +394,7 @@ export interface FileRoutesByTo {
   '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/study-schedule': typeof StudyScheduleRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/achievements': typeof AuthenticatedAchievementsRoute
@@ -441,6 +449,7 @@ export interface FileRoutesById {
   '/mcp': typeof McpRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/study-schedule': typeof StudyScheduleRoute
   '/.mcp/list-tools': typeof Char91DotmcpChar93ListToolsRoute
   '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/achievements': typeof AuthenticatedAchievementsRoute
@@ -495,6 +504,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/study-schedule'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/achievements'
@@ -547,6 +557,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/study-schedule'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/achievements'
@@ -600,6 +611,7 @@ export interface FileRouteTypes {
     | '/mcp'
     | '/rate'
     | '/sitemap.xml'
+    | '/study-schedule'
     | '/.mcp/list-tools'
     | '/.well-known/oauth-protected-resource'
     | '/_authenticated/achievements'
@@ -654,6 +666,7 @@ export interface RootRouteChildren {
   McpRoute: typeof McpRoute
   RateRoute: typeof RateRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  StudyScheduleRoute: typeof StudyScheduleRoute
   Char91DotmcpChar93ListToolsRoute: typeof Char91DotmcpChar93ListToolsRoute
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
@@ -719,6 +732,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/study-schedule': {
+      id: '/study-schedule'
+      path: '/study-schedule'
+      fullPath: '/study-schedule'
+      preLoaderRoute: typeof StudyScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/.mcp/list-tools': {
@@ -1140,6 +1160,7 @@ const rootRouteChildren: RootRouteChildren = {
   McpRoute: McpRoute,
   RateRoute: RateRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  StudyScheduleRoute: StudyScheduleRoute,
   Char91DotmcpChar93ListToolsRoute: Char91DotmcpChar93ListToolsRoute,
   Char91DotwellKnownChar93OauthProtectedResourceRoute:
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
