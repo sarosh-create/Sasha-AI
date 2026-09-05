@@ -11,9 +11,9 @@ export const Route = createFileRoute("/_authenticated/schemes")({
     { name: "description", content: "Browse schemes of work and curriculum outlines for your exam board, mapped to Sasha AI lessons and quizzes." },
     { property: "og:title", content: "Schemes — Sasha AI" },
     { property: "og:description", content: "Curriculum outlines and schemes of work mapped to lessons inside Sasha AI." },
-    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/schemes" },
+    { property: "og:url", content: "https://sashaai.lovable.app/schemes" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/schemes" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/schemes" }] }),
   component: SchemesPage,
 });
 

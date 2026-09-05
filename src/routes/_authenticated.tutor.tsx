@@ -23,7 +23,7 @@ export const Route = createFileRoute("/_authenticated/tutor")({
       { property: "og:title", content: "AI Study Tutor — Sasha AI" },
       { property: "og:description", content: "Step-by-step AI tutoring tailored to your subjects and exam date." },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/tutor" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/tutor" }],
   }),
   validateSearch: (s: Record<string, unknown>): { subject?: string } =>
     typeof s.subject === "string" ? { subject: s.subject } : {},

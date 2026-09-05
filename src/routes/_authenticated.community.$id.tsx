@@ -39,13 +39,13 @@ export const Route = createFileRoute("/_authenticated/community/$id")({
         { property: "og:title", content: title.slice(0, 60) },
         { property: "og:description", content: description },
         { property: "og:type", content: "website" },
-        { property: "og:url", content: `https://study-mentor-by-sarosh-ai.lovable.app/community/${params.id}` },
+        { property: "og:url", content: `https://sashaai.lovable.app/community/${params.id}` },
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [
         {
           rel: "canonical",
-          href: `https://study-mentor-by-sarosh-ai.lovable.app/community/${params.id}`,
+          href: `https://sashaai.lovable.app/community/${params.id}`,
         },
       ],
     };

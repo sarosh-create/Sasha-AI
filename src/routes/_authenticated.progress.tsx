@@ -25,10 +25,10 @@ export const Route = createFileRoute("/_authenticated/progress")({
       { property: "og:title", content: "Progress & Mastery — Sasha AI" },
       { property: "og:description", content: "A mastery curve per topic, backed by strict marking. Proof of improvement you can show a parent." },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/progress" },
+      { property: "og:url", content: "https://sashaai.lovable.app/progress" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/progress" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/progress" }],
   }),
 });
 

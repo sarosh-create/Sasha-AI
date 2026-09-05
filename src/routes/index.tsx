@@ -24,13 +24,13 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Free AI study mentor: adaptive plans, AI tutor, strict exam-style quizzes, magical homework helper and a custom study buddy." },
       { property: "og:title", content: "Sasha AI — Free AI study mentor & exam coach" },
       { property: "og:description", content: "Adaptive plans, an AI tutor, strict-marked exam quizzes and a customisable study buddy. Free for students." },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/" },
+      { property: "og:url", content: "https://sashaai.lovable.app/" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Sasha AI — Free AI study mentor & exam coach" },
       { name: "twitter:description", content: "Adaptive plans, AI tutor, strict-marked exam quizzes, magical homework helper, custom study buddy." },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -40,7 +40,7 @@ export const Route = createFileRoute("/")({
             {
               "@type": "WebApplication",
               name: "Sasha AI",
-              url: "https://study-mentor-by-sarosh-ai.lovable.app/",
+              url: "https://sashaai.lovable.app/",
               applicationCategory: "EducationalApplication",
               operatingSystem: "Web",
               description:
@@ -50,7 +50,7 @@ export const Route = createFileRoute("/")({
             {
               "@type": "Organization",
               name: "Sasha AI",
-              url: "https://study-mentor-by-sarosh-ai.lovable.app/",
+              url: "https://sashaai.lovable.app/",
             },
           ],
         }),

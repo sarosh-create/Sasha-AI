@@ -137,7 +137,7 @@ export const Route = createFileRoute("/api/public/hooks/weekly-digest")({
                 ? `<div style="margin:18px 0 0;color:#fbbf24;font-size:14px;font-weight:600">${left} day${left === 1 ? "" : "s"} until your exam.</div>`
                 : ""
             }
-            <a href="https://study-mentor-by-sarosh-ai.lovable.app/progress" style="display:inline-block;margin-top:20px;background:#fbbf24;color:#0f172a;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none">See your mastery curve</a>`;
+            <a href="https://sashaai.lovable.app/progress" style="display:inline-block;margin-top:20px;background:#fbbf24;color:#0f172a;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none">See your mastery curve</a>`;
 
           const res = await sendEmail(to, `Your week in review, ${name}`, shell("This week's progress", inner));
           if (res.ok) {

@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 
-const BASE_URL = "https://study-mentor-by-sarosh-ai.lovable.app";
+const BASE_URL = "https://sashaai.lovable.app";
 
 interface SitemapEntry {
   path: string;
@@ -18,6 +18,8 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/auth", changefreq: "monthly", priority: "0.5" },
           { path: "/homework-helper", changefreq: "weekly", priority: "0.9" },
           { path: "/math-solver", changefreq: "weekly", priority: "0.9" },
+          { path: "/study-schedule", changefreq: "weekly", priority: "0.9" },
+          { path: "/paper-checker", changefreq: "weekly", priority: "0.8" },
           { path: "/rate", changefreq: "monthly", priority: "0.6" },
           { path: "/dashboard", changefreq: "weekly", priority: "0.8" },
           { path: "/achievements", changefreq: "weekly", priority: "0.6" },

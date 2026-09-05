@@ -14,9 +14,9 @@ export const Route = createFileRoute("/_authenticated/leaderboard")({
     { name: "description", content: "See where you rank on the Sasha AI leaderboard for XP, weekly XP, lab XP and study streaks." },
     { property: "og:title", content: "Leaderboard — Sasha AI" },
     { property: "og:description", content: "Compete with other students on XP, weekly XP, lab XP and study streaks." },
-    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/leaderboard" },
+    { property: "og:url", content: "https://sashaai.lovable.app/leaderboard" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/leaderboard" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/leaderboard" }] }),
   component: LeaderboardPage,
 });
 
