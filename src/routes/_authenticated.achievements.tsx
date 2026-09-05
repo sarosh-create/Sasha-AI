@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/achievements")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/achievements" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/achievements" }],
   }),
   component: AchievementsPage,
 });

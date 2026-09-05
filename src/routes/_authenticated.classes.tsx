@@ -14,9 +14,9 @@ export const Route = createFileRoute("/_authenticated/classes")({
     { name: "description", content: "Sign up for live classes with Sasha AI teachers — small-group sessions across maths, sciences and exam-board specific topics." },
     { property: "og:title", content: "Live classes — Sasha AI" },
     { property: "og:description", content: "Join small-group live classes with Sasha AI teachers, across maths, sciences and exam-board topics." },
-    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/classes" },
+    { property: "og:url", content: "https://sashaai.lovable.app/classes" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/classes" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/classes" }] }),
   component: ClassesPage,
 });
 

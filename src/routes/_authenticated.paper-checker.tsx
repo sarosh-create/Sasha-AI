@@ -16,7 +16,7 @@ export const Route = createFileRoute("/_authenticated/paper-checker")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/paper-checker" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/paper-checker" }],
   }),
   component: PaperCheckerPage,
 });

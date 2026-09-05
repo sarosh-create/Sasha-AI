@@ -35,7 +35,7 @@ export const Route = createFileRoute("/_authenticated/study-buddy")({
         content: "Customise your AI study buddy's look, name and personality, then study together.",
       },
       { property: "og:type", content: "website" },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/study-buddy" },
+      { property: "og:url", content: "https://sashaai.lovable.app/study-buddy" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "Design Your Study Buddy — Sasha AI" },
       {
@@ -43,7 +43,7 @@ export const Route = createFileRoute("/_authenticated/study-buddy")({
         content: "Customise your AI study buddy's look, name and personality, then study together.",
       },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/study-buddy" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/study-buddy" }],
   }),
 });
 

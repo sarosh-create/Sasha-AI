@@ -104,7 +104,7 @@ export const Route = createFileRoute("/api/public/hooks/daily-reminder")({
             );
           }
           bits.push(
-            `<a href="https://study-mentor-by-sarosh-ai.lovable.app/dashboard" style="display:inline-block;margin-top:18px;background:#fbbf24;color:#0f172a;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none">Open today's plan</a>`,
+            `<a href="https://sashaai.lovable.app/dashboard" style="display:inline-block;margin-top:18px;background:#fbbf24;color:#0f172a;font-weight:700;padding:11px 20px;border-radius:10px;text-decoration:none">Open today's plan</a>`,
           );
 
           const res = await sendEmail(

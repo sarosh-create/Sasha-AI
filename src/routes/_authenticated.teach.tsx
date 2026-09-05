@@ -20,7 +20,7 @@ export const Route = createFileRoute("/_authenticated/teach")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/teach" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/teach" }] }),
 });
 
 const FN = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/teach-back`;

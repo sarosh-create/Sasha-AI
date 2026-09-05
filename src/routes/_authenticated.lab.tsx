@@ -15,8 +15,8 @@ export const Route = createFileRoute("/_authenticated/lab")({
     { name: "description", content: "Practice practical-paper experiments in physics, chemistry and biology with Sasha AI's interactive lab game mode." },
     { property: "og:title", content: "Practical Lab — Sasha AI" },
     { property: "og:description", content: "Interactive practical-paper lab for physics, chemistry and biology — game-mode experiments inside Sasha AI." },
-    { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/lab" },
-  ], links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/lab" }] }),
+    { property: "og:url", content: "https://sashaai.lovable.app/lab" },
+  ], links: [{ rel: "canonical", href: "https://sashaai.lovable.app/lab" }] }),
   component: LabPage,
 });
 

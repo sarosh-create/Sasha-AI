@@ -21,7 +21,7 @@ export const Route = createFileRoute("/_authenticated/predictions")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/predictions" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/predictions" }] }),
 });
 
 const FN = (n: string) => `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/${n}`;

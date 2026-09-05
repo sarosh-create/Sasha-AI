@@ -20,12 +20,12 @@ export const Route = createFileRoute("/homework-helper")({
       { name: "keywords", content: "ai homework helper, free homework help, hologram explainer, focus timer, brain dump organizer, all subjects" },
       { property: "og:title", content: "AI Homework Helper — every subject, free" },
       { property: "og:description", content: "Hologram explanations, learning-style tutoring, brain-dump organizer, focus timer." },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper" },
+      { property: "og:url", content: "https://sashaai.lovable.app/homework-helper" },
       { property: "og:type", content: "website" },
       { name: "twitter:title", content: "AI Homework Helper — every subject, free" },
       { name: "twitter:description", content: "Hologram explanations, learning-style tutoring, brain-dump organizer, focus timer." },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/homework-helper" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -33,7 +33,7 @@ export const Route = createFileRoute("/homework-helper")({
           "@context": "https://schema.org",
           "@type": "WebApplication",
           name: "Sasha AI Homework Helper",
-          url: "https://study-mentor-by-sarosh-ai.lovable.app/homework-helper",
+          url: "https://sashaai.lovable.app/homework-helper",
           applicationCategory: "EducationalApplication",
           operatingSystem: "Web",
           description:

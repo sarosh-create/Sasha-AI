@@ -17,12 +17,12 @@ export const Route = createFileRoute("/math-solver")({
       { name: "keywords", content: "math solver, ai math solver, algebra solver, calculus solver, free math help, step by step math" },
       { property: "og:title", content: "AI Math Solver — free step-by-step solutions" },
       { property: "og:description", content: "Algebra, calculus, geometry and word problems solved step-by-step, free." },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/math-solver" },
+      { property: "og:url", content: "https://sashaai.lovable.app/math-solver" },
       { property: "og:type", content: "website" },
       { name: "twitter:title", content: "AI Math Solver — free step-by-step solutions" },
       { name: "twitter:description", content: "Algebra, calculus, geometry and word problems solved step-by-step, free." },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/math-solver" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/math-solver" }],
     scripts: [{
       type: "application/ld+json",
       children: JSON.stringify({

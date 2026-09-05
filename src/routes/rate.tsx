@@ -18,11 +18,11 @@ export const Route = createFileRoute("/rate")({
       { name: "description", content: "Rate Sasha AI and share suggestions. Your feedback goes straight to the team and shapes upcoming features." },
       { property: "og:title", content: "Rate Sasha AI & share your suggestions" },
       { property: "og:description", content: "Give us a star rating, request a feature, or report a bug. We read everything." },
-      { property: "og:url", content: "https://study-mentor-by-sarosh-ai.lovable.app/rate" },
+      { property: "og:url", content: "https://sashaai.lovable.app/rate" },
       { name: "twitter:title", content: "Rate Sasha AI & share your suggestions" },
       { name: "twitter:description", content: "Star ratings, feature requests, bug reports — all welcome." },
     ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/rate" }],
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/rate" }],
   }),
   component: RatePage,
 });

@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_authenticated/converter")({
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
   ],
-    links: [{ rel: "canonical", href: "https://study-mentor-by-sarosh-ai.lovable.app/converter" }] }),
+    links: [{ rel: "canonical", href: "https://sashaai.lovable.app/converter" }] }),
 });
 
 const KINDS = [
