@@ -65,6 +65,7 @@ const GROUPS: Group[] = [
     label: "Learn",
     items: [
       { title: "Study Path", url: "/path", icon: Map },
+      { title: "Study Schedule", url: "/study-schedule", icon: CalendarDays },
       { title: "AI Tutor", url: "/tutor", icon: MessageSquare },
       { title: "Homework Helper", url: "/homework-helper", icon: Wand2 },
       { title: "Math Solver", url: "/math-solver", icon: Brain },
