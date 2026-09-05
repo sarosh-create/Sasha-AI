@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://study-mentor-by-sarosh-ai.lovable.app/sitemap.xml
+Sitemap: https://sashaai.lovable.app/sitemap.xml
