@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as EssayGraderRouteImport } from './routes/essay-grader'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -75,6 +76,11 @@ const AuthenticatedRoute = AuthenticatedRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EssayGraderRoute = EssayGraderRouteImport.update({
+  id: '/essay-grader',
+  path: '/essay-grader',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeworkHelperRoute = HomeworkHelperRouteImport.update({
@@ -342,6 +348,7 @@ const ApiPublicHooksWeeklyDigestRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/essay-grader': typeof EssayGraderRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/essay-grader': typeof EssayGraderRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
+  '/essay-grader': typeof EssayGraderRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -508,6 +517,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/essay-grader'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -562,6 +572,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/essay-grader'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -617,6 +628,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/essay-grader'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -673,6 +685,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
+  EssayGraderRoute: typeof EssayGraderRoute
   HomeworkHelperRoute: typeof HomeworkHelperRoute
   MathSolverRoute: typeof MathSolverRoute
   McpRoute: typeof McpRoute
@@ -710,6 +723,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/essay-grader': {
+      id: '/essay-grader'
+      path: '/essay-grader'
+      fullPath: '/essay-grader'
+      preLoaderRoute: typeof EssayGraderRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/homework-helper': {
@@ -1175,6 +1195,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
+  EssayGraderRoute: EssayGraderRoute,
   HomeworkHelperRoute: HomeworkHelperRoute,
   MathSolverRoute: MathSolverRoute,
   McpRoute: McpRoute,
