@@ -58,6 +58,7 @@ import { Route as AuthenticatedQuizNewRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authenticated.rooms.index'
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
+import { Route as ApiPublicEssayGradeRouteImport } from './routes/api/public/essay-grade'
 import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
@@ -315,6 +316,11 @@ const AuthenticatedUIdRoute = AuthenticatedUIdRouteImport.update({
   path: '/u/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const ApiPublicEssayGradeRoute = ApiPublicEssayGradeRouteImport.update({
+  id: '/api/public/essay-grade',
+  path: '/api/public/essay-grade',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaperCheckRoute = ApiPublicPaperCheckRouteImport.update({
   id: '/api/public/paper-check',
   path: '/api/public/paper-check',
@@ -380,6 +386,7 @@ export interface FileRoutesByFullPath {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
@@ -433,6 +440,7 @@ export interface FileRoutesByTo {
   '/quiz/new': typeof AuthenticatedQuizNewRoute
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
@@ -488,6 +496,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz/new': typeof AuthenticatedQuizNewRoute
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
+  '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
@@ -543,6 +552,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/quiz/'
     | '/rooms/'
@@ -596,6 +606,7 @@ export interface FileRouteTypes {
     | '/quiz/new'
     | '/rooms/$id'
     | '/u/$id'
+    | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/quiz'
     | '/rooms'
@@ -650,6 +661,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz/new'
     | '/_authenticated/rooms/$id'
     | '/_authenticated/u/$id'
+    | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
@@ -671,6 +683,7 @@ export interface RootRouteChildren {
   Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
+  ApiPublicEssayGradeRoute: typeof ApiPublicEssayGradeRoute
   ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
@@ -1021,6 +1034,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedUIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/api/public/essay-grade': {
+      id: '/api/public/essay-grade'
+      path: '/api/public/essay-grade'
+      fullPath: '/api/public/essay-grade'
+      preLoaderRoute: typeof ApiPublicEssayGradeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/paper-check': {
       id: '/api/public/paper-check'
       path: '/api/public/paper-check'
@@ -1166,6 +1186,7 @@ const rootRouteChildren: RootRouteChildren = {
     Char91DotwellKnownChar93OauthProtectedResourceRoute,
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
+  ApiPublicEssayGradeRoute: ApiPublicEssayGradeRoute,
   ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
