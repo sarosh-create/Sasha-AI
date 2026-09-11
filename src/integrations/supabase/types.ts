@@ -68,6 +68,33 @@ export type Database = {
         }
         Relationships: []
       }
+      auth_activity: {
+        Row: {
+          created_at: string
+          email: string | null
+          event: string
+          id: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          event: string
+          id?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          event?: string
+          id?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       channel_message_ratings: {
         Row: {
           created_at: string
