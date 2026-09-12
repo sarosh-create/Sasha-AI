@@ -89,6 +89,27 @@ function SettingsPage() {
     })();
   }, [user]);
 
+  /** Reads a picked photo, shrinks it to a small square and keeps it inline. */
+  const pickAvatar = async (file: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast.error("Please pick an image file");
+    try {
+      const bitmap = await createImageBitmap(file);
+      const size = 256;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas unavailable");
+      const side = Math.min(bitmap.width, bitmap.height);
+      ctx.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, size, size);
+      setAvatarUrl(canvas.toDataURL("image/jpeg", 0.82));
+      toast.success("Photo ready — press Save to keep it");
+    } catch {
+      toast.error("Could not read that image. Try a JPG or PNG.");
+    }
+  };
+
   const savePrefs = async () => {
     if (!user) return;
     setSaving(true);
