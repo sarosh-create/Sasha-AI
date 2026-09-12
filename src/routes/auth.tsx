@@ -135,7 +135,16 @@ function AuthPage() {
         goNext("/dashboard");
       }
     } catch (err: any) {
-      toast.error(err.message ?? "Something went wrong");
+      const raw = String(err?.message ?? "");
+      if (/email not confirmed/i.test(raw)) {
+        toast.error("Confirm your email first — check your inbox (and spam) for the link.");
+      } else if (/already registered|already been registered/i.test(raw)) {
+        toast.error("That email already has an account. Try signing in instead.");
+      } else if (/invalid login credentials/i.test(raw)) {
+        toast.error("Wrong email or password. Try again or create an account.");
+      } else {
+        toast.error(raw || "Something went wrong");
+      }
     } finally {
       setBusy(false);
     }
