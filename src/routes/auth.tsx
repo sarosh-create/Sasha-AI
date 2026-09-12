@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
+import { useCaptcha } from "@/lib/use-captcha";
+import { verifyCaptcha } from "@/lib/captcha.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -53,6 +55,7 @@ function AuthPage() {
   const [teacherQualifications, setTeacherQualifications] = useState("");
   const [teacherMessage, setTeacherMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const captcha = useCaptcha();
 
   useEffect(() => {
     if (!loading && user) goNext("/dashboard");
@@ -68,6 +71,15 @@ function AuthPage() {
           toast.error("Tell us which subjects you can teach");
           setBusy(false);
           return;
+        }
+        if (captcha.enabled) {
+          const token = await captcha.getToken("signup");
+          const check = await verifyCaptcha({ data: { token, action: "signup" } });
+          if (!check.ok) {
+            toast.error("We couldn't verify you're human. Please try again.");
+            setBusy(false);
+            return;
+          }
         }
         const redirectUrl = `${window.location.origin}${returnTo ?? "/dashboard"}`;
         const { data, error } = await supabase.auth.signUp({

@@ -4,7 +4,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
 import { PaperChecker } from "@/components/paper-checker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrainCircuit,
   CalendarCheck,
@@ -195,10 +195,10 @@ function Landing() {
 const TRIAL_KEY = "sasha:trialChecks";
 
 function TrialChecker() {
-  const [used, setUsed] = useState(() => {
-    if (typeof window === "undefined") return 0;
-    return Number(localStorage.getItem(TRIAL_KEY) ?? 0);
-  });
+  const [used, setUsed] = useState(0);
+  useEffect(() => {
+    setUsed(Number(localStorage.getItem(TRIAL_KEY) ?? 0));
+  }, []);
   const left = Math.max(0, 2 - used);
   return (
     <div>
