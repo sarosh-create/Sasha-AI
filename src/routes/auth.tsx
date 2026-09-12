@@ -55,6 +55,7 @@ function AuthPage() {
   const [teacherQualifications, setTeacherQualifications] = useState("");
   const [teacherMessage, setTeacherMessage] = useState("");
   const [busy, setBusy] = useState(false);
+  const captcha = useCaptcha();
 
   useEffect(() => {
     if (!loading && user) goNext("/dashboard");
