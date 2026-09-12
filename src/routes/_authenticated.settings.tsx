@@ -89,6 +89,27 @@ function SettingsPage() {
     })();
   }, [user]);
 
+  /** Reads a picked photo, shrinks it to a small square and keeps it inline. */
+  const pickAvatar = async (file: File | null) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast.error("Please pick an image file");
+    try {
+      const bitmap = await createImageBitmap(file);
+      const size = 256;
+      const canvas = document.createElement("canvas");
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("Canvas unavailable");
+      const side = Math.min(bitmap.width, bitmap.height);
+      ctx.drawImage(bitmap, (bitmap.width - side) / 2, (bitmap.height - side) / 2, side, side, 0, 0, size, size);
+      setAvatarUrl(canvas.toDataURL("image/jpeg", 0.82));
+      toast.success("Photo ready — press Save to keep it");
+    } catch {
+      toast.error("Could not read that image. Try a JPG or PNG.");
+    }
+  };
+
   const savePrefs = async () => {
     if (!user) return;
     setSaving(true);
@@ -103,7 +124,7 @@ function SettingsPage() {
         email_weekly_digest: weeklyEmail,
         display_name: displayName.trim().slice(0, 40) || null,
         bio: bio.trim().slice(0, 500) || null,
-        avatar_url: avatarUrl.trim().slice(0, 500) || null,
+        avatar_url: avatarUrl.trim() || null,
         status: status.trim().slice(0, 80) || null,
         status_emoji: statusEmoji.slice(0, 4) || null,
         profile_public: profilePublic,
@@ -184,8 +205,18 @@ function SettingsPage() {
         </div>
         <div className="mt-4 grid gap-4">
           <div>
-            <Label htmlFor="avatar-url">Profile picture URL</Label>
-            <Input id="avatar-url" className="mt-1" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…" />
+            <Label htmlFor="avatar-file">Profile picture</Label>
+            <div className="mt-1 flex flex-wrap items-center gap-2">
+              <Input id="avatar-file" type="file" accept="image/*" className="max-w-xs" onChange={(e) => pickAvatar(e.target.files?.[0] ?? null)} />
+              {avatarUrl && (
+                <Button type="button" variant="outline" size="sm" onClick={() => setAvatarUrl("")}>Remove</Button>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-muted-foreground">Pick a photo from your device — it's resized automatically. Remember to press Save.</p>
+          </div>
+          <div>
+            <Label htmlFor="avatar-url">…or paste an image link</Label>
+            <Input id="avatar-url" className="mt-1" value={avatarUrl.startsWith("data:") ? "" : avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…" />
           </div>
           <div>
             <Label htmlFor="bio">Bio</Label>
