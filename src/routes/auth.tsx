@@ -69,6 +69,15 @@ function AuthPage() {
           setBusy(false);
           return;
         }
+        if (captcha.enabled) {
+          const token = await captcha.getToken("signup");
+          const check = await verifyCaptcha({ data: { token, action: "signup" } });
+          if (!check.ok) {
+            toast.error("We couldn't verify you're human. Please try again.");
+            setBusy(false);
+            return;
+          }
+        }
         const redirectUrl = `${window.location.origin}${returnTo ?? "/dashboard"}`;
         const { data, error } = await supabase.auth.signUp({
           email,
