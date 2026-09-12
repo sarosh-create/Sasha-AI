@@ -4,7 +4,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
 import { PaperChecker } from "@/components/paper-checker";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   BrainCircuit,
   CalendarCheck,
