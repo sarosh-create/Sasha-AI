@@ -76,8 +76,17 @@ function AuthPage() {
           options: { emailRedirectTo: redirectUrl, data: { name, account_type: accountType } },
         });
         if (error) throw error;
+
+        // Without a confirmed session the database rejects any write for this
+        // account, so only fill in the profile once the user is actually signed in.
+        if (!data.session) {
+          toast.success("Account created — check your email to confirm it, then sign in.");
+          setMode("signin");
+          return;
+        }
+
         if (data.user) {
-          await supabase.from("profiles").upsert(
+          const { error: profileError } = await supabase.from("profiles").upsert(
             {
               user_id: data.user.id,
               display_name: name || email.split("@")[0],
@@ -85,6 +94,7 @@ function AuthPage() {
             } as any,
             { onConflict: "user_id" },
           );
+          if (profileError) console.error("profile upsert failed", profileError);
           if (accountType === "teacher") {
             const { error: applicationError } = await supabase.from("teacher_applications" as any).upsert(
               {
@@ -98,14 +108,13 @@ function AuthPage() {
               },
               { onConflict: "user_id" },
             );
-            if (applicationError) throw applicationError;
+            if (applicationError) console.error("teacher application failed", applicationError);
             toast.success("Teacher application sent for admin review.");
           } else {
             toast.success("Account created. Let's set up your study plan.");
           }
           // Fire-and-forget admin email notification (Resend) — authenticated call
-          const { data: sessionData } = await supabase.auth.getSession();
-          const accessToken = sessionData.session?.access_token;
+          const accessToken = data.session.access_token;
           if (accessToken) {
             fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/notify-signup`, {
               method: "POST",
@@ -119,8 +128,6 @@ function AuthPage() {
           }
 
           goNext("/onboarding");
-        } else {
-          toast.success("Check your email to confirm your account.");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
