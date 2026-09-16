@@ -272,6 +272,31 @@ function AuthPage() {
           </Button>
         </form>
 
+        {captcha.enabled && mode === "signup" && (
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              Terms of Service
+            </a>{" "}
+            apply.
+          </p>
+        )}
+
+
         <p className="mt-5 text-center text-sm text-muted-foreground">
           {mode === "signup" ? "Already have an account?" : "New here?"}{" "}
           <button
