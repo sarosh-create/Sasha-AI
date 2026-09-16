@@ -333,6 +333,8 @@ function PathPage() {
         </section>
       )}
 
+      <ScheduleTimeline />
+
       <ol className="relative mt-8 space-y-3 border-l border-border pl-6 sm:pl-8">
         {lessons.map((l) => {
           const sub = l.subject_id ? subjects[l.subject_id] : null;
