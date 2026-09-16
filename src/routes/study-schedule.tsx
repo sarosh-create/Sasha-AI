@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Logo } from "@/components/logo";
 import { CalendarDays, Clock, Target, Sparkles } from "lucide-react";
+import { saveSchedule } from "@/lib/study-schedule-store";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/study-schedule")({
   head: () => ({
@@ -202,7 +204,31 @@ function StudySchedulePage() {
               />
             </div>
           </div>
-          <Button className="mt-5" onClick={() => setSubmitted(true)} disabled={!examDate || !subjects.trim()}>
+          <Button
+            className="mt-5"
+            onClick={() => {
+              setSubmitted(true);
+              const built = buildPlan(examDate, board, subjects, minutes);
+              if (built.length) {
+                saveSchedule({
+                  board,
+                  examDate,
+                  minutes,
+                  savedAt: new Date().toISOString(),
+                  days: built.map((d) => ({
+                    iso: d.date.toISOString(),
+                    label: d.label,
+                    subject: d.subject,
+                    focus: d.focus,
+                    rest: d.rest,
+                    blocks: d.blocks,
+                  })),
+                });
+                toast.success("Plan saved — it now shows on your study path too.");
+              }
+            }}
+            disabled={!examDate || !subjects.trim()}
+          >
             <Sparkles className="mr-2 h-4 w-4" /> Generate my daily plan
           </Button>
         </section>
