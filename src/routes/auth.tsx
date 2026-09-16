@@ -140,11 +140,13 @@ function AuthPage() {
             }).catch(() => {});
           }
 
+          logAuthEvent({ data: { event: "sign_in", userAgent: navigator.userAgent } }).catch(() => {});
           goNext("/onboarding");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        logAuthEvent({ data: { event: "sign_in", userAgent: navigator.userAgent } }).catch(() => {});
         goNext("/dashboard");
       }
     } catch (err: any) {
