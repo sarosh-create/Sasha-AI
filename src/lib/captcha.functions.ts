@@ -17,7 +17,9 @@ export const verifyCaptcha = createServerFn({ method: "POST" })
   .handler(async ({ data }) => {
     const secret = process.env["RECAPTCHA_SECRET_KEY"];
     if (!secret) return { ok: true, skipped: true, score: null as number | null };
-    if (!data.token) return { ok: false, skipped: false, score: null as number | null };
+    // If Google's script never loaded (blocked, offline, unregistered host) we
+    // must not lock a real student out of signing up.
+    if (!data.token) return { ok: true, skipped: true, score: null as number | null };
 
     try {
       const res = await fetch("https://www.google.com/recaptcha/api/siteverify", {
