@@ -79,6 +79,7 @@ const GROUPS: Group[] = [
       { title: "Progress & Mastery", url: "/progress", icon: LineChart },
       { title: "Past Papers", url: "/papers", icon: BookOpenCheck },
       { title: "Paper Checker", url: "/paper-checker", icon: Stamp },
+      { title: "Grade my essay", url: "/essay-grader", icon: Gavel },
       { title: "Revision", url: "/revision", icon: BookMarked },
     ],
   },
