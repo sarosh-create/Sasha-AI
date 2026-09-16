@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { useAuth } from "@/lib/auth-context";
 import { useCaptcha } from "@/lib/use-captcha";
 import { verifyCaptcha } from "@/lib/captcha.functions";
+import { logAuthEvent } from "@/lib/auth-activity.functions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -139,11 +140,13 @@ function AuthPage() {
             }).catch(() => {});
           }
 
+          logAuthEvent({ data: { event: "sign_in", userAgent: navigator.userAgent } }).catch(() => {});
           goNext("/onboarding");
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        logAuthEvent({ data: { event: "sign_in", userAgent: navigator.userAgent } }).catch(() => {});
         goNext("/dashboard");
       }
     } catch (err: any) {
@@ -268,6 +271,31 @@ function AuthPage() {
             {mode === "signup" ? "Create account" : "Sign in"}
           </Button>
         </form>
+
+        {captcha.enabled && mode === "signup" && (
+          <p className="mt-3 text-center text-[11px] leading-relaxed text-muted-foreground">
+            This site is protected by reCAPTCHA and the Google{" "}
+            <a
+              href="https://policies.google.com/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              Privacy Policy
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://policies.google.com/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2"
+            >
+              Terms of Service
+            </a>{" "}
+            apply.
+          </p>
+        )}
+
 
         <p className="mt-5 text-center text-sm text-muted-foreground">
           {mode === "signup" ? "Already have an account?" : "New here?"}{" "}

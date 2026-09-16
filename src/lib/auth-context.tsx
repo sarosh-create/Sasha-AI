@@ -38,6 +38,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         session,
         loading,
         signOut: async () => {
+          // Log while the session still exists, otherwise the record is rejected.
+          try {
+            const { logAuthEvent } = await import("@/lib/auth-activity.functions");
+            await logAuthEvent({
+              data: { event: "sign_out", userAgent: typeof navigator !== "undefined" ? navigator.userAgent : "" },
+            });
+          } catch {
+            // Never block signing out on the notification.
+          }
           await supabase.auth.signOut();
         },
       }}

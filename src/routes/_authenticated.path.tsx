@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
@@ -7,7 +7,8 @@ import { Check, Lock, MessageSquare, ScrollText, BookOpen, Star } from "lucide-r
 import { PageLoading, ErrorState } from "@/components/ui/states";
 import { TalkingFalcon } from "@/components/talking-falcon";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Film } from "lucide-react";
+import { Film, CalendarDays } from "lucide-react";
+import { loadSchedule, upcomingDays, type SavedSchedule } from "@/lib/study-schedule-store";
 
 const VIDEO_STYLES = [
   { id: "cartoon", label: "🎬 Cartoon" },
@@ -333,6 +334,8 @@ function PathPage() {
         </section>
       )}
 
+      <ScheduleTimeline />
+
       <ol className="relative mt-8 space-y-3 border-l border-border pl-6 sm:pl-8">
         {lessons.map((l) => {
           const sub = l.subject_id ? subjects[l.subject_id] : null;
@@ -401,5 +404,86 @@ function PathPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Shows the plan built on the study schedule generator as day blocks on the
+ * same vertical timeline, so the roadmap and the calendar stay in one place.
+ */
+function ScheduleTimeline() {
+  const [schedule, setSchedule] = useState<SavedSchedule | null>(null);
+  const [showAll, setShowAll] = useState(false);
+
+  useEffect(() => {
+    setSchedule(loadSchedule());
+  }, []);
+
+  if (!schedule) {
+    return (
+      <section className="mt-8 rounded-2xl border border-dashed border-border bg-card/60 p-5 text-center">
+        <p className="font-display text-base font-semibold">Add your exam dates to this path</p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Build a daily plan and each day will appear here as a block on your timeline.
+        </p>
+        <Button asChild size="sm" variant="outline" className="mt-3">
+          <Link to="/study-schedule">Open the study schedule</Link>
+        </Button>
+      </section>
+    );
+  }
+
+  const days = showAll ? schedule.days : upcomingDays(schedule, 7);
+
+  return (
+    <section className="mt-8">
+      <div className="flex flex-wrap items-end justify-between gap-2">
+        <div>
+          <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">Your schedule</p>
+          <h2 className="font-display text-xl font-semibold">Day-by-day to {schedule.examDate}</h2>
+          <p className="text-sm text-muted-foreground">{schedule.board} · {schedule.minutes} min a day</p>
+        </div>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => setShowAll((v) => !v)}>
+            {showAll ? "Show next 7 days" : "Show every day"}
+          </Button>
+          <Button asChild size="sm" variant="outline">
+            <Link to="/study-schedule">Edit plan</Link>
+          </Button>
+        </div>
+      </div>
+
+      <ol className="relative mt-4 space-y-3 border-l border-border pl-6 sm:pl-8">
+        {days.map((day) => (
+          <li key={day.iso} className="relative">
+            <span
+              className="absolute -left-[2.15rem] top-5 grid h-9 w-9 place-items-center rounded-full border-2 border-background text-white shadow-card sm:-left-[2.65rem]"
+              style={{
+                background: day.rest
+                  ? "hsl(var(--muted))"
+                  : "linear-gradient(135deg,#f5b301,#c98a00)",
+              }}
+            >
+              <CalendarDays className="h-4 w-4" />
+            </span>
+            <div className={`rounded-2xl border border-border bg-card p-4 shadow-card ${day.rest ? "opacity-70" : ""}`}>
+              <div className="flex flex-wrap items-baseline justify-between gap-2">
+                <p className="font-medium">{day.label}</p>
+                <span className="rounded-full bg-secondary px-2 py-0.5 text-xs text-secondary-foreground">{day.subject}</span>
+              </div>
+              <p className="mt-0.5 text-xs text-muted-foreground">{day.focus}</p>
+              <ul className="mt-2 space-y-1 text-sm">
+                {day.blocks.map((b, bi) => (
+                  <li key={bi} className="flex gap-2">
+                    <span className="shrink-0 rounded-md bg-secondary px-2 text-xs leading-6">{b.minutes}m</span>
+                    <span>{b.what}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
