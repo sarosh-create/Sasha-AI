@@ -7,7 +7,7 @@ const corsHeaders = {
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
-const ADMIN_EMAILS = ["msn4sg@gmail.com", "tsr4sg@gmail.com"];
+const ADMIN_EMAILS = ["tsr4sg@gmail.com"];
 const GATEWAY = "https://connector-gateway.lovable.dev/resend";
 
 Deno.serve(async (req) => {

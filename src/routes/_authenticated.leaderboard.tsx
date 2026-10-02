@@ -103,7 +103,9 @@ function LeaderboardPage() {
 
         </header>
 
-        <div className="flex items-center justify-end gap-2 rounded-2xl border bg-card p-3 shadow-pop">
+        <div className="flex items-center justify-between gap-2 rounded-2xl border bg-card p-3 shadow-pop">
+          <Link to="/my-dashboard" className="text-sm font-medium text-primary underline">My student dashboard →</Link>
+          <span className="flex-1" />
           <span className="text-xs text-muted-foreground">Show my name publicly</span>
           <Switch checked={optIn} onCheckedChange={toggleOpt} />
         </div>
