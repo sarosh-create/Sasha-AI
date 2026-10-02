@@ -55,6 +55,7 @@ function AdminPage() {
           <TabsTrigger value="videos">Videos</TabsTrigger>
           <TabsTrigger value="invites">Role invites</TabsTrigger>
           <TabsTrigger value="audit">Audit log</TabsTrigger>
+          <TabsTrigger value="visitors">Visitor chat</TabsTrigger>
         </TabsList>
         <TabsContent value="classes"><LiveClassesAdmin /></TabsContent>
         <TabsContent value="applications"><TeacherApplicationsAdmin /></TabsContent>
@@ -68,6 +69,7 @@ function AdminPage() {
         <TabsContent value="videos"><VideosAdmin /></TabsContent>
         <TabsContent value="invites"><RoleInvitesAdmin /></TabsContent>
         <TabsContent value="audit"><AuditLogAdmin /></TabsContent>
+        <TabsContent value="visitors"><VisitorChatAdmin /></TabsContent>
 
       </Tabs>
     </div>
@@ -727,6 +729,26 @@ function AuditLogAdmin() {
             </p>
           </Card>
         ))}
+    </div>
+  );
+}
+
+
+function VisitorChatAdmin() {
+  const [rows, setRows] = useState<{ id: string; visitor_id: string; question: string; answer: string | null; created_at: string }[]>([]);
+  useEffect(() => {
+    supabase.from("visitor_questions").select("*").order("created_at", { ascending: false }).limit(200).then(({ data }) => setRows(data ?? []));
+  }, []);
+  return (
+    <div className="space-y-2">
+      {rows.length === 0 && <p className="text-sm text-muted-foreground">No visitor questions yet.</p>}
+      {rows.map((r) => (
+        <div key={r.id} className="rounded-xl border border-border bg-card p-3 text-sm">
+          <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()} · visitor {r.visitor_id.slice(0, 8)}</p>
+          <p className="mt-1 font-medium">Q: {r.question}</p>
+          <p className="mt-1 text-muted-foreground">A: {r.answer ?? "—"}</p>
+        </div>
+      ))}
     </div>
   );
 }

@@ -5,7 +5,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
-const OWNER_EMAILS = ["msn4sg@gmail.com", "tsr4sg@gmail.com"];
+// Email service is in test mode: only the account owner inbox can receive mail until a domain is verified.
+const OWNER_EMAILS = ["tsr4sg@gmail.com"];
 
 export const logAuthEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

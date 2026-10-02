@@ -4,6 +4,7 @@ import { Logo } from "@/components/logo";
 import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
 import { PaperChecker } from "@/components/paper-checker";
+import { VisitorChat } from "@/components/visitor-chat";
 import { useEffect, useState } from "react";
 import {
   BrainCircuit,
@@ -64,6 +65,7 @@ export const Route = createFileRoute("/")({
 function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <VisitorChat />
       <header className="container mx-auto flex items-center justify-between px-6 py-5">
         <Logo />
         <nav className="flex items-center gap-3">
