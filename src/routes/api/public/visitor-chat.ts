@@ -44,7 +44,7 @@ export const Route = createFileRoute("/api/public/visitor-chat")({
             method: "POST",
             headers: { Authorization: `Bearer ${process.env["LOVABLE_API_KEY"]}`, "Content-Type": "application/json" },
             body: JSON.stringify({
-              model: "google/gemini-2.5-flash",
+              model: "openai/gpt-6-astra",
               messages: [{ role: "system", content: SYSTEM }, ...(parsed.history ?? []), { role: "user", content: parsed.question }],
             }),
           });
