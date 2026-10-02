@@ -1446,6 +1446,30 @@ export type Database = {
         }
         Relationships: []
       }
+      visitor_questions: {
+        Row: {
+          answer: string | null
+          created_at: string
+          id: string
+          question: string
+          visitor_id: string
+        }
+        Insert: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          question: string
+          visitor_id: string
+        }
+        Update: {
+          answer?: string | null
+          created_at?: string
+          id?: string
+          question?: string
+          visitor_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
