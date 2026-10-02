@@ -33,6 +33,7 @@ import { Route as AuthenticatedExplainersRouteImport } from './routes/_authentic
 import { Route as AuthenticatedLabRouteImport } from './routes/_authenticated.lab'
 import { Route as AuthenticatedLeaderboardRouteImport } from './routes/_authenticated.leaderboard'
 import { Route as AuthenticatedMentorsRouteImport } from './routes/_authenticated.mentors'
+import { Route as AuthenticatedMyDashboardRouteImport } from './routes/_authenticated.my-dashboard'
 import { Route as AuthenticatedNotesRouteImport } from './routes/_authenticated.notes'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated.onboarding'
 import { Route as AuthenticatedPaperCheckerRouteImport } from './routes/_authenticated.paper-checker'
@@ -61,6 +62,7 @@ import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticate
 import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
 import { Route as ApiPublicEssayGradeRouteImport } from './routes/api/public/essay-grade'
 import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
+import { Route as ApiPublicVisitorChatRouteImport } from './routes/api/public/visitor-chat'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -187,6 +189,12 @@ const AuthenticatedMentorsRoute = AuthenticatedMentorsRouteImport.update({
   path: '/mentors',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMyDashboardRoute =
+  AuthenticatedMyDashboardRouteImport.update({
+    id: '/my-dashboard',
+    path: '/my-dashboard',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedNotesRoute = AuthenticatedNotesRouteImport.update({
   id: '/notes',
   path: '/notes',
@@ -332,6 +340,11 @@ const ApiPublicPaperCheckRoute = ApiPublicPaperCheckRouteImport.update({
   path: '/api/public/paper-check',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicVisitorChatRoute = ApiPublicVisitorChatRouteImport.update({
+  id: '/api/public/visitor-chat',
+  path: '/api/public/visitor-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -369,6 +382,7 @@ export interface FileRoutesByFullPath {
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/mentors': typeof AuthenticatedMentorsRoute
+  '/my-dashboard': typeof AuthenticatedMyDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/paper-checker': typeof AuthenticatedPaperCheckerRoute
@@ -395,6 +409,7 @@ export interface FileRoutesByFullPath {
   '/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
+  '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -424,6 +439,7 @@ export interface FileRoutesByTo {
   '/lab': typeof AuthenticatedLabRoute
   '/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/mentors': typeof AuthenticatedMentorsRoute
+  '/my-dashboard': typeof AuthenticatedMyDashboardRoute
   '/notes': typeof AuthenticatedNotesRoute
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/paper-checker': typeof AuthenticatedPaperCheckerRoute
@@ -450,6 +466,7 @@ export interface FileRoutesByTo {
   '/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
+  '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -481,6 +498,7 @@ export interface FileRoutesById {
   '/_authenticated/lab': typeof AuthenticatedLabRoute
   '/_authenticated/leaderboard': typeof AuthenticatedLeaderboardRoute
   '/_authenticated/mentors': typeof AuthenticatedMentorsRoute
+  '/_authenticated/my-dashboard': typeof AuthenticatedMyDashboardRoute
   '/_authenticated/notes': typeof AuthenticatedNotesRoute
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/paper-checker': typeof AuthenticatedPaperCheckerRoute
@@ -507,6 +525,7 @@ export interface FileRoutesById {
   '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
+  '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -538,6 +557,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/leaderboard'
     | '/mentors'
+    | '/my-dashboard'
     | '/notes'
     | '/onboarding'
     | '/paper-checker'
@@ -564,6 +584,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
+    | '/api/public/visitor-chat'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -593,6 +614,7 @@ export interface FileRouteTypes {
     | '/lab'
     | '/leaderboard'
     | '/mentors'
+    | '/my-dashboard'
     | '/notes'
     | '/onboarding'
     | '/paper-checker'
@@ -619,6 +641,7 @@ export interface FileRouteTypes {
     | '/u/$id'
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
+    | '/api/public/visitor-chat'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
@@ -649,6 +672,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lab'
     | '/_authenticated/leaderboard'
     | '/_authenticated/mentors'
+    | '/_authenticated/my-dashboard'
     | '/_authenticated/notes'
     | '/_authenticated/onboarding'
     | '/_authenticated/paper-checker'
@@ -675,6 +699,7 @@ export interface FileRouteTypes {
     | '/_authenticated/u/$id'
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
+    | '/api/public/visitor-chat'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -698,6 +723,7 @@ export interface RootRouteChildren {
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicEssayGradeRoute: typeof ApiPublicEssayGradeRoute
   ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
+  ApiPublicVisitorChatRoute: typeof ApiPublicVisitorChatRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -870,6 +896,13 @@ declare module '@tanstack/react-router' {
       path: '/mentors'
       fullPath: '/mentors'
       preLoaderRoute: typeof AuthenticatedMentorsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/my-dashboard': {
+      id: '/_authenticated/my-dashboard'
+      path: '/my-dashboard'
+      fullPath: '/my-dashboard'
+      preLoaderRoute: typeof AuthenticatedMyDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/notes': {
@@ -1068,6 +1101,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicPaperCheckRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/visitor-chat': {
+      id: '/api/public/visitor-chat'
+      path: '/api/public/visitor-chat'
+      fullPath: '/api/public/visitor-chat'
+      preLoaderRoute: typeof ApiPublicVisitorChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -1126,6 +1166,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedLabRoute: typeof AuthenticatedLabRoute
   AuthenticatedLeaderboardRoute: typeof AuthenticatedLeaderboardRoute
   AuthenticatedMentorsRoute: typeof AuthenticatedMentorsRoute
+  AuthenticatedMyDashboardRoute: typeof AuthenticatedMyDashboardRoute
   AuthenticatedNotesRoute: typeof AuthenticatedNotesRoute
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedPaperCheckerRoute: typeof AuthenticatedPaperCheckerRoute
@@ -1163,6 +1204,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedLabRoute: AuthenticatedLabRoute,
   AuthenticatedLeaderboardRoute: AuthenticatedLeaderboardRoute,
   AuthenticatedMentorsRoute: AuthenticatedMentorsRoute,
+  AuthenticatedMyDashboardRoute: AuthenticatedMyDashboardRoute,
   AuthenticatedNotesRoute: AuthenticatedNotesRoute,
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedPaperCheckerRoute: AuthenticatedPaperCheckerRoute,
@@ -1209,6 +1251,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicEssayGradeRoute: ApiPublicEssayGradeRoute,
   ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
+  ApiPublicVisitorChatRoute: ApiPublicVisitorChatRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
