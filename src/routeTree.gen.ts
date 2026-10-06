@@ -63,6 +63,7 @@ import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.
 import { Route as ApiPublicEssayGradeRouteImport } from './routes/api/public/essay-grade'
 import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicVisitorChatRouteImport } from './routes/api/public/visitor-chat'
+import { Route as ApiPublicVisitorClaimRouteImport } from './routes/api/public/visitor-claim'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
@@ -345,6 +346,11 @@ const ApiPublicVisitorChatRoute = ApiPublicVisitorChatRouteImport.update({
   path: '/api/public/visitor-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicVisitorClaimRoute = ApiPublicVisitorClaimRouteImport.update({
+  id: '/api/public/visitor-claim',
+  path: '/api/public/visitor-claim',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
@@ -410,6 +416,7 @@ export interface FileRoutesByFullPath {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
+  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -467,6 +474,7 @@ export interface FileRoutesByTo {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
+  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -526,6 +534,7 @@ export interface FileRoutesById {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
+  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
@@ -585,6 +594,7 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
+    | '/api/public/visitor-claim'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -642,6 +652,7 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
+    | '/api/public/visitor-claim'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
@@ -700,6 +711,7 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
+    | '/api/public/visitor-claim'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
@@ -724,6 +736,7 @@ export interface RootRouteChildren {
   ApiPublicEssayGradeRoute: typeof ApiPublicEssayGradeRoute
   ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicVisitorChatRoute: typeof ApiPublicVisitorChatRoute
+  ApiPublicVisitorClaimRoute: typeof ApiPublicVisitorClaimRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
@@ -1108,6 +1121,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicVisitorChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/visitor-claim': {
+      id: '/api/public/visitor-claim'
+      path: '/api/public/visitor-claim'
+      fullPath: '/api/public/visitor-claim'
+      preLoaderRoute: typeof ApiPublicVisitorClaimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
@@ -1252,6 +1272,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicEssayGradeRoute: ApiPublicEssayGradeRoute,
   ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicVisitorChatRoute: ApiPublicVisitorChatRoute,
+  ApiPublicVisitorClaimRoute: ApiPublicVisitorClaimRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
