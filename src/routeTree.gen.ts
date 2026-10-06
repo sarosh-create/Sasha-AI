@@ -65,6 +65,7 @@ import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/pap
 import { Route as ApiPublicVisitorChatRouteImport } from './routes/api/public/visitor-chat'
 import { Route as ApiPublicVisitorClaimRouteImport } from './routes/api/public/visitor-claim'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
+import { Route as ApiPublicHooksGscSitemapRouteImport } from './routes/api/public/hooks/gsc-sitemap'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
 const IndexRoute = IndexRouteImport.update({
@@ -357,6 +358,12 @@ const ApiPublicHooksDailyReminderRoute =
     path: '/api/public/hooks/daily-reminder',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksGscSitemapRoute =
+  ApiPublicHooksGscSitemapRouteImport.update({
+    id: '/api/public/hooks/gsc-sitemap',
+    path: '/api/public/hooks/gsc-sitemap',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksWeeklyDigestRoute =
   ApiPublicHooksWeeklyDigestRouteImport.update({
     id: '/api/public/hooks/weekly-digest',
@@ -420,6 +427,7 @@ export interface FileRoutesByFullPath {
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
+  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRoutesByTo {
@@ -478,6 +486,7 @@ export interface FileRoutesByTo {
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
+  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRoutesById {
@@ -538,6 +547,7 @@ export interface FileRoutesById {
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
+  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRouteTypes {
@@ -598,6 +608,7 @@ export interface FileRouteTypes {
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
+    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -656,6 +667,7 @@ export interface FileRouteTypes {
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
+    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   id:
     | '__root__'
@@ -715,6 +727,7 @@ export interface FileRouteTypes {
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
+    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   fileRoutesById: FileRoutesById
 }
@@ -738,6 +751,7 @@ export interface RootRouteChildren {
   ApiPublicVisitorChatRoute: typeof ApiPublicVisitorChatRoute
   ApiPublicVisitorClaimRoute: typeof ApiPublicVisitorClaimRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
+  ApiPublicHooksGscSitemapRoute: typeof ApiPublicHooksGscSitemapRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
 
@@ -1135,6 +1149,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksDailyReminderRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/gsc-sitemap': {
+      id: '/api/public/hooks/gsc-sitemap'
+      path: '/api/public/hooks/gsc-sitemap'
+      fullPath: '/api/public/hooks/gsc-sitemap'
+      preLoaderRoute: typeof ApiPublicHooksGscSitemapRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/weekly-digest': {
       id: '/api/public/hooks/weekly-digest'
       path: '/api/public/hooks/weekly-digest'
@@ -1274,6 +1295,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicVisitorChatRoute: ApiPublicVisitorChatRoute,
   ApiPublicVisitorClaimRoute: ApiPublicVisitorClaimRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
+  ApiPublicHooksGscSitemapRoute: ApiPublicHooksGscSitemapRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
 export const routeTree = rootRouteImport
