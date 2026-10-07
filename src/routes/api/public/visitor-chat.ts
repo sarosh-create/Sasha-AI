@@ -17,20 +17,6 @@ Signing up is free at /auth. If you don't know something, say an admin will foll
 export const Route = createFileRoute("/api/public/visitor-chat")({
   server: {
     handlers: {
-      // Visitor polls for admin replies to their own questions (visitorId is a random UUID only they hold).
-      GET: async ({ request }) => {
-        const vid = new URL(request.url).searchParams.get("visitorId") ?? "";
-        if (vid.length < 6 || vid.length > 64) return Response.json({ replies: [] });
-        const { adminClient } = await import("@/lib/emails.server");
-        const { data } = await adminClient()
-          .from("visitor_questions")
-          .select("id, question, admin_reply, replied_at")
-          .eq("visitor_id", vid)
-          .not("admin_reply", "is", null)
-          .order("replied_at", { ascending: true })
-          .limit(30);
-        return Response.json({ replies: data ?? [] });
-      },
       POST: async ({ request }) => {
         let parsed;
         try {

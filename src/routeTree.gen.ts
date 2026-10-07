@@ -63,9 +63,7 @@ import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.
 import { Route as ApiPublicEssayGradeRouteImport } from './routes/api/public/essay-grade'
 import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicVisitorChatRouteImport } from './routes/api/public/visitor-chat'
-import { Route as ApiPublicVisitorClaimRouteImport } from './routes/api/public/visitor-claim'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
-import { Route as ApiPublicHooksGscSitemapRouteImport } from './routes/api/public/hooks/gsc-sitemap'
 import { Route as ApiPublicHooksWeeklyDigestRouteImport } from './routes/api/public/hooks/weekly-digest'
 
 const IndexRoute = IndexRouteImport.update({
@@ -347,21 +345,10 @@ const ApiPublicVisitorChatRoute = ApiPublicVisitorChatRouteImport.update({
   path: '/api/public/visitor-chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicVisitorClaimRoute = ApiPublicVisitorClaimRouteImport.update({
-  id: '/api/public/visitor-claim',
-  path: '/api/public/visitor-claim',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ApiPublicHooksDailyReminderRoute =
   ApiPublicHooksDailyReminderRouteImport.update({
     id: '/api/public/hooks/daily-reminder',
     path: '/api/public/hooks/daily-reminder',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiPublicHooksGscSitemapRoute =
-  ApiPublicHooksGscSitemapRouteImport.update({
-    id: '/api/public/hooks/gsc-sitemap',
-    path: '/api/public/hooks/gsc-sitemap',
     getParentRoute: () => rootRouteImport,
   } as any)
 const ApiPublicHooksWeeklyDigestRoute =
@@ -423,11 +410,9 @@ export interface FileRoutesByFullPath {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
-  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
   '/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
-  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRoutesByTo {
@@ -482,11 +467,9 @@ export interface FileRoutesByTo {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
-  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
   '/rooms': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
-  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRoutesById {
@@ -543,11 +526,9 @@ export interface FileRoutesById {
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
-  '/api/public/visitor-claim': typeof ApiPublicVisitorClaimRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
   '/_authenticated/rooms/': typeof AuthenticatedRoomsIndexRoute
   '/api/public/hooks/daily-reminder': typeof ApiPublicHooksDailyReminderRoute
-  '/api/public/hooks/gsc-sitemap': typeof ApiPublicHooksGscSitemapRoute
   '/api/public/hooks/weekly-digest': typeof ApiPublicHooksWeeklyDigestRoute
 }
 export interface FileRouteTypes {
@@ -604,11 +585,9 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
-    | '/api/public/visitor-claim'
     | '/quiz/'
     | '/rooms/'
     | '/api/public/hooks/daily-reminder'
-    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -663,11 +642,9 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
-    | '/api/public/visitor-claim'
     | '/quiz'
     | '/rooms'
     | '/api/public/hooks/daily-reminder'
-    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   id:
     | '__root__'
@@ -723,11 +700,9 @@ export interface FileRouteTypes {
     | '/api/public/essay-grade'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
-    | '/api/public/visitor-claim'
     | '/_authenticated/quiz/'
     | '/_authenticated/rooms/'
     | '/api/public/hooks/daily-reminder'
-    | '/api/public/hooks/gsc-sitemap'
     | '/api/public/hooks/weekly-digest'
   fileRoutesById: FileRoutesById
 }
@@ -749,9 +724,7 @@ export interface RootRouteChildren {
   ApiPublicEssayGradeRoute: typeof ApiPublicEssayGradeRoute
   ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicVisitorChatRoute: typeof ApiPublicVisitorChatRoute
-  ApiPublicVisitorClaimRoute: typeof ApiPublicVisitorClaimRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
-  ApiPublicHooksGscSitemapRoute: typeof ApiPublicHooksGscSitemapRoute
   ApiPublicHooksWeeklyDigestRoute: typeof ApiPublicHooksWeeklyDigestRoute
 }
 
@@ -1135,25 +1108,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicVisitorChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/visitor-claim': {
-      id: '/api/public/visitor-claim'
-      path: '/api/public/visitor-claim'
-      fullPath: '/api/public/visitor-claim'
-      preLoaderRoute: typeof ApiPublicVisitorClaimRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/api/public/hooks/daily-reminder': {
       id: '/api/public/hooks/daily-reminder'
       path: '/api/public/hooks/daily-reminder'
       fullPath: '/api/public/hooks/daily-reminder'
       preLoaderRoute: typeof ApiPublicHooksDailyReminderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/hooks/gsc-sitemap': {
-      id: '/api/public/hooks/gsc-sitemap'
-      path: '/api/public/hooks/gsc-sitemap'
-      fullPath: '/api/public/hooks/gsc-sitemap'
-      preLoaderRoute: typeof ApiPublicHooksGscSitemapRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/weekly-digest': {
@@ -1293,9 +1252,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicEssayGradeRoute: ApiPublicEssayGradeRoute,
   ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicVisitorChatRoute: ApiPublicVisitorChatRoute,
-  ApiPublicVisitorClaimRoute: ApiPublicVisitorClaimRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
-  ApiPublicHooksGscSitemapRoute: ApiPublicHooksGscSitemapRoute,
   ApiPublicHooksWeeklyDigestRoute: ApiPublicHooksWeeklyDigestRoute,
 }
 export const routeTree = rootRouteImport

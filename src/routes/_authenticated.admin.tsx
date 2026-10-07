@@ -734,45 +734,19 @@ function AuditLogAdmin() {
 }
 
 
-type VQ = { id: string; visitor_id: string; question: string; answer: string | null; admin_reply: string | null; replied_at: string | null; claimed_by: string | null; created_at: string };
-
 function VisitorChatAdmin() {
-  const { user } = useAuth();
-  const [rows, setRows] = useState<VQ[]>([]);
-  const [drafts, setDrafts] = useState<Record<string, string>>({});
-  const load = () =>
-    supabase.from("visitor_questions").select("*").order("created_at", { ascending: false }).limit(200).then(({ data }) => setRows((data as any) ?? []));
-  useEffect(() => { load(); }, []);
-  const reply = async (r: VQ) => {
-    const text = (drafts[r.id] ?? "").trim();
-    if (!text) return;
-    const { error } = await supabase.from("visitor_questions" as any)
-      .update({ admin_reply: text, replied_at: new Date().toISOString(), replied_by: user?.id } as any).eq("id", r.id);
-    if (error) return toast.error(error.message);
-    toast.success("Reply sent — the visitor sees it in their chat");
-    setDrafts((d) => ({ ...d, [r.id]: "" }));
-    load();
-  };
+  const [rows, setRows] = useState<{ id: string; visitor_id: string; question: string; answer: string | null; created_at: string }[]>([]);
+  useEffect(() => {
+    supabase.from("visitor_questions").select("*").order("created_at", { ascending: false }).limit(200).then(({ data }) => setRows(data ?? []));
+  }, []);
   return (
     <div className="space-y-2">
       {rows.length === 0 && <p className="text-sm text-muted-foreground">No visitor questions yet.</p>}
       {rows.map((r) => (
         <div key={r.id} className="rounded-xl border border-border bg-card p-3 text-sm">
-          <p className="text-xs text-muted-foreground">
-            {new Date(r.created_at).toLocaleString()} · visitor {r.visitor_id.slice(0, 8)}
-            {r.claimed_by ? " · signed up ✓" : ""}
-          </p>
+          <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()} · visitor {r.visitor_id.slice(0, 8)}</p>
           <p className="mt-1 font-medium">Q: {r.question}</p>
-          <p className="mt-1 text-muted-foreground">Sasha: {r.answer ?? "—"}</p>
-          {r.admin_reply ? (
-            <p className="mt-1 text-primary">Admin ({r.replied_at ? new Date(r.replied_at).toLocaleString() : ""}): {r.admin_reply}</p>
-          ) : (
-            <div className="mt-2 flex gap-2">
-              <Input aria-label="Reply to visitor" placeholder="Write a personal reply…" value={drafts[r.id] ?? ""}
-                onChange={(e) => setDrafts((d) => ({ ...d, [r.id]: e.target.value }))} />
-              <Button size="sm" onClick={() => reply(r)}>Reply</Button>
-            </div>
-          )}
+          <p className="mt-1 text-muted-foreground">A: {r.answer ?? "—"}</p>
         </div>
       ))}
     </div>

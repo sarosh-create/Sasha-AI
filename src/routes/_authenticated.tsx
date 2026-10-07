@@ -9,8 +9,6 @@ import { A11yProvider } from "@/lib/a11y";
 import { A11yToggle } from "@/components/a11y-toggle";
 import { EmojiBurstLayer } from "@/components/emoji-burst";
 import { MobileNav } from "@/components/mobile-nav";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthLayout,
@@ -29,23 +27,6 @@ function AuthLayout() {
     ensureDailyChallenges(user.id);
     refillHeartsIfDue(user.id);
     touchStreak(user.id);
-    // Reward questions asked in the homepage chat before signing up.
-    const vid = localStorage.getItem("sasha:visitorId");
-    if (vid && localStorage.getItem("sasha:visitorClaimed") !== user.id) {
-      supabase.auth.getSession().then(async ({ data }) => {
-        const token = data.session?.access_token;
-        if (!token) return;
-        const res = await fetch("/api/public/visitor-claim", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-          body: JSON.stringify({ visitorId: vid }),
-        });
-        if (!res.ok) return;
-        localStorage.setItem("sasha:visitorClaimed", user.id);
-        const j = await res.json();
-        if (j.xp > 0) toast.success(`+${j.xp} XP for your questions before signing up${j.badge ? " — Curious Falcon badge unlocked!" : ""}`);
-      }).catch(() => {});
-    }
   }, [user]);
 
   if (loading || !user) {
