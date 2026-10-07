@@ -1448,24 +1448,36 @@ export type Database = {
       }
       visitor_questions: {
         Row: {
+          admin_reply: string | null
           answer: string | null
+          claimed_by: string | null
           created_at: string
           id: string
           question: string
+          replied_at: string | null
+          replied_by: string | null
           visitor_id: string
         }
         Insert: {
+          admin_reply?: string | null
           answer?: string | null
+          claimed_by?: string | null
           created_at?: string
           id?: string
           question: string
+          replied_at?: string | null
+          replied_by?: string | null
           visitor_id: string
         }
         Update: {
+          admin_reply?: string | null
           answer?: string | null
+          claimed_by?: string | null
           created_at?: string
           id?: string
           question?: string
+          replied_at?: string | null
+          replied_by?: string | null
           visitor_id?: string
         }
         Relationships: []
