@@ -188,7 +188,10 @@ function Landing() {
       <footer className="container mx-auto flex items-center justify-between px-6 py-8 text-sm text-muted-foreground">
 
         <Logo size={22} />
-        <span>© {new Date().getFullYear()} Sasha AI</span>
+        <span className="flex items-center gap-4">
+          <Link to="/privacy" className="hover:text-foreground">Privacy Policy</Link>
+          <span>© {new Date().getFullYear()} Sasha AI</span>
+        </span>
       </footer>
     </div>
   );
