@@ -1,0 +1,1 @@
+- Native store apps use Capacitor (capacitor.config.ts) loading the published site via server.url; native-shell/ is only a placeholder webDir — keeps one codebase for web and stores.
