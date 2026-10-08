@@ -16,6 +16,7 @@ import { Route as EssayGraderRouteImport } from './routes/essay-grader'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as McpRouteImport } from './routes/mcp'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as RateRouteImport } from './routes/rate'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StudyScheduleRouteImport } from './routes/study-schedule'
@@ -98,6 +99,11 @@ const MathSolverRoute = MathSolverRouteImport.update({
 const McpRoute = McpRouteImport.update({
   id: '/mcp',
   path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RateRoute = RateRouteImport.update({
@@ -365,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/study-schedule': typeof StudyScheduleRoute
@@ -422,6 +429,7 @@ export interface FileRoutesByTo {
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/study-schedule': typeof StudyScheduleRoute
@@ -481,6 +489,7 @@ export interface FileRoutesById {
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
+  '/privacy': typeof PrivacyRoute
   '/rate': typeof RateRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/study-schedule': typeof StudyScheduleRoute
@@ -540,6 +549,7 @@ export interface FileRouteTypes {
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
+    | '/privacy'
     | '/rate'
     | '/sitemap.xml'
     | '/study-schedule'
@@ -597,6 +607,7 @@ export interface FileRouteTypes {
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
+    | '/privacy'
     | '/rate'
     | '/sitemap.xml'
     | '/study-schedule'
@@ -655,6 +666,7 @@ export interface FileRouteTypes {
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
+    | '/privacy'
     | '/rate'
     | '/sitemap.xml'
     | '/study-schedule'
@@ -714,6 +726,7 @@ export interface RootRouteChildren {
   HomeworkHelperRoute: typeof HomeworkHelperRoute
   MathSolverRoute: typeof MathSolverRoute
   McpRoute: typeof McpRoute
+  PrivacyRoute: typeof PrivacyRoute
   RateRoute: typeof RateRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StudyScheduleRoute: typeof StudyScheduleRoute
@@ -777,6 +790,13 @@ declare module '@tanstack/react-router' {
       path: '/mcp'
       fullPath: '/mcp'
       preLoaderRoute: typeof McpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rate': {
@@ -1241,6 +1261,7 @@ const rootRouteChildren: RootRouteChildren = {
   HomeworkHelperRoute: HomeworkHelperRoute,
   MathSolverRoute: MathSolverRoute,
   McpRoute: McpRoute,
+  PrivacyRoute: PrivacyRoute,
   RateRoute: RateRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   StudyScheduleRoute: StudyScheduleRoute,
