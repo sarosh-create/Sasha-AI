@@ -50,45 +50,51 @@ export const Route = createFileRoute("/api/public/flashcards")({
         const apiKey = process.env["LOVABLE_API_KEY"];
         if (!apiKey) return json({ error: "Flashcard maker isn't configured." }, 500);
 
-        const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+        const schema = {
+          type: "object", additionalProperties: false, required: ["title", "cards"],
+          properties: {
+            title: { type: "string" },
+            cards: { type: "array", items: { type: "object", additionalProperties: false, required: ["front", "back"], properties: { front: { type: "string" }, back: { type: "string" } } } },
+          },
+        };
+        const resp = await fetch("https://ai.gateway.lovable.dev/v1/responses", {
           method: "POST",
-          headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+          headers: { "Lovable-API-Key": apiKey, Authorization: `Bearer ${apiKey}`, "X-Lovable-AIG-SDK": "fetch", "Content-Type": "application/json" },
           body: JSON.stringify({
-            model: "google/gemini-3.7-flash",
-            messages: [
-              {
-                role: "system",
-                content: `You are Sasha AI's flashcard maker for exam students. Make exactly ${count} accurate, exam-focused flashcards. Front: one clear question or term. Back: a concise, correct answer (max 40 words). Cover the most examinable points, no duplicates. Only use facts you are sure of.`,
-              },
-              { role: "user", content: `Topic: ${input.topic || "(from notes)"}\n\nNotes:\n${text || "(none — use the topic)"}` },
-            ],
-            tools: [{
-              type: "function",
-              function: {
-                name: "return_flashcards",
-                description: "Return the flashcard deck.",
-                parameters: {
-                  type: "object",
-                  properties: {
-                    title: { type: "string" },
-                    cards: { type: "array", items: { type: "object", properties: { front: { type: "string" }, back: { type: "string" } }, required: ["front", "back"] } },
-                  },
-                  required: ["title", "cards"],
-                },
-              },
-            }],
-            tool_choice: { type: "function", function: { name: "return_flashcards" } },
+            model: "openai/gpt-6-astra",
+            stream: true,
+            store: false,
+            reasoning: { effort: "low" },
+            instructions: `You are Sasha AI's flashcard maker for exam students. Make exactly ${count} accurate, exam-focused flashcards. Front: one clear question or term. Back: a concise, correct answer (max 40 words). Cover the most examinable points, no duplicates. Only use facts you are sure of.`,
+            input: `Topic: ${input.topic || "(from notes)"}\n\nNotes:\n${text || "(none — use the topic)"}`,
+            text: { format: { type: "json_schema", name: "flashcards", strict: true, schema } },
           }),
         });
         if (resp.status === 429) return json({ error: "Lots of students right now — try again in a minute." }, 429);
-        if (resp.status === 402) return json({ error: "The flashcard maker is temporarily unavailable." }, 402);
-        if (!resp.ok) {
+        if (resp.status === 402 || resp.status === 403) return json({ error: "The flashcard maker is temporarily unavailable." }, resp.status);
+        if (!resp.ok || !resp.body) {
           console.error("flashcards AI", resp.status, await resp.text());
           return json({ error: "Couldn't make flashcards — please try again." }, 502);
         }
-        const j = await resp.json();
+        const reader = resp.body.getReader();
+        const dec = new TextDecoder();
+        let buf = "", out = "";
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          const lines = buf.split("\n");
+          buf = lines.pop() ?? "";
+          for (const l of lines) {
+            if (!l.startsWith("data:")) continue;
+            try {
+              const ev = JSON.parse(l.slice(5).trim());
+              if (ev.type === "response.output_text.delta") out += ev.delta;
+            } catch { /* keep-alive */ }
+          }
+        }
         try {
-          const args = JSON.parse(j.choices[0].message.tool_calls[0].function.arguments);
+          const args = JSON.parse(out);
           const cards = (args.cards ?? []).slice(0, count).map((c: { front: string; back: string }) => ({ front: String(c.front).slice(0, 300), back: String(c.back).slice(0, 600) }));
           return json({ title: String(args.title || input.topic || "Flashcards").slice(0, 120), cards, trial });
         } catch {
