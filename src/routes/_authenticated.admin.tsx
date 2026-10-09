@@ -735,10 +735,21 @@ function AuditLogAdmin() {
 
 
 function VisitorChatAdmin() {
-  const [rows, setRows] = useState<{ id: string; visitor_id: string; question: string; answer: string | null; created_at: string }[]>([]);
-  useEffect(() => {
-    supabase.from("visitor_questions").select("*").order("created_at", { ascending: false }).limit(200).then(({ data }) => setRows(data ?? []));
-  }, []);
+  type Row = { id: string; visitor_id: string; question: string; answer: string | null; admin_reply: string | null; replied_at: string | null; created_at: string };
+  const [rows, setRows] = useState<Row[]>([]);
+  const [drafts, setDrafts] = useState<Record<string, string>>({});
+  const load = () => supabase.from("visitor_questions").select("*").order("created_at", { ascending: false }).limit(200).then(({ data }) => setRows((data as Row[]) ?? []));
+  useEffect(() => { load(); }, []);
+  const reply = async (id: string) => {
+    const text = (drafts[id] ?? "").trim();
+    if (!text) return;
+    const { data: u } = await supabase.auth.getUser();
+    const { error } = await supabase.from("visitor_questions").update({ admin_reply: text.slice(0, 2000), replied_at: new Date().toISOString(), replied_by: u.user?.id ?? null }).eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Reply sent — the visitor sees it in their chat.");
+    setDrafts((d) => ({ ...d, [id]: "" }));
+    load();
+  };
   return (
     <div className="space-y-2">
       {rows.length === 0 && <p className="text-sm text-muted-foreground">No visitor questions yet.</p>}
@@ -746,7 +757,13 @@ function VisitorChatAdmin() {
         <div key={r.id} className="rounded-xl border border-border bg-card p-3 text-sm">
           <p className="text-xs text-muted-foreground">{new Date(r.created_at).toLocaleString()} · visitor {r.visitor_id.slice(0, 8)}</p>
           <p className="mt-1 font-medium">Q: {r.question}</p>
-          <p className="mt-1 text-muted-foreground">A: {r.answer ?? "—"}</p>
+          <p className="mt-1 text-muted-foreground">Sasha: {r.answer ?? "—"}</p>
+          {r.admin_reply && <p className="mt-1 text-primary">Your reply ({r.replied_at ? new Date(r.replied_at).toLocaleString() : ""}): {r.admin_reply}</p>}
+          <div className="mt-2 flex gap-2">
+            <label htmlFor={`vr-${r.id}`} className="sr-only">Reply to visitor</label>
+            <input id={`vr-${r.id}`} className="h-9 flex-1 rounded-md border border-input bg-background px-2 text-sm" placeholder={r.admin_reply ? "Send another reply…" : "Reply to this visitor…"} value={drafts[r.id] ?? ""} onChange={(e) => setDrafts((d) => ({ ...d, [r.id]: e.target.value }))} maxLength={2000} />
+            <button type="button" onClick={() => reply(r.id)} className="h-9 rounded-md bg-primary px-3 text-sm font-medium text-primary-foreground">Send</button>
+          </div>
         </div>
       ))}
     </div>

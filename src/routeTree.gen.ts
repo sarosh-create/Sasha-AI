@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as EssayGraderRouteImport } from './routes/essay-grader'
+import { Route as FlashcardMakerRouteImport } from './routes/flashcard-maker'
 import { Route as HomeworkHelperRouteImport } from './routes/homework-helper'
 import { Route as MathSolverRouteImport } from './routes/math-solver'
 import { Route as McpRouteImport } from './routes/mcp'
@@ -62,6 +63,7 @@ import { Route as AuthenticatedRoomsIndexRouteImport } from './routes/_authentic
 import { Route as AuthenticatedRoomsIdRouteImport } from './routes/_authenticated.rooms.$id'
 import { Route as AuthenticatedUIdRouteImport } from './routes/_authenticated.u.$id'
 import { Route as ApiPublicEssayGradeRouteImport } from './routes/api/public/essay-grade'
+import { Route as ApiPublicFlashcardsRouteImport } from './routes/api/public/flashcards'
 import { Route as ApiPublicPaperCheckRouteImport } from './routes/api/public/paper-check'
 import { Route as ApiPublicVisitorChatRouteImport } from './routes/api/public/visitor-chat'
 import { Route as ApiPublicHooksDailyReminderRouteImport } from './routes/api/public/hooks/daily-reminder'
@@ -84,6 +86,11 @@ const AuthRoute = AuthRouteImport.update({
 const EssayGraderRoute = EssayGraderRouteImport.update({
   id: '/essay-grader',
   path: '/essay-grader',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FlashcardMakerRoute = FlashcardMakerRouteImport.update({
+  id: '/flashcard-maker',
+  path: '/flashcard-maker',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HomeworkHelperRoute = HomeworkHelperRouteImport.update({
@@ -341,6 +348,11 @@ const ApiPublicEssayGradeRoute = ApiPublicEssayGradeRouteImport.update({
   path: '/api/public/essay-grade',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicFlashcardsRoute = ApiPublicFlashcardsRouteImport.update({
+  id: '/api/public/flashcards',
+  path: '/api/public/flashcards',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicPaperCheckRoute = ApiPublicPaperCheckRouteImport.update({
   id: '/api/public/paper-check',
   path: '/api/public/paper-check',
@@ -368,6 +380,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/essay-grader': typeof EssayGraderRoute
+  '/flashcard-maker': typeof FlashcardMakerRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -415,6 +428,7 @@ export interface FileRoutesByFullPath {
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
+  '/api/public/flashcards': typeof ApiPublicFlashcardsRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/quiz/': typeof AuthenticatedQuizIndexRoute
@@ -426,6 +440,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/essay-grader': typeof EssayGraderRoute
+  '/flashcard-maker': typeof FlashcardMakerRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -473,6 +488,7 @@ export interface FileRoutesByTo {
   '/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
+  '/api/public/flashcards': typeof ApiPublicFlashcardsRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/quiz': typeof AuthenticatedQuizIndexRoute
@@ -486,6 +502,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/auth': typeof AuthRoute
   '/essay-grader': typeof EssayGraderRoute
+  '/flashcard-maker': typeof FlashcardMakerRoute
   '/homework-helper': typeof HomeworkHelperRoute
   '/math-solver': typeof MathSolverRoute
   '/mcp': typeof McpRoute
@@ -533,6 +550,7 @@ export interface FileRoutesById {
   '/_authenticated/rooms/$id': typeof AuthenticatedRoomsIdRoute
   '/_authenticated/u/$id': typeof AuthenticatedUIdRoute
   '/api/public/essay-grade': typeof ApiPublicEssayGradeRoute
+  '/api/public/flashcards': typeof ApiPublicFlashcardsRoute
   '/api/public/paper-check': typeof ApiPublicPaperCheckRoute
   '/api/public/visitor-chat': typeof ApiPublicVisitorChatRoute
   '/_authenticated/quiz/': typeof AuthenticatedQuizIndexRoute
@@ -546,6 +564,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/essay-grader'
+    | '/flashcard-maker'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -593,6 +612,7 @@ export interface FileRouteTypes {
     | '/rooms/$id'
     | '/u/$id'
     | '/api/public/essay-grade'
+    | '/api/public/flashcards'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
     | '/quiz/'
@@ -604,6 +624,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/essay-grader'
+    | '/flashcard-maker'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -651,6 +672,7 @@ export interface FileRouteTypes {
     | '/rooms/$id'
     | '/u/$id'
     | '/api/public/essay-grade'
+    | '/api/public/flashcards'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
     | '/quiz'
@@ -663,6 +685,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/essay-grader'
+    | '/flashcard-maker'
     | '/homework-helper'
     | '/math-solver'
     | '/mcp'
@@ -710,6 +733,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rooms/$id'
     | '/_authenticated/u/$id'
     | '/api/public/essay-grade'
+    | '/api/public/flashcards'
     | '/api/public/paper-check'
     | '/api/public/visitor-chat'
     | '/_authenticated/quiz/'
@@ -723,6 +747,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   AuthRoute: typeof AuthRoute
   EssayGraderRoute: typeof EssayGraderRoute
+  FlashcardMakerRoute: typeof FlashcardMakerRoute
   HomeworkHelperRoute: typeof HomeworkHelperRoute
   MathSolverRoute: typeof MathSolverRoute
   McpRoute: typeof McpRoute
@@ -735,6 +760,7 @@ export interface RootRouteChildren {
   DotlovableOauthConsentRoute: typeof DotlovableOauthConsentRoute
   Char91DotmcpChar93InvokeToolToolRoute: typeof Char91DotmcpChar93InvokeToolToolRoute
   ApiPublicEssayGradeRoute: typeof ApiPublicEssayGradeRoute
+  ApiPublicFlashcardsRoute: typeof ApiPublicFlashcardsRoute
   ApiPublicPaperCheckRoute: typeof ApiPublicPaperCheckRoute
   ApiPublicVisitorChatRoute: typeof ApiPublicVisitorChatRoute
   ApiPublicHooksDailyReminderRoute: typeof ApiPublicHooksDailyReminderRoute
@@ -769,6 +795,13 @@ declare module '@tanstack/react-router' {
       path: '/essay-grader'
       fullPath: '/essay-grader'
       preLoaderRoute: typeof EssayGraderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/flashcard-maker': {
+      id: '/flashcard-maker'
+      path: '/flashcard-maker'
+      fullPath: '/flashcard-maker'
+      preLoaderRoute: typeof FlashcardMakerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/homework-helper': {
@@ -1114,6 +1147,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicEssayGradeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/flashcards': {
+      id: '/api/public/flashcards'
+      path: '/api/public/flashcards'
+      fullPath: '/api/public/flashcards'
+      preLoaderRoute: typeof ApiPublicFlashcardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/paper-check': {
       id: '/api/public/paper-check'
       path: '/api/public/paper-check'
@@ -1258,6 +1298,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   AuthRoute: AuthRoute,
   EssayGraderRoute: EssayGraderRoute,
+  FlashcardMakerRoute: FlashcardMakerRoute,
   HomeworkHelperRoute: HomeworkHelperRoute,
   MathSolverRoute: MathSolverRoute,
   McpRoute: McpRoute,
@@ -1271,6 +1312,7 @@ const rootRouteChildren: RootRouteChildren = {
   DotlovableOauthConsentRoute: DotlovableOauthConsentRoute,
   Char91DotmcpChar93InvokeToolToolRoute: Char91DotmcpChar93InvokeToolToolRoute,
   ApiPublicEssayGradeRoute: ApiPublicEssayGradeRoute,
+  ApiPublicFlashcardsRoute: ApiPublicFlashcardsRoute,
   ApiPublicPaperCheckRoute: ApiPublicPaperCheckRoute,
   ApiPublicVisitorChatRoute: ApiPublicVisitorChatRoute,
   ApiPublicHooksDailyReminderRoute: ApiPublicHooksDailyReminderRoute,
