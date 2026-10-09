@@ -109,7 +109,7 @@ function MathSolver() {
         </div>
 
         <section className="mt-8 rounded-2xl border border-border bg-card p-5 shadow-card">
-          <h2 className="sr-only">Solve a problem</h2>
+          <h2 className="mb-3 font-display text-xl font-semibold">Solve a problem</h2>
           <Label htmlFor="math-problem" className="sr-only">Math problem</Label>
           <Textarea id="math-problem" value={q} onChange={(e) => setQ(e.target.value)} placeholder="e.g. Solve 2x² − 5x − 3 = 0, or find the derivative of sin(x)·e^x" className="min-h-[140px] resize-none text-base" maxLength={4000} />
           <div className="mt-3 flex items-center justify-between gap-3">

@@ -113,19 +113,19 @@ function HomeworkHelper() {
           </TabsList>
 
           <TabsContent value="solve">
-            <h2 className="sr-only">Step-by-step homework solver</h2>
+            <h2 className="mb-3 font-display text-xl font-semibold">Step-by-step homework solver</h2>
             <SolvePanel />
           </TabsContent>
           <TabsContent value="dump">
-            <h2 className="sr-only">Brain dump organiser</h2>
+            <h2 className="mb-3 font-display text-xl font-semibold">Brain dump organiser</h2>
             <BrainDumpPanel />
           </TabsContent>
           <TabsContent value="hologram">
-            <h2 className="sr-only">Hologram-style topic walkthrough</h2>
+            <h2 className="mb-3 font-display text-xl font-semibold">Hologram-style topic walkthrough</h2>
             <HologramPanel />
           </TabsContent>
           <TabsContent value="focus">
-            <h2 className="sr-only">Focus timer & time freeze</h2>
+            <h2 className="mb-3 font-display text-xl font-semibold">Focus timer & time freeze</h2>
             <FocusPanel />
           </TabsContent>
         </Tabs>

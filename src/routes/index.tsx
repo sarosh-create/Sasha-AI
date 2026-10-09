@@ -88,8 +88,9 @@ function Landing() {
               Built for students preparing for real exams
             </div>
             <h1 className="font-display text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl">
-              Proof you're getting <span className="text-gradient">better</span> — not just busier.
+              Sasha AI: your free <span className="text-gradient">AI study mentor</span> &amp; exam coach
             </h1>
+            <p className="mt-3 font-display text-lg text-foreground/80">Proof you're getting better — not just busier.</p>
             <p className="mt-5 text-base text-muted-foreground md:text-lg">
               Sasha AI marks your answers against the real mark scheme, re-teaches what you lost
               marks on, and plots a mastery curve per topic you can show a parent.
