@@ -23,6 +23,28 @@ export function VisitorChat() {
     }
     setVid(id);
   }, []);
+  const [replies, setReplies] = useState<{ id: string; question: string; admin_reply: string }[]>([]);
+  const [unread, setUnread] = useState(0);
+  useEffect(() => {
+    if (!vid) return;
+    let alive = true;
+    const poll = async () => {
+      try {
+        const r = await fetch(`/api/public/visitor-chat?visitorId=${vid}`);
+        const b = await r.json();
+        if (!alive) return;
+        const seen = Number(localStorage.getItem("sasha:visitorRepliesSeen") ?? 0);
+        setReplies(b.replies ?? []);
+        setUnread(Math.max(0, (b.replies?.length ?? 0) - seen));
+      } catch { /* offline */ }
+    };
+    poll();
+    const t = setInterval(poll, open ? 15000 : 60000);
+    return () => { alive = false; clearInterval(t); };
+  }, [vid, open]);
+  useEffect(() => {
+    if (open) { localStorage.setItem("sasha:visitorRepliesSeen", String(replies.length)); setUnread(0); }
+  }, [open, replies.length]);
   useEffect(() => endRef.current?.scrollIntoView({ behavior: "smooth" }), [msgs, open]);
 
   const send = async () => {
@@ -61,6 +83,13 @@ export function VisitorChat() {
                 {m.content}
               </div>
             ))}
+            {replies.map((r) => (
+              <div key={r.id} className="max-w-[90%] rounded-xl border border-primary/40 bg-background px-3 py-2 text-sm">
+                <p className="text-xs font-semibold text-primary">Reply from the Sasha team</p>
+                <p className="text-xs text-muted-foreground">Re: {r.question}</p>
+                <p className="mt-1">{r.admin_reply}</p>
+              </div>
+            ))}
             {busy && <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />}
             <div ref={endRef} />
           </div>
@@ -72,7 +101,7 @@ export function VisitorChat() {
         </div>
       ) : (
         <Button onClick={() => setOpen(true)} className="h-12 rounded-full px-4 shadow-pop" aria-label="Open chat with Sasha">
-          <MessageCircle className="mr-2 h-5 w-5" /> Ask a question
+          <MessageCircle className="mr-2 h-5 w-5" /> {unread > 0 ? `${unread} new repl${unread === 1 ? "y" : "ies"}` : "Ask a question"}
         </Button>
       )}
     </div>

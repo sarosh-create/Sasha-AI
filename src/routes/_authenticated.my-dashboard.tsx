@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { PageLoading } from "@/components/ui/states";
 import { loadSchedule, upcomingDays, type SavedScheduleDay } from "@/lib/study-schedule-store";
-import { Map, CalendarDays, FileText, AlertTriangle } from "lucide-react";
+import { Map, CalendarDays, FileText, AlertTriangle, Layers } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/my-dashboard")({
   component: MyDashboard,
@@ -31,6 +31,7 @@ function MyDashboard() {
   const [path, setPath] = useState({ done: 0, total: 0 });
   const [quizzes, setQuizzes] = useState<Quiz[]>([]);
   const [mistakes, setMistakes] = useState<Mistake[]>([]);
+  const [decks, setDecks] = useState<{ id: string; title: string; known: number; total: number; created_at: string }[]>([]);
   const [days, setDays] = useState<SavedScheduleDay[]>([]);
 
   useEffect(() => {
@@ -38,11 +39,16 @@ function MyDashboard() {
     setDays(s ? upcomingDays(s, 7) : []);
     if (!user) return;
     (async () => {
-      const [{ data: lp }, { data: qz }, { data: mj }] = await Promise.all([
+      const [{ data: lp }, { data: qz }, { data: mj }, { data: fc }] = await Promise.all([
         supabase.from("lesson_path").select("status").eq("user_id", user.id),
         supabase.from("quizzes").select("id, topic, score, total, created_at").eq("user_id", user.id).eq("completed", true).order("created_at", { ascending: false }).limit(10),
         supabase.from("mistake_journal").select("id, topic, question, why_wrong, marks_lost, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10),
+        supabase.from("generated_artifacts").select("id, title, payload, created_at").eq("user_id", user.id).eq("artifact_kind", "flashcards").order("created_at", { ascending: false }).limit(10),
       ]);
+      setDecks((fc ?? []).map((d) => {
+        const cards = ((d.payload as { cards?: { known?: boolean }[] })?.cards) ?? [];
+        return { id: d.id, title: d.title, created_at: d.created_at, total: cards.length, known: cards.filter((c) => c.known).length };
+      }));
       const rows = lp ?? [];
       setPath({ done: rows.filter((r) => r.status === "done").length, total: rows.length });
       setQuizzes((qz as Quiz[]) ?? []);
@@ -80,6 +86,23 @@ function MyDashboard() {
             ))}
           </ul>
         )}
+      </section>
+
+      <section className="rounded-2xl border border-border bg-card p-5 shadow-card">
+        <h2 className="mb-3 flex items-center gap-2 font-display text-lg font-semibold"><Layers className="h-4 w-4" /> Flashcard decks</h2>
+        {decks.length === 0 ? <p className="text-sm text-muted-foreground">No decks yet.</p> : (
+          <ul className="grid gap-2 sm:grid-cols-2">
+            {decks.map((d) => (
+              <li key={d.id} className="rounded-xl border border-border bg-background p-3">
+                <p className="truncate font-medium">{d.title}</p>
+                <p className="text-xs text-muted-foreground">{d.known} of {d.total} known</p>
+                <Progress value={d.total ? (d.known / d.total) * 100 : 0} className="mt-2" />
+                <Link to="/flashcard-maker" search={{ deck: d.id }}><Button size="sm" variant="outline" className="mt-2">Review</Button></Link>
+              </li>
+            ))}
+          </ul>
+        )}
+        <Link to="/flashcard-maker" search={{}}><Button size="sm" className="mt-3">Make a new deck</Button></Link>
       </section>
 
       <div className="grid gap-6 lg:grid-cols-2">
