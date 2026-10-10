@@ -81,6 +81,8 @@ const GROUPS: Group[] = [
       { title: "Paper Checker", url: "/paper-checker", icon: Stamp },
       { title: "Grade my essay", url: "/essay-grader", icon: Gavel },
       { title: "Revision", url: "/revision", icon: BookMarked },
+      { title: "Flashcard Maker", url: "/flashcard-maker", icon: Library },
+      { title: "My Dashboard", url: "/my-dashboard", icon: LayoutDashboard },
     ],
   },
   {
