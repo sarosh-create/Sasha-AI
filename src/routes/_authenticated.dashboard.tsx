@@ -146,6 +146,8 @@ function Dashboard() {
         </StatCard>
       </div>
 
+      <FlashcardReview />
+
       <div className="mt-8 grid gap-6 lg:grid-cols-3">
         {/* Continue path widget */}
         <div className="lg:col-span-2 rounded-2xl border border-border bg-card p-6 shadow-card">
@@ -236,6 +238,43 @@ function StatCard({ label, value, children }: { label: string; value: string; ch
       <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-1 font-display text-2xl font-semibold">{value}</p>
       {children}
+    </div>
+  );
+}
+
+/** Today's flashcard review: decks with cards still being learned. */
+function FlashcardReview() {
+  const { user } = useAuth();
+  const [decks, setDecks] = useState<{ id: string; title: string; due: number; total: number }[] | null>(null);
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("generated_artifacts").select("id, title, payload").eq("user_id", user.id).eq("artifact_kind", "flashcards")
+      .order("created_at", { ascending: false }).limit(6).then(({ data }) => {
+        setDecks((data ?? []).map((d) => {
+          const cards = ((d.payload as { cards?: { known?: boolean }[] })?.cards) ?? [];
+          return { id: d.id, title: d.title, total: cards.length, due: cards.filter((c) => !c.known).length };
+        }).filter((d) => d.due > 0).slice(0, 3));
+      });
+  }, [user]);
+  return (
+    <div className="mt-8 rounded-2xl border border-border bg-card p-6 shadow-card">
+      <div className="mb-3 flex items-center justify-between">
+        <h2 className="font-display text-xl font-semibold">Flashcards to review today</h2>
+        <Link to="/flashcard-maker" search={{}}><Button variant="ghost" size="sm">Make a deck</Button></Link>
+      </div>
+      {!decks || decks.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Nothing due. Turn today's topic into a deck with the free flashcard maker.</p>
+      ) : (
+        <ul className="grid gap-2 sm:grid-cols-3">
+          {decks.map((d) => (
+            <li key={d.id} className="rounded-xl border border-border bg-background p-3">
+              <p className="truncate font-medium">{d.title}</p>
+              <p className="text-xs text-muted-foreground">{d.due} of {d.total} cards still to learn</p>
+              <Link to="/flashcard-maker" search={{ deck: d.id }}><Button size="sm" className="mt-2">Review now</Button></Link>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
