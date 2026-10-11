@@ -17,7 +17,12 @@ Deno.serve(async (req) => {
     const system = payload.system ? String(payload.system).slice(0, deep ? 12000 : 4000) : undefined;
     const messages = (Array.isArray(payload.messages) ? payload.messages : [])
       .slice(-20)
-      .map((m: any) => ({ role: m?.role === "assistant" ? "assistant" : "user", content: String(m?.content ?? "").slice(0, 4000) }));
+      .map((m: any, i: number, arr: any[]) => {
+        const role = m?.role === "assistant" ? "assistant" : "user";
+        const text = String(m?.content ?? "").slice(0, 4000) || "Please look at this picture.";
+        const img = typeof m?.image === "string" && m.image.startsWith("data:image/") && m.image.length < 3_000_000 && i >= arr.length - 3 ? m.image : null;
+        return img && role === "user" ? { role, content: [{ type: "text", text }, { type: "image_url", image_url: { url: img } }] } : { role, content: text };
+      });
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {

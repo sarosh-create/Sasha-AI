@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth-context";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { VoiceButton, PictureButton, PicturePreview } from "@/components/chat-attach";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { tutorSystemPrompt, deepResearchPrompt } from "@/lib/ai/system-prompts";
 import { toast } from "sonner";
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/tutor")({
     typeof s.subject === "string" ? { subject: s.subject } : {},
 });
 
-type Msg = { role: "user" | "assistant"; content: string };
+type Msg = { role: "user" | "assistant"; content: string; image?: string };
 type Session = { id: string; title: string; created_at: string };
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-tutor`;
@@ -120,8 +121,9 @@ function TutorPage() {
     toast.success("Saved to notes");
   };
 
+  const [pic, setPic] = useState<string | null>(null);
   const send = async () => {
-    if (!input.trim() || !user) return;
+    if ((!input.trim() && !pic) || !user) return;
     let sid = sessionId;
     if (!sid) {
       const { data, error } = await supabase
@@ -135,7 +137,8 @@ function TutorPage() {
       setSessions((s) => [data!, ...s]);
     }
 
-    const userMsg: Msg = { role: "user", content: input };
+    const userMsg: Msg = { role: "user", content: input.trim() || "Please look at this picture.", ...(pic ? { image: pic } : {}) };
+    setPic(null);
     const next = [...messages, userMsg];
     setMessages(next);
     setInput("");
@@ -313,7 +316,10 @@ function TutorPage() {
               {deep ? "Full briefing: theory, history, worked examples, sources." : "Answers stay tuned to your board and level."}
             </span>
           </div>
+          <div className="mx-auto max-w-3xl"><PicturePreview src={pic} onClear={() => setPic(null)} /></div>
           <div className="mx-auto flex max-w-3xl items-end gap-2">
+            <PictureButton onImage={setPic} disabled={streaming} />
+            <VoiceButton onText={(t) => setInput((v) => (v ? v + " " : "") + t)} disabled={streaming} />
             <Textarea
               value={input}
               onChange={(e) => setInput(e.target.value)}
@@ -325,7 +331,7 @@ function TutorPage() {
               rows={1}
               disabled={streaming}
             />
-            <Button onClick={send} disabled={streaming || !input.trim()} size="lg" aria-label="Send message">
+            <Button onClick={send} disabled={streaming || (!input.trim() && !pic)} size="lg" aria-label="Send message">
               <Send className="h-4 w-4" />
             </Button>
           </div>
