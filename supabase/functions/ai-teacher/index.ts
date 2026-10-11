@@ -21,7 +21,14 @@ Deno.serve(async (req) => {
   const authedUser = await getAuthedUser(req);
   if (!authedUser) return unauthorized(cors);
   try {
-    const { persona = "friendly", messages = [] } = await req.json();
+    const body = await req.json();
+    const persona = body.persona ?? "friendly";
+    const messages = (Array.isArray(body.messages) ? body.messages : []).slice(-20).map((m: any, i: number, arr: any[]) => {
+      const role = m?.role === "assistant" ? "assistant" : "user";
+      const text = String(m?.content ?? "").slice(0, 4000) || "Please look at this picture.";
+      const img = typeof m?.image === "string" && m.image.startsWith("data:image/") && m.image.length < 3_000_000 && i >= arr.length - 3 ? m.image : null;
+      return img && role === "user" ? { role, content: [{ type: "text", text }, { type: "image_url", image_url: { url: img } }] } : { role, content: text };
+    });
     const system = PERSONAS[persona] ?? PERSONAS.friendly;
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) throw new Error("Missing LOVABLE_API_KEY");

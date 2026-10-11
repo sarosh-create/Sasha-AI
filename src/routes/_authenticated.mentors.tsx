@@ -32,12 +32,14 @@ const PERSONAS = [
   { id: "career", name: "Career Advisor", icon: Briefcase, blurb: "Subjects → futures" },
 ];
 
+import { VoiceButton, PictureButton, PicturePreview } from "@/components/chat-attach";
 const FN = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-teacher`;
 
 function Mentors() {
   const { session } = useAuth();
   const [persona, setPersona] = useState("friendly");
-  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
+  const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string; image?: string }[]>([]);
+  const [pic, setPic] = useState<string | null>(null);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const endRef = useRef<HTMLDivElement>(null);
@@ -45,9 +47,9 @@ function Mentors() {
   useEffect(() => { endRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   const send = async () => {
-    if (!input.trim() || busy) return;
-    const next = [...messages, { role: "user" as const, content: input.trim() }];
-    setMessages(next); setInput(""); setBusy(true);
+    if ((!input.trim() && !pic) || busy) return;
+    const next = [...messages, { role: "user" as const, content: input.trim() || "Please look at this picture.", ...(pic ? { image: pic } : {}) }];
+    setMessages(next); setInput(""); setPic(null); setBusy(true);
     try {
       const r = await fetch(FN, {
         method: "POST",
@@ -97,12 +99,15 @@ function Mentors() {
           {messages.length === 0 && <p className="text-sm text-muted-foreground">Ask anything — the {PERSONAS.find(p => p.id === persona)?.name} is listening.</p>}
           {messages.map((m, i) => (
             <div key={i} className={`rounded-xl p-3 text-sm ${m.role === "user" ? "ml-auto max-w-[80%] bg-falcon-gold/15" : "max-w-[85%] bg-secondary"}`}>
-              {m.role === "assistant" ? <div className="prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{m.content || "…"}</ReactMarkdown></div> : m.content}
+              {m.role === "assistant" ? <div className="prose prose-sm max-w-none dark:prose-invert"><ReactMarkdown>{m.content || "…"}</ReactMarkdown></div> : <>{m.image && <img src={m.image} alt="Sent picture" className="mb-2 max-h-40 rounded-md" />}{m.content}</>}
             </div>
           ))}
           <div ref={endRef} />
         </div>
-        <div className="mt-3 flex gap-2">
+        <div className="mt-3"><PicturePreview src={pic} onClear={() => setPic(null)} /></div>
+        <div className="mt-1 flex gap-2">
+          <PictureButton onImage={setPic} disabled={busy} />
+          <VoiceButton onText={(t) => setInput((v) => (v ? v + " " : "") + t)} disabled={busy} />
           <Input value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && send()} placeholder="Type a question…" />
           <Button onClick={send} disabled={busy}>Send</Button>
         </div>
