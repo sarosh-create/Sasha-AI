@@ -1518,6 +1518,10 @@ export type Database = {
         Returns: boolean
       }
       is_my_student: { Args: { _student: string }; Returns: boolean }
+      is_room_member: {
+        Args: { _room_id: string; _user_id: string }
+        Returns: boolean
+      }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       is_staff_or_teacher: { Args: { _user_id: string }; Returns: boolean }
       leaderboard: {
