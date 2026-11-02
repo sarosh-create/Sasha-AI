@@ -10,7 +10,7 @@ const OWNER_EMAILS = ["tsr4sg@gmail.com"];
 
 export const logAuthEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: { event: "sign_in" | "sign_out"; userAgent?: string }) => ({
+  .validator((input: { event: "sign_in" | "sign_out"; userAgent?: string }) => ({
     event: input.event === "sign_out" ? ("sign_out" as const) : ("sign_in" as const),
     userAgent: (input.userAgent ?? "").slice(0, 300),
   }))

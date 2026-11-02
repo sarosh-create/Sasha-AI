@@ -10,7 +10,7 @@ export const getCaptchaSiteKey = createServerFn({ method: "GET" }).handler(async
  * check is skipped so sign-up keeps working.
  */
 export const verifyCaptcha = createServerFn({ method: "POST" })
-  .inputValidator((input: { token: string; action?: string }) => ({
+  .validator((input: { token: string; action?: string }) => ({
     token: String(input?.token ?? "").slice(0, 4000),
     action: String(input?.action ?? "signup").slice(0, 40),
   }))
