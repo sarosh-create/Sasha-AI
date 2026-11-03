@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
 import { PaperChecker } from "@/components/paper-checker";
 import { VisitorChat } from "@/components/visitor-chat";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 import { useEffect, useState } from "react";
 import {
   BrainCircuit,
@@ -66,6 +67,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <VisitorChat />
+      <WhatsAppButton />
       <header className="container mx-auto flex items-center justify-between px-6 py-5">
         <Logo />
         <nav className="flex items-center gap-3">
