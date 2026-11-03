@@ -67,6 +67,7 @@ function Landing() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <VisitorChat />
+      <WhatsAppButton />
       <header className="container mx-auto flex items-center justify-between px-6 py-5">
         <Logo />
         <nav className="flex items-center gap-3">
