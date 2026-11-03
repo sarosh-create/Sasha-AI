@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { GradingDemo } from "@/components/grading-demo";
 import { PaperChecker } from "@/components/paper-checker";
 import { VisitorChat } from "@/components/visitor-chat";
+import { WhatsAppButton } from "@/components/whatsapp-button";
 import { useEffect, useState } from "react";
 import {
   BrainCircuit,
