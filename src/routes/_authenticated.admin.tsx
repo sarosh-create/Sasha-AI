@@ -451,7 +451,9 @@ function AssignStudentsAdmin() {
       const cur = byId.get(d.user_id);
       if (cur && !cur.display_name) cur.display_name = d.name;
     });
-    setTeachers(Array.from(byId.values()).map((r) => ({ ...r, display_name: r.display_name ?? r.user_id })));
+    const linked = Array.from(byId.values()).map((r) => ({ ...r, display_name: r.display_name ?? r.user_id }));
+    const pending = (dir ?? []).filter((d: any) => !d.user_id).map((d: any, i: number) => ({ user_id: `pending-${i}`, display_name: `${d.name} (no account yet — ask them to sign up)`, pending: true }));
+    setTeachers([...linked, ...pending]);
     const { data: s } = await supabase.from("profiles").select("user_id, display_name, account_type").eq("account_type", "student");
     setStudents(s ?? []);
   })(); }, []);
@@ -469,7 +471,7 @@ function AssignStudentsAdmin() {
           <div><Label>Teacher</Label>
             <select className="w-full rounded-md border px-3 py-2 text-sm" value={teacherId} onChange={(e) => setTeacherId(e.target.value)}>
               <option value="">— pick —</option>
-              {teachers.map((t) => <option key={t.user_id} value={t.user_id}>{t.display_name}</option>)}
+              {teachers.map((t) => <option key={t.user_id} value={t.user_id} disabled={!!t.pending}>{t.display_name}</option>)}
             </select>
           </div>
           <div><Label>Student</Label>
