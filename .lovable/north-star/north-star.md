@@ -2,7 +2,7 @@
 
 # North star
 
-Students walk into their exams prepared and earn the grades they're aiming for.
+Students turn A* ambitions into exam-day results.
 
 ## Metric
 
